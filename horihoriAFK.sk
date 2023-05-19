@@ -1,0 +1,27 @@
+command /set_afkroom:
+	permission: admin
+	permission message: &4 !&cYou do not have permission to execute this command】
+	trigger:
+		set {afk} to location of player
+		send "&c%{afk}%をAFK Roomとして設定しました。"
+
+command /set_hub:
+	permission: admin
+	permission message: &4 !&cYou do not have permission to execute this command】
+	trigger:
+		set {horihorihub} to location of player
+		send "&c%{horihorihub}%をhubとして設定しました。"
+
+command /afk:
+	trigger:
+		send "&2AFK Roomに移動しました。" 
+		teleport player to {afk}
+
+command /center:
+	trigger:
+		send "&2ほりほりロビーに移動しました。" 
+		teleport player to {horihorihub}
+
+on npc right click:
+    if npc name is "&8[&7クリックしてAFK Roomから抜ける&8]":
+        execute player command "/center"

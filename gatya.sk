@@ -1,0 +1,380 @@
+on load:
+    clear {gatya.panelist::*}
+    add white stained glass pane to {gatya.panelist::*}
+    add orange stained glass pane to {gatya.panelist::*}
+    add magenta stained glass pane to {gatya.panelist::*}
+    add light blue stained glass pane to {gatya.panelist::*}
+    add yellow stained glass pane to {gatya.panelist::*}
+    add lime stained glass pane to {gatya.panelist::*}
+    add pink stained glass pane to {gatya.panelist::*}
+    add gray stained glass pane to {gatya.panelist::*}
+
+on load:
+    loop {gatya.list::*}:
+        gatya_holo_refresh(loop-value)
+
+on join:
+    clear metadata value "gatya_set_create_name" of player
+    clear metadata value "gatya_set_location" of player
+    clear metadata value "gatya_set_price" of player
+    clear metadata value "gatya_opening" of player
+
+command /gatya [<text>]:
+    permission: admin
+    permission message: &c権限がありません。
+    trigger:
+        gatya_settings(player)
+
+on tab complete of "/gatya":
+    add "settings" to tab completions for position 1
+
+#function gatya_show_help(p: player):
+#    send "&r" to {_p}
+#    send "&e&lガチャガチャ &7- &e使い方" to {_p}
+#    send "&b  /gatya settings &7| ガチャガチャの作成、削除、設定を行います。 " to {_p}
+#    send "&r" to {_p}
+
+function gatya_settings(p: player):
+    sound_question({_p})
+    open chest inventory with 1 rows named "&e【 操作を選択してください。 】" to {_p}
+    set slot 1 of {_p}'s current inventory to red terracotta named "&cガチャの&c&l削除"
+    set slot 4 of {_p}'s current inventory to green terracotta named "&aガチャの&a&l新規作成"
+    set slot 7 of {_p}'s current inventory to yellow terracotta named "&eガチャの&e&l編集"
+
+on inventory click:
+    if name of player's inventory is "&e【 操作を選択してください。 】":
+        cancel event
+        if name of event-item is "&cガチャの&c&l削除":
+            gatya_remove(player)
+        else if name of event-item is "&aガチャの&a&l新規作成":
+            gatya_create(player)
+        else if name of event-item is "&eガチャの&e&l編集":
+            gatya_edit(player)
+    else if name of player's inventory is "&c【 ガチャ名を選択してください 】":
+        cancel event
+        if tag "gatya_name" of nbt compound of event-item is set:
+            sound_question(player)
+            set {_name} to tag "gatya_name" of nbt compound of event-item
+            gatya_remove_confirm(player, {_name})
+            clear {_name}
+    else if name of player's inventory is "&e【 ガチャ名を選択してください 】":
+        cancel event
+        if tag "gatya_name" of nbt compound of event-item is set: 
+            sound_question(player)
+            set {_name} to tag "gatya_name" of nbt compound of event-item
+            gatya_edit_gui(player, {_name})
+            clear {_name}
+    else if name of player's inventory is "&c【 本当に削除しますか？ 】":
+        cancel event
+        if name of event-item is "&a&lキャンセル&aする":
+            close player's inventory
+            send "&aキャンセルしました。" to player
+            sound_error(player)
+        else if name of event-item is "&c&l削除&cする":
+            close player's inventory
+            set {_name} to tag "gatya_name" of nbt compound of event-item
+            send "&aガチャ &f%{_name}% &aを削除しました。" to player
+            sound_success2(player)
+            delete holo object "gatya_%{_name}%"
+            remove {_name} from {gatya.list::*}
+            clear {gatya.info::%{_name}%::*}
+            clear {_name}
+    else if name of player's inventory is "&e【 ガチャの編集 】":
+        cancel event
+        if name of event-item is "&b金額":
+            if tag "gatya_name" of nbt compound of event-item is set: 
+                set {_name} to tag "gatya_name" of nbt compound of event-item
+                gatya_set_price(player, {_name})
+                clear {_name}
+        else if name of event-item is "&b内容":
+            if tag "gatya_name" of nbt compound of event-item is set: 
+                set {_name} to tag "gatya_name" of nbt compound of event-item
+                gatya_set_content(player, {_name})
+                clear {_name}
+        else if name of event-item is "&bガチャの場所":
+            if tag "gatya_name" of nbt compound of event-item is set: 
+                set {_name} to tag "gatya_name" of nbt compound of event-item
+                gatya_set_location(player, {_name})
+                clear {_name}
+        else if name of event-item is "&bホログラム更新":
+            if tag "gatya_name" of nbt compound of event-item is set: 
+                set {_name} to tag "gatya_name" of nbt compound of event-item
+                sound_success2(player)
+                gatya_holo_refresh({_name})
+                send "&aホログラムを更新しました！" to player
+                close player's inventory
+                clear {_name}
+    else if name of player's inventory is "&e【 ガチャ内容の編集 】":
+        if name of event-item is "&c" or "&a変更を確定する" or "&cキャンセルする":
+            cancel event
+        if name of event-item is "&a変更を確定する":
+            if tag "gatya_name" of nbt compound of event-item is set: 
+                set {_name} to tag "gatya_name" of nbt compound of event-item
+                clear {gatya.info::%{_name}%::content::*}
+                loop all items in player's current inventory:
+                    if name of loop-item is not "&c" or "&a変更を確定する" or "&cキャンセルする":
+                        add loop-item to {gatya.info::%{_name}%::content::*}
+                sound_success2(player)
+                close player's inventory
+                send "&aガチャ &f%{_name}% &aの内容を変更しました。" to player
+        else if name of event-item is "&cキャンセルする":
+            close player's inventory
+            sound_error(player)
+            send "&aキャンセルしました。" to player
+    else if name of player's inventory is "&a&l【 ガチャガチャ 】":
+        cancel event
+
+on chat:
+    if metadata value "gatya_set_create_name" of player is true:
+        cancel event
+        execute console command "/jp %player% on"
+        clear metadata value "gatya_set_create_name" of player
+        if message is "cancel":
+            send "&aキャンセルしました。" to player
+            sound_error(player)
+        else:
+            clear {_n}
+            loop {gatya.list::*}:
+                if loop-value is message:
+                    add 1 to {_n}
+            if {_n} is not set:                
+                send "&a新しいガチャを &f%message% &aという名前で作成しました。" to player
+                sound_success2(player)
+                add message to {gatya.list::*}
+            else:
+                send "&cすでにその名前のガチャが存在するため、作成できませんでした。" to player
+                sound_error(player)
+        send action bar "&r" to player
+    if metadata value "gatya_set_price" of player is set:
+        cancel event
+        execute console command "/jp %player% on"
+        if message is "cancel":
+            clear metadata value "gatya_set_price" of player
+            send "&aキャンセルしました。" to player
+            sound_error(player)
+        else:
+            set {_name} to metadata value "gatya_set_price" of player
+            set {gatya.info::%{_name}%::price} to message parsed as integer
+            send "&aガチャ &f%{_name}% &aの金額を &f%message parsed as integer%円 &aに設定しました。" to player
+            gatya_holo_refresh({_name})
+            sound_success2(player)
+            clear {_name}
+            clear metadata value "gatya_set_price" of player
+
+on break:
+    if metadata value "gatya_set_location" of player is set:
+        cancel event
+        if event-block is chest:
+            set {_name} to metadata value "gatya_set_location" of player
+            set {_n} to 0
+            loop {gatya.list::*}:
+                if loop-value is not {_name}:
+                    if {gatya.info::%loop-value%::location} is location of event-block:
+                        add 1 to {_n}
+            if {_n} is 0:
+                send "&aガチャ &f%{_name}% &aのチェストの位置を設定しました。" to player
+                set {gatya.info::%{_name}%::location} to location of event-block
+                sound_success2(player)
+                gatya_holo_refresh({_name})
+            else:
+                sound_error(player)
+                send "&cすでにそのチェストは別のガチャによって指定されてるため、設定できませんでした。" to player
+            clear {_name}
+            clear metadata value "gatya_set_location" of player
+        else:
+            sound_error(player)
+            send "&cチェスト以外のブロックは指定できません。" to player
+    else:
+        clear {_n}
+        loop {gatya.list::*}:
+            if {gatya.info::%loop-value%::location} is location of event-block:
+                set {_n} to loop-value
+        if {_n} is set:
+            cancel event
+            sound_error(player)
+            send "&cガチャのチェストは破壊できません。" to player
+
+on right click:
+    if metadata value "gatya_set_location" of player is set:
+        cancel event
+        sound_error(player)
+        send "&aキャンセルしました。" to player
+        clear metadata value "gatya_set_location" of player
+    clear {_n}
+    loop {gatya.list::*}:
+        if {gatya.info::%loop-value%::location} is location of event-block:
+            set {_n} to loop-value
+    if {_n} is set:
+        cancel event
+        gatya_open(player, {_n})
+
+function gatya_create(p: player):
+    close {_p}'s inventory
+    sound_question({_p})
+    execute console command "/jp %{_p}% off"
+    set metadata value "gatya_set_create_name" of {_p} to true
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+    send "&r" to {_p}
+    send "&e 作成するガチャの名前を指定する。" to {_p}
+    send "&r" to {_p}
+    send "&fチャットに名前を送信してください。" to {_p}
+    send "&f(キャンセルの場合はcancelと送信してください。)" to {_p}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+
+function gatya_remove(p: player):
+    sound_question({_p})
+    open chest inventory with 6 rows named "&c【 ガチャ名を選択してください 】" to {_p}
+    set {_n} to 0
+    loop {gatya.list::*}:
+        set slot {_n} of {_p}'s current inventory to chest named "&f&l%loop-value%" with nbt compound from "{gatya_name:""%loop-value%""}"
+        add 1 to {_n}
+
+function gatya_remove_confirm(p: player, name: text):
+    sound_question({_p})
+    open chest inventory with 3 rows named "&c【 本当に削除しますか？ 】" to {_p}
+    set slot 12 of {_p}'s current inventory to green terracotta named "&a&lキャンセル&aする"
+    set slot 14 of {_p}'s current inventory to red terracotta named "&c&l削除&cする" with lore "&c&l※一度削除すると、二度と元に戻せません！！" with nbt compound from "{gatya_name:""%{_name}%""}"
+
+function gatya_edit(p: player):
+    sound_question({_p})
+    open chest inventory with 6 rows named "&e【 ガチャ名を選択してください 】" to {_p}
+    set {_n} to 0
+    loop {gatya.list::*}:
+        set slot {_n} of {_p}'s current inventory to chest named "&f&l%loop-value%" with nbt compound from "{gatya_name:""%loop-value%""}"
+        add 1 to {_n}
+
+function gatya_edit_gui(p: player, name: text):
+    open chest inventory with 3 rows named "&e【 ガチャの編集 】" to {_p}
+    set slot 0 of {_p}'s current inventory to player head named "&8&l* &7ガチャ情報" with lore "&eガチャ名: &f%{_name}%"
+    if {gatya.info::%{_name}%::price} is not set:
+        set slot 10 of {_p}'s current inventory to gold ingot named "&b金額" with lore "&7ガチャを1回回すのに必要な金額です。", "&b現在値: &c未設定" and "&e[ クリックして設定 ]" with nbt compound from "{gatya_name:""%{_name}%""}"
+    else:
+        set slot 10 of {_p}'s current inventory to gold ingot named "&b金額" with lore "&7ガチャを1回回すのに必要な金額です。", "&b現在値: &f%{gatya.info::%{_name}%::price}%円" and "&e[ クリックして設定 ]" with nbt compound from "{gatya_name:""%{_name}%""}"
+    set slot 11 of {_p}'s current inventory to chest named "&b内容" with lore "&7ガチャで出るアイテムの設定です。" and "&e[ クリックして設定 ]" with nbt compound from "{gatya_name:""%{_name}%""}"
+    if {gatya.info::%{_name}%::location} is not set:
+        set slot 12 of {_p}'s current inventory to beacon named "&bガチャの場所" with lore "&7ガチャを回すためのチェストの場所を設定します。", "&b現在位置: &c未設定" and "&e[ クリックして設定 ]" with nbt compound from "{gatya_name:""%{_name}%""}"
+    else:
+        set slot 12 of {_p}'s current inventory to beacon named "&bガチャの場所" with lore "&7ガチャを回すためのチェストの場所を設定します。", "&b現在位置: &f%x location of {gatya.info::%{_name}%::location}%, %y location of {gatya.info::%{_name}%::location}%, %z location of {gatya.info::%{_name}%::location}%" and "&e[ クリックして設定 ]" with nbt compound from "{gatya_name:""%{_name}%""}"
+    set slot 16 of {_p}'s current inventory to oak sign named "&bホログラム更新" with lore "&7スロットのホログラムを更新します。" with nbt compound from "{gatya_name:""%{_name}%""}"
+
+function gatya_set_price(p: player, name: text):
+    close {_p}'s inventory
+    sound_question({_p})
+    execute console command "/jp %{_p}% off"
+    set metadata value "gatya_set_price" of {_p} to {_name}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+    send "&r" to {_p}
+    send "&e ガチャの金額を設定する。" to {_p}
+    send "&r" to {_p}
+    send "&f&n半角数字&fでチャットに送信してください。" to {_p}
+    send "&f(キャンセルの場合はcancelと送信してください。)" to {_p}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+
+function gatya_set_content(p: player, name: text):
+    sound_question({_p})
+    open chest inventory with 6 rows named "&e【 ガチャ内容の編集 】" to {_p}
+    set {_n} to 0
+    loop {gatya.info::%{_name}%::content::*}:
+        set slot {_n} of {_p}'s current inventory to loop-value
+        add 1 to {_n}
+    set {_n} to 45
+    loop 9 times:
+        if {_p} contain "BE_":
+            set slot {_n} of {_p}'s current inventory to gray stained glass named "&c"
+        else:
+            set slot {_n} of {_p}'s current inventory to gray stained glass pane named "&c"
+        add 1 to {_n}
+    set slot 48 of {_p}'s current inventory to red terracotta named "&cキャンセルする"
+    set slot 50 of {_p}'s current inventory to green terracotta named "&a変更を確定する" with nbt compound from "{gatya_name:""%{_name}%""}"
+
+function gatya_set_location(p: player, name: text):
+    close {_p}'s inventory
+    sound_question({_p})
+    set metadata value "gatya_set_location" of {_p} to {_name}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+    send "&r" to {_p}
+    send "&e ガチャのチェストの場所を設定する。" to {_p}
+    send "&r" to {_p}
+    send "&fチェストを&n左クリック&fしてください。" to {_p}
+    send "&f(キャンセルの場合は&n右クリック&fしてください。)" to {_p}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+
+function gatya_roll_process(p: player, name: text, speed: integer, count: integer):
+    loop {_count} times:
+        set {_n} to 0
+        loop 54 times:
+            set {_pane} to random element out of {gatya.panelist::*}
+            set {_i} to random element out of {gatya.info::%{_name}%::content::*}
+            if name of {_p}'s inventory is "&a&l【 ガチャガチャ 】":
+                set slot {_n} of {_p}'s current inventory to {_pane}
+                set slot 22 of {_p}'s current inventory to {_i}
+            add 1 to {_n}
+        sound_gatya_roll({_p})
+        loop {_speed} times:
+            wait 1 tick
+
+function gatya_result_process(p: player, name: text):
+    set {_i} to random element out of {gatya.info::%{_name}%::content::*}
+    if name of {_p}'s inventory is "&a&l【 ガチャガチャ 】":
+        set slot 22 of {_p}'s current inventory to {_i}
+    set {_n} to 0
+    set {_n2} to 0
+    loop 36 times:
+        if slot {_n} of {_p}'s inventory is air:
+            add 1 to {_n2}
+        add 1 to {_n}
+    if {_n2} is 0:
+        add {_i} to {pickup.%{_p}'s uuid%::*}
+        send "&c&l！ &cインベントリーに空きがないため景品は&n/pickup&cで後から回収できます。" to {_p}
+    else:
+        give {_i} to {_p}
+    sound_gatya_result({_p})
+    clear metadata value "gatya_opening" of {_p}
+
+function gatya_open(p: player, name: text):
+    if {gatya.info::%{_name}%::price} is not set:
+        sound_error({_p})
+        send "&c価格が設定されていないため、ガチャを回せません。" to {_p}
+    else if {gatya.info::%{_name}%::content::*} is not set:
+        sound_error({_p})
+        send "&c内容が設定されていないため、ガチャを回せません。" to {_p}
+    else if {gatya.info::%{_name}%::location} is not set:
+        sound_error({_p})
+        send "&cチェストの場所が設定されていないため、ガチャを回せません。" to {_p}
+    else:
+        if metadata value "gatya_opening" of {_p} is set:
+            open chest inventory with 6 rows named "&a&l【 ガチャガチャ 】" to {_p}
+        else:
+            if {_p}'s money is more than {gatya.info::%{_name}%::price}-1:
+                remove {gatya.info::%{_name}%::price} from {_p}'s money
+                set metadata value "gatya_opening" of {_p} to {_name}
+                open chest inventory with 6 rows named "&a&l【 ガチャガチャ 】" to {_p}
+                gatya_roll_process({_p}, {_name}, 1, 50)
+                wait 50 tick
+                gatya_roll_process({_p}, {_name}, 2, 20)
+                wait 40 tick
+                gatya_roll_process({_p}, {_name}, 5, 10)
+                wait 50 tick
+                gatya_roll_process({_p}, {_name}, 10, 5)
+                wait 50 tick
+                gatya_roll_process({_p}, {_name}, 20, 3)
+                wait 60 tick
+                gatya_result_process({_p}, {_name})
+            else:
+                sound_error({_p})
+                send "&cお金が足りません。&7(%{gatya.info::%{_name}%::price}-{_p}'s money%円不足)" to {_p}
+
+every 5 second:
+    loop {gatya.list::*}:
+        set {_i} to random element out of {gatya.info::%loop-value%::content::*} 
+        edit holo object "gatya_%loop-value%" with line 1 to "ItemStack:%type of {_i}%"
+
+every 30 second:
+    loop {gatya.list::*}:
+        gatya_holo_refresh(loop-value)
+
+function gatya_holo_refresh(name: text):
+    set {_i} to random element out of {gatya.info::%{_name}%::content::*} 
+    delete holo object "gatya_%{_name}%"
+    create holo object "ItemStack:%type of {_i}%;&e&lガチャガチャ;&f&l%{_name}% &7[&c%{gatya.info::%{_name}%::price}%円&7];&7[ 右クリックで回す ]" with id "gatya_%{_name}%" at location of block 2 above {gatya.info::%{_name}%::location}
+    clear {_i}
