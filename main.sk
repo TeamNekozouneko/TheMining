@@ -18,7 +18,7 @@ Options:
 
     #以下値設定
     maboroshi_ingot_drop_p: 1
-    maboroshi_ingot_drop_c: 50000
+    maboroshi_ingot_drop_c: 100000
     #maboroshi_ingot_drop設定ではpが確率分母、cが確率分子を示しています。
     #確率演算については、nupo_calc_lib.skを参照してください。
 
