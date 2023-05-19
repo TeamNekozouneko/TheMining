@@ -136,6 +136,15 @@ on load:
     set {mine.seller.sellprice::7} to 2*64
     set {mine.seller.sellprice::9} to 5*64
     set {mine.seller.sellprice::8} to 8*64
+
+    clear {mine.enchant::*}
+    set {mine.enchant_range} to 1
+    add {mine.items::30} to {mine.enchant::1::*}
+    add 2 of {mine.items::5} to {mine.enchant::1::*}
+
+    clear {mine.enchant_result::*}
+    add {mine.items::23} to {mine.enchant_result::1::*}
+
 on join:
     clear metadata value "mine_add_orerange" of player
 
@@ -954,16 +963,62 @@ every 5 tick:
                         add 1 to {_n2}
                         wait 5 tick
         else if name of loop-player's current inventory is "{@menu_enchant_title}":
-            if slot 10 of loop-player's current inventory is air:
+            if (slot 10 of loop-player's current inventory) and (slot 11 of loop-player's current inventory) is air:
                 set {_slots::*} to 13 and 14 and 15 and 16 and 17 and 5 and 23
                 loop {_slots::*}:
                     set slot (loop-value-2) of loop-player-1's current inventory to red stained glass pane named "&c該当のアイテムを入れてください"
             else:
-                set slot 5 of loop-player's current inventory to gray stained glass pane named "&c"
-                set slot 23 of loop-player's current inventory to gray stained glass pane named "&c"
-                set {_slots::*} to 13 and 14 and 15 and 16 and 17
-                loop {_slots::*}:
-                    set slot (loop-value-2) of loop-player-1's current inventory to green stained glass pane named "&aエンチャント可能"
+                set {_n} to 0
+                loop {mine.enchant_range} times:
+                    add 1 to {_n}
+                    set {_n2} to 0
+                    loop {mine.enchant::%{_n}%::*}:
+                        if loop-value-3 is (slot 10 of loop-player-1's current inventory) or (slot 11 of loop-player-1's current inventory):
+                            add 1 to {_n2}
+                    if {_n2} is size of {mine.enchant::%{_n}%::*}:
+                        set slot 5 of loop-player's current inventory to gray stained glass pane named "&c"
+                        set slot 23 of loop-player's current inventory to gray stained glass pane named "&c"
+                        set {_slots::*} to 13 and 14 and 15 and 16 and 17
+                        loop {_slots::*}:
+                            set slot (loop-value-3) of loop-player-1's current inventory to air
+                        set {_n3} to 13
+                        loop {mine.enchant_result::%{_n}%::*}:
+                            clear {_n5}
+                            loop {mine.items::*}:
+                                if loop-value-4 is loop-value-3:
+                                    set {_n5} to loop-index-2
+                            if {mine.players::%loop-player-1's uuid%::recipes::*} contains ({_n5} parsed as integer):
+                                set slot {_n3} of loop-player-1's current inventory to loop-value-3 with lore "&r" and "&e[ クリックしてエンチャント ]" with nbt compound from "{mine_index:%{_n}%, mine_cindex:%{_n3}-12%}"
+                                add 1 to {_n3}
+                            else:
+                                set slot {_n3} of loop-player-1's current inventory to red stained glass pane named "&cエンチャント不可能" with lore "&7&lあなたはこのアイテムを" and "&7&l習得していません。"
+                                add 1 to {_n3}
+                    else:
+                        set {_slots::*} to 13 and 14 and 15 and 16 and 17 and 5 and 23
+                        loop {_slots::*}:
+                            set slot (loop-value-3) of loop-player-1's current inventory to red stained glass pane named "&cエンチャント不可能" with lore "&7この組み合わせは扱えません"
+
+on inventory click:
+    if name of player's current inventory is "{@menu_enchant_title}":
+        cancel event if name of event-item is "&c" or "&c該当のアイテムを入れてください" or "&cエンチャント不可能"
+        set {_index} to tag "mine_index" of nbt compound of event-item
+        set {_cindex} to tag "mine_cindex" of nbt compound of event-item
+        if {_index} and {_cindex} is set:
+            cancel event
+
+            set {_n} to 0 #以下適合性による論理チェック
+            loop {mine.enchant_range} times:
+                add 1 to {_n}
+                set {_n2} to 0
+                loop {mine.enchant::%{_n}%::*}:
+                    if loop-value-2 is (slot 10 of player's current inventory) or (slot 11 of player's current inventory):
+                        add 1 to {_n2}
+                if {_n2} is size of {mine.enchant::%{_n}%::*}:
+                    set slot 10 of player's current inventory to air
+                    set slot 11 of player's current inventory to air
+                    give {mine.enchant_result::%{_index}%::%{_cindex}%} to player
+                    sound_enchanted(player)
+                    send "&2&l! &aエンチャントしました！" to player
 
 #以下スキル
 command /skill:
@@ -1111,14 +1166,17 @@ function mine_recipe_content(p: player, index: integer):
         add {mine.items::16} to {_recipes::*}
         add anvil named "&c鍛冶屋&aで溶解する" to {_recipes::*}
     else if {_index} is 23:
-        add {mine.items::16} to {_recipes::*}
-        add anvil named "&c鍛冶屋&aで溶解する" to {_recipes::*}
+        add {mine.items::30} to {_recipes::*}
+        set {_additional_recipes::1} to 2 of {mine.items::5}
+        add enchanting table named "&d&lエンチャント台&aでエンチャントする" to {_recipes::*}
 
     #レシピ情報の描写
     if size of {_recipes::*} is 1:
         set {_n} to 29
         loop {_recipes::*}:
             set slot {_n} of {_p}'s current inventory to loop-value
+            if {_additional_recipes::%loop-index%} is set:
+                set slot {_n}-9 of {_p}'s current inventory to {_additional_recipes::%loop-index%}
             set slot {_n}+2 of {_p}'s current inventory to {_arrow}
             add 3 to {_n}
         set slot {_n}+1 of {_p}'s current inventory to {mine.items::%{_index}%}
@@ -1126,6 +1184,9 @@ function mine_recipe_content(p: player, index: integer):
         set {_n} to 29
         loop {_recipes::*}:
             set slot {_n} of {_p}'s current inventory to loop-value
+            send {_additional_recipes::%loop-index%} to {_p}
+            if {_additional_recipes::%loop-index%} is set:
+                set slot {_n}-9 of {_p}'s current inventory to {_additional_recipes::%loop-index%}
             set slot {_n}+1 of {_p}'s current inventory to {_arrow}
             add 2 to {_n}
         set slot {_n}+0 of {_p}'s current inventory to {mine.items::%{_index}%}

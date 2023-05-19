@@ -38,3 +38,6 @@ function sound_telling(p: player):
 
 function sound_notification(p: player):
     play sound "block.anvil.land" with pitch 2 to {_p}
+
+function sound_enchanted(p: player):
+    play sound "entity.player.levelup" with volume 0.5 to {_p}
