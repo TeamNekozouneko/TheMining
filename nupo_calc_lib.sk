@@ -1,0 +1,5 @@
+function nupo_calc_rounded(a: number) :: boolean: #小数判定演算
+    set {_a} to abs({_a})
+    set {_floor} to floor({_a})
+    return true if {_floor} is {_a}
+    return false
