@@ -35,3 +35,6 @@ function sound_click(p: player):
 
 function sound_telling(p: player):
     play sound "entity.experience_orb.pickup" to {_p}
+
+function sound_notification(p: player):
+    play sound "block.anvil.land" with pitch 2 to {_p}

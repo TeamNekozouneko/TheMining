@@ -1,3 +1,6 @@
+#必須ライブラリ
+#・nupo_calc_lib.sk
+
 Options:
     oremenu_title: &c&lThe Mining &7- &f鉱石の設定
     oremenu_remove_title: &c&lThe Mining &7- &f鉱石範囲の削除
@@ -12,6 +15,12 @@ Options:
     menu_seller_sell_title: &c&lTheMining &7- &f売店屋 &7- &fアイテム売却
 
     slot: true #スロットSkriptと連携するかどうか
+
+    #以下値設定
+    maboroshi_ingot_drop_p: 1
+    maboroshi_ingot_drop_c: 50000
+    #maboroshi_ingot_drop設定ではpが確率分母、cが確率分子を示しています。
+    #確率演算については、nupo_calc_lib.skを参照してください。
 
 on load:
     clear {mine.items::*}
@@ -44,6 +53,7 @@ on load:
     set {mine.items::27} to diamond named "&aダイヤモンド"
     set {mine.items::28} to emerald named "&a&lエメラルド"
     set {mine.items::29} to obsidian named "&7&l黒曜石"
+    set {mine.items::30} to magma cream named "&7[ &d&l幻のインゴット &7]" with lore "&7ごく稀に鉱石を掘ると発掘できるようだ..." and "&7原材料は未だに不明だそう"
 
     clear {mine.require::*}
     set {mine.require::2} to {mine.items::0}
@@ -707,6 +717,10 @@ on break:
     if event-entity is a player:
         if mine_break(player, event-block) is false:
             cancel event
+        if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
+            drop {mine.items::30} at player
+            sound_notification(player)
+            send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to player
 
 function mine_break(p: player, b: block, thread_bypass: boolean = false) :: boolean:
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
@@ -1173,3 +1187,10 @@ function mine_seller_open_sell(p: player):
     loop 9 times:
         set slot {_n} of {_p}'s current inventory to gray stained glass pane named "&c"
         add 1 to {_n}
+
+#スレッド処理
+function mine_thread_throw(type: string) :: object:
+    if {_type} is "MINE_MABOROSHI_INGOT_DROP":
+        return true if nupo_calc_random({@maboroshi_ingot_drop_p}, {@maboroshi_ingot_drop_c})
+        return false
+    return false
