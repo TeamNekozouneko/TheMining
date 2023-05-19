@@ -1,3 +1,17 @@
+function nupo_calc_reduction(a: integer, b: integer) :: objects: #約分演算
+    return 0 and 0 if {_a} or {_b} = 0
+    set {_v} to {_a} if {_a} < {_b}
+    set {_v} to {_b} if {_a} > {_b}
+    return 1 and 1 if {_a} = {_b}
+    while {_v} > 0:
+        set {_flag} to 0
+        add 1 to {_flag} if nupo_calc_rounded({_a}/{_v})
+        add 1 to {_flag} if nupo_calc_rounded({_b}/{_v})
+        exit loop if {_flag} = 2
+        remove 1 from {_v}
+    return {_a}/{_v} and {_b}/{_v} if {_a} and {_b} is not 0
+    return 1 and 1
+
 function nupo_calc_rounded(a: number) :: boolean: #小数判定演算
     set {_a} to abs({_a})
     set {_floor} to floor({_a})
