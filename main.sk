@@ -691,6 +691,13 @@ function mine_scoreboardUpdate(p: player):
     set score "&8¦¦  &e所持金: &6&l%(({_p}'s money)*10)/10%円" in sidebar of {_p} to 1
     set score "&8¦¦  &6" in sidebar of {_p} to 0
 
+on right click:
+    player is not op
+    cancel event if event-block is crafting table
+    cancel event if event-block is barrel
+    cancel event if event-block is oak trapdoor
+    cancel event if event-block is spruce trapdoor
+
 #以下定期システム
 every 30 minute:
     send "&4&l! &cマップ上の鉱石がすべて補填されます。" to all players
