@@ -180,8 +180,14 @@ command /mine [<text>] [<text>] [<integer>]:
         else if arg-1 is "stop_update":
             set {mine.temp::stopupdate} to true
         else if arg-1 is "setlobby":
-            set {mine.generic::lobbyloc} to location of player
-            send "&2&l! &aあなたの場所を初期スポーンに設定しました。" to player
+            if arg-2 is not set:
+                send "&4&l! &c優先番号を設定してください。" to player
+            else if arg-3 is 1:
+                clear {mine.generic::lobbyloc::%arg-2%}
+                send "&2&l! &aスポーン番号 &f%arg-2%番 &aのスポーンをクリアしました。" to player
+            else:
+                set {mine.generic::lobbyloc::%arg-2%} to location of player
+                send "&2&l! &aあなたの場所を &f%arg-2%番 &aスポーンに設定しました。" to player
         else if arg-1 is "give":
             if {mine.items::%arg-2%} is set:
                 give {mine.items::%arg-2%} to player
@@ -202,12 +208,14 @@ command /mine [<text>] [<text>] [<integer>]:
             else:
                 mine_resetlv_player(arg-2 parsed as player, arg-3)
                 send "&2&l! &aリセットしました。" to player
+        else if arg-1 is "lobby":
+            mine_teleport_lobby(player, arg-2)
         else:
             mine_show_help(player)
 
 command /spawn:
     trigger:
-        teleport player to location of {mine.generic::lobbyloc}
+        teleport player to location of {mine.generic::lobbyloc::1}
         send "&2&l! &aスポーンにテレポートしました。" to player
 
 on inventory click:
@@ -392,6 +400,15 @@ on inventory close:
             else if {_i} is not air:
                 give {_i} to player
 
+function mine_teleport_lobby(p: player, num: string):
+    if {_num} is not set:
+        send "&4&l! &c優先番号を指定してください。" to {_p}
+    else if {mine.generic::lobbyloc::%{_num}%} is not set:
+        send "&4&l! &cこの優先番号は登録されていません。" to {_p}
+    else:
+        teleport {_p} to location of {mine.generic::lobbyloc::%{_num}%}
+        send "&2&l! &aテレポートしました。" to {_p}
+
 function mine_open_oremenu(p: player):
     open chest inventory with 6 row named "{@oremenu_title}" to {_p}
     set {_n} to 36
@@ -414,7 +431,8 @@ function mine_show_help(p: player):
     send "&4&l・&c/mine stop_clear &8- &f鉱石のクリアを停止します。" to {_p}
     send "&4&l・&c/mine update &8- &fすべての鉱石の範囲を再生成します。" to {_p}
     send "&4&l・&c/mine stop_update &8- &f鉱石の再生成を停止します。" to {_p}
-    send "&4&l・&c/mine setlobby &8- &f今いる場所を初期地点として設定します。" to {_p}
+    send "&4&l・&c/mine setlobby <優先番号> &8- &f今いる場所を地点として設定します。" to {_p}
+    send "&4&l・&c/mine lobby <優先番号> &8- &f優先番号に登録された場所へテレポートします。" to {_p}
     send "&4&l・&c/mine resetplayer <プレイヤー> &8- &fプレイヤーのデータを初期化します。" to {_p}
     send "&4&l・&c/mine resetlv <プレイヤー> <指定値> &8- &fプレイヤーのレベルとEXPデータを指定値に設定します。" to {_p}
 
@@ -654,7 +672,7 @@ every 1 second:
         mine_scoreboardUpdate(loop-player)
 
 on first join:
-    teleport player to location of {mine.generic::lobbyloc}
+    teleport player to location of {mine.generic::lobbyloc::1}
     send title "&m     &f&l ようこそ" with subtitle "&bᴡᴇʟᴄᴏᴍᴇ ᴛᴏ &c&lThe Mining" to player
     loop 5 times:
         send "&r" to player
