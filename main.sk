@@ -140,7 +140,7 @@ on load:
     clear {mine.enchant::*}
     set {mine.enchant_range} to 1
     add {mine.items::30} to {mine.enchant::1::*}
-    add 2 of {mine.items::5} to {mine.enchant::1::*}
+    add 8 of {mine.items::5} to {mine.enchant::1::*}
 
     clear {mine.enchant_result::*}
     add {mine.items::23} to {mine.enchant_result::1::*}
@@ -1167,7 +1167,7 @@ function mine_recipe_content(p: player, index: integer):
         add anvil named "&c鍛冶屋&aで溶解する" to {_recipes::*}
     else if {_index} is 23:
         add {mine.items::30} to {_recipes::*}
-        set {_additional_recipes::1} to 2 of {mine.items::5}
+        set {_additional_recipes::1} to 8 of {mine.items::5}
         add enchanting table named "&d&lエンチャント台&aでエンチャントする" to {_recipes::*}
 
     #レシピ情報の描写
