@@ -400,6 +400,10 @@ function mine_open_oremenu(p: player):
         add 1 to {_n}
     set slot 48 of {_p}'s current inventory to green terracotta named "&a&l鉱石範囲の追加" with lore "&7[ クリックして追加する ]"
     set slot 50 of {_p}'s current inventory to red terracotta named "&c&l鉱石範囲の削除" with lore "&7[ クリックして削除する ]"
+    set {_n} to 0
+    loop {mine.orerange_list::*}:
+        set slot {_n} of {_p}'s current inventory to chest named "&eID: &6%loop-value%"
+        add 1 to {_n}
 
 function mine_show_help(p: player):
     send "&f&m&l----------  &f&l[ &c&lThe Mining &f&l]  &f&m&l----------" to {_p}
@@ -426,7 +430,7 @@ on place:
         add {_id} to {mine.orerange_list::*}
         set {mine.orerange::%{_id}%::1} to {_m}
         set {mine.orerange::%{_id}%::2} to location of event-block
-        send "&2&l! &a鉱石の範囲を追加しました！" to player
+        send "&2&l! &a鉱石の範囲を追加しました！ ID: %{_id}%" to player
         clear metadata value "mine_add_orerange" of player
 
 function mine_settings_add_orerange(p :player):
@@ -441,6 +445,7 @@ function mine_settings_remove_orerange(p :player):
         set {_l1} to mine_convert_location2text({mine.orerange::%loop-value%::1})
         set {_l2} to mine_convert_location2text({mine.orerange::%loop-value%::2})
         set slot {_n} of {_p}'s current inventory to gold ore named "&eID: &6%loop-value%" with lore "&7範囲1: &f%{_l1}%", "&7範囲2: &f%{_l2}%", "&r", "&c[ クリックして削除する ]" and "&4&l※ &c&l一度消すと元には戻せません！" with nbt compound from "{mine_rangeid: %loop-value%}"
+        add 1 to {_n}
 
 function mine_remove_range(p: player, id: integer):
     if {mine.orerange_list::*} contains {_id}:
@@ -491,7 +496,9 @@ function mine_update_allrange_nm():
             loop all players in radius 2 of loop-block:
                 add 1 to {_n}
             {_n} is not set
-            
+            set {_blocks::*} to air and stone and coal ore and iron ore and diamond ore and emerald ore and obsidian
+            {_blocks::*} contains loop-block
+
             set {_num} to random integer between 1 and 100
             if {mine.oretype::%loop-value-1%} is 1:
                 if {_num} is between 1 and 15:
@@ -528,7 +535,7 @@ function mine_update_allrange_nm():
                 clear {mine.temp::stopupdate}
                 exit
             add 1 to {_bf}
-            if {_bf} >= 100:
+            if {_bf} >= 300:
                 set {_bf} to 0
                 wait a tick
 
