@@ -44,7 +44,7 @@ on load:
     set {mine.items::18} to diamond pickaxe named "&7[&cアドバンスピッケル&7]"
     set {mine.items::19} to spider eye named "&7[&cビギナーピッケルを溶かしたもの&7]" with lore "&7どうやって素手でこれを・・・"
     set {mine.items::20} to brick named "&7[&cアドバンスピッケルの素&7]"
-    set {mine.items::21} to unbreakable diamond pickaxe of efficiency 6 named "&7[&cアドバンスピッケル&7] &e&lLv.1" with lore "&8&l黒曜石&7が掘れるようになった！" and "&7とある村人から作り方を教わるんだ..." with enchants flag hidden
+    set {mine.items::21} to unbreakable diamond pickaxe of efficiency 10 named "&7[&cアドバンスピッケル&7] &e&lLv.1" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
     set {mine.items::22} to glowing blaze rod named "&6&l破壊の王 &7[クリックして使う]" with lore "&7これを鉱石などに向けてクリックすると" and "&7周囲の鉱石を徐々に溶かしてしまう。"
     set {mine.items::23} to netherite ingot named "&7[ &cネザライト &7]" with lore "&7固く鋭いぞ...."
     set {mine.items::24} to cobblestone named "&a丸石"
@@ -54,6 +54,10 @@ on load:
     set {mine.items::28} to emerald named "&a&lエメラルド"
     set {mine.items::29} to obsidian named "&7&l黒曜石"
     set {mine.items::30} to magma cream named "&7[ &d&l幻のインゴット &7]" with lore "&7ごく稀に鉱石を掘ると発掘できるようだ..." and "&7原材料は未だに不明だそう"
+    set {mine.items::31} to unbreakable diamond pickaxe of efficiency 12 named "&7[&cアドバンスピッケル&7] &e&lLv.2" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::32} to unbreakable diamond pickaxe of efficiency 13 named "&7[&cアドバンスピッケル&7] &e&lLv.3" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::33} to unbreakable diamond pickaxe of efficiency 14 named "&7[&cアドバンスピッケル&7] &e&lLv.4" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::34} to unbreakable diamond pickaxe of efficiency 15 named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
 
     clear {mine.require::*}
     set {mine.require::2} to {mine.items::0}
@@ -126,6 +130,7 @@ on load:
     clear {mine.recipe_price::*}
     set {mine.recipe_price::19} to 1500
     set {mine.recipe_price::23} to 4000
+    set {mine.recipe_price::21} to 5000
 
     #！！！売却値段は必ず1つあたりの値段を入力すること！！！
     set {mine.seller.sellprice::24} to 0.1
@@ -142,12 +147,15 @@ on load:
     set {mine.seller.sellprice::8} to 8*64
 
     clear {mine.enchant::*}
-    set {mine.enchant_range} to 1
+    set {mine.enchant_range} to 2
     add {mine.items::30} to {mine.enchant::1::*}
     add 8 of {mine.items::5} to {mine.enchant::1::*}
+    add {mine.items::19} to {mine.enchant::2::*}
+    add {mine.items::23} to {mine.enchant::2::*}
 
     clear {mine.enchant_result::*}
     add {mine.items::23} to {mine.enchant_result::1::*}
+    add {mine.items::21} to {mine.enchant_result::2::*}
 
 on join:
     clear metadata value "mine_add_orerange" of player
@@ -1153,7 +1161,7 @@ on npc right click:
 
 function mine_recipe_page(p: player, page: integer):
     open chest inventory with 6 row named "{@menu_recipe_title}" to {_p}
-    set {_items::*} to 19 and 23
+    set {_items::*} to 19 and 23 and 21
     set {_n} to 10
     loop {_items::*}:
         set {_price} to {mine.recipe_price::%loop-value%}
@@ -1192,6 +1200,10 @@ function mine_recipe_content(p: player, index: integer):
         add {mine.items::30} to {_recipes::*}
         set {_additional_recipes::1} to 8 of {mine.items::5}
         add enchanting table named "&d&lエンチャント台&aでエンチャントする" to {_recipes::*}
+    else if {_index} is 21:
+        add {mine.items::19} to {_recipes::*}
+        add {mine.items::23} to {_additional_recipes::*}
+        add enchanting table named "&d&lエンチャント台&aでエンチャントする" to {_recipes::*}
 
     #レシピ情報の描写
     if size of {_recipes::*} is 1:
@@ -1207,7 +1219,7 @@ function mine_recipe_content(p: player, index: integer):
         set {_n} to 29
         loop {_recipes::*}:
             set slot {_n} of {_p}'s current inventory to loop-value
-            send {_additional_recipes::%loop-index%} to {_p}
+            #send {_additional_recipes::%loop-index%} to {_p}
             if {_additional_recipes::%loop-index%} is set:
                 set slot {_n}-9 of {_p}'s current inventory to {_additional_recipes::%loop-index%}
             set slot {_n}+1 of {_p}'s current inventory to {_arrow}
