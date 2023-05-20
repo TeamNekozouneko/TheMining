@@ -75,7 +75,30 @@ on load:
     set {mine.require::15} to {mine.items::14}
     set {mine.require::16} to {mine.items::15}
     set {mine.require::19} to {mine.items::16}
+    set {mine.require::31} to {mine.items::21}
+    set {mine.require::32} to {mine.items::31}
+    set {mine.require::33} to {mine.items::32}
+    set {mine.require::34} to {mine.items::33}
 
+    clear {mine.upgrade_price::*}
+    set {mine.upgrade_price::2} to 300
+    set {mine.upgrade_price::3} to 800
+    set {mine.upgrade_price::5} to 0
+    set {mine.upgrade_price::6} to 0
+    set {mine.upgrade_price::7} to 0
+    set {mine.upgrade_price::8} to 0
+    set {mine.upgrade_price::9} to 0
+    set {mine.upgrade_price::17} to 0
+    set {mine.upgrade_price::12} to 1200
+    set {mine.upgrade_price::13} to 1600
+    set {mine.upgrade_price::14} to 1800
+    set {mine.upgrade_price::15} to 2000
+    set {mine.upgrade_price::16} to 2200
+    set {mine.upgrade_price::31} to 4000
+    set {mine.upgrade_price::32} to 4500
+    set {mine.upgrade_price::33} to 5000
+    set {mine.upgrade_price::34} to 5500
+ 
     clear {mine.orewhite::*}
     add {mine.ores::emerald_ore} to {mine.orewhite::0::*}
     add {mine.ores::obsidian} to {mine.orewhite::0::*}
@@ -235,8 +258,8 @@ on inventory click:
         cancel event
         set {_tab} to tag "mine_tab" of nbt compound of event-item
         set {_page} to tag "mine_page" of nbt compound of event-item
-        set {_tag} to tag "mine_price" of nbt compound of event-item
         set {_index} to tag "mine_item_index" of nbt compound of event-item
+        set {_tag} to {mine.upgrade_price::%{_index}%}
         if {_tag} is set:
             if player's money >= {_tag}:
                 #send {_index} to player
@@ -893,11 +916,11 @@ function mine_open_upgrade(p: player, tab: integer, page: integer):
         else if {_tab} is 3:
             set {_list::*} to 12 and 13 and 14 and 15 and 16
         else if {_tab} is 4:
-            set {_list::*} to 21
+            set {_list::*} to 21 and 31 and 32 and 33 and 34
 
     set {_n} to 28
     loop {_list::*}:
-        set {_tag} to tag "mine_price" of nbt compound of {mine.items::%loop-value%}
+        set {_tag} to {mine.upgrade_price::%loop-value%}
         if {_tag} is not set:
             set slot {_n} of {_p}'s current inventory to {mine.items::%loop-value%} with lore (lore of {mine.items::%loop-value%}) and "&8&m-------------------------------" and "&cこのアイテムは購入できません"
         else:
