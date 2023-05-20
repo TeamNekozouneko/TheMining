@@ -1348,6 +1348,18 @@ on right click:
                 set tag "mine_portal_connection_id" of nbt compound of targeted block to {_id}
                 send "結果: NBT設定 (%{_id}%)" to player
 
+function mine_portal_conditions(p: player, n: integer) :: boolean:
+    return false if {_p} is not set
+    return false if {_n} is not set
+    return false if {mine.generic::lobbyloc::%{_n}%} is not set
+    #以下条件設定
+    return true if {_n} is 1
+    if {_n} is 2:
+        if {mine.level::%{_p}'s uuid%} >= 200:
+            if {mine.players::%{_p}'s uuid%::recipes::*} contains 21:
+                return true
+        return false
+
 on portal:
     cancel event
     set {_pblock} to block 0.5 south player if block 0.5 south player is nether portal block
@@ -1357,7 +1369,11 @@ on portal:
     {_pblock} is set
     set {_connection} to tag "mine_portal_connection_id" of nbt compound of {_pblock}
     if {_connection} is not set:
+        sound_portal_failed(player)
         send action bar "&4&l! &cこのポータルにはテレポート先が設定されていません。" to player
+    else if mine_portal_conditions(player, {_connection}) = false:
+        sound_portal_failed(player)
+        send action bar "&4&l! &cテレポート条件を満たしていません。" to player
     else:
         set {_waitingtime} to 3
         sound_portal_wait(player)
