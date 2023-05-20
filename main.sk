@@ -772,6 +772,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 add 1 to {_tb_b}
             add 1 to {_tb_d}
         if {_tb_b} is {_tb_d}:
+            player is not op
             send action bar "&4&l! &c採掘場では地表からしか採掘できません。" to {_p}
             return false
     if {@slot} is true:
