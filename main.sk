@@ -587,6 +587,15 @@ on place:
 on hunger meter change:
     cancel event
 
+command /pickaxe:
+    trigger:
+        if (unix timestamp of now)-{mine.players::%player's uuid%::lastgetpickaxe} < 86400:
+            send "&4&l! &c初期ピッケルを再入手できるのは、1日に1回のみです。" to player
+        else:
+            set {mine.players::%player's uuid%::lastgetpickaxe} to unix timestamp of now
+            send "&2&l! &a初期ピッケルを入手しました！" to player
+            give {mine.items::0} to player
+
 every tick:
     loop all players:
         if {mine.exp::%loop-player's uuid%} <= 0:
