@@ -44,7 +44,7 @@ on load:
     set {mine.items::18} to diamond pickaxe named "&7[&cアドバンスピッケル&7]"
     set {mine.items::19} to spider eye named "&7[&cビギナーピッケルを溶かしたもの&7]" with lore "&7どうやって素手でこれを・・・"
     set {mine.items::20} to brick named "&7[&cアドバンスピッケルの素&7]"
-    set {mine.items::21} to unbreakable diamond pickaxe of efficiency 10 named "&7[&cアドバンスピッケル&7] &e&lLv.1" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::21} to unbreakable diamond pickaxe of efficiency 10 named "&7[&cアドバンスピッケル&7] &e&lLv.1" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
     set {mine.items::22} to glowing blaze rod named "&6&l破壊の王 &7[クリックして使う]" with lore "&7これを鉱石などに向けてクリックすると" and "&7周囲の鉱石を徐々に溶かしてしまう。"
     set {mine.items::23} to netherite ingot named "&7[ &cネザライト &7]" with lore "&7固く鋭いぞ...."
     set {mine.items::24} to cobblestone named "&a丸石"
@@ -54,10 +54,10 @@ on load:
     set {mine.items::28} to emerald named "&a&lエメラルド"
     set {mine.items::29} to obsidian named "&7&l黒曜石"
     set {mine.items::30} to magma cream named "&7[ &d&l幻のインゴット &7]" with lore "&7ごく稀に鉱石を掘ると発掘できるようだ..." and "&7原材料は未だに不明だそう"
-    set {mine.items::31} to unbreakable diamond pickaxe of efficiency 12 named "&7[&cアドバンスピッケル&7] &e&lLv.2" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
-    set {mine.items::32} to unbreakable diamond pickaxe of efficiency 13 named "&7[&cアドバンスピッケル&7] &e&lLv.3" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
-    set {mine.items::33} to unbreakable diamond pickaxe of efficiency 14 named "&7[&cアドバンスピッケル&7] &e&lLv.4" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
-    set {mine.items::34} to unbreakable diamond pickaxe of efficiency 15 named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::31} to unbreakable diamond pickaxe of efficiency 12 named "&7[&cアドバンスピッケル&7] &e&lLv.2" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::32} to unbreakable diamond pickaxe of efficiency 13 named "&7[&cアドバンスピッケル&7] &e&lLv.3" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::33} to unbreakable diamond pickaxe of efficiency 14 named "&7[&cアドバンスピッケル&7] &e&lLv.4" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::34} to unbreakable diamond pickaxe of efficiency 15 named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
     set {mine.items::35} to glowing stick named "&dポータル設定用棒"
 
     clear {mine.require::*}
@@ -759,8 +759,10 @@ every 5 minute:
     add "アップグレードNPCでピッケルを強化しよう！" to {_notes::*}
     add "/afkコマンドで放置もできるって？！" to {_notes::*}
     add "採掘場で帰れなくなった？/spawnコマンドで一気に帰ろう！" to {_notes::*}
+    add "レシピが分からない？レシピの渡来人が教えてくれるんだって！" to {_notes::*}
+    add "アイテムが一杯なんだって？売店屋が鉱石を買い取ってくれるよ！" to {_notes::*}
     set {_note} to random element out of {_notes::*}
-    send "&7&l[&e定期&7&l] &r%{_note}%" to all players
+    send "&7[ &e定期 &7] &r%{_note}%" to all players
 
 #以下採掘システム
 on first join:
