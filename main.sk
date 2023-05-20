@@ -58,6 +58,7 @@ on load:
     set {mine.items::32} to unbreakable diamond pickaxe of efficiency 13 named "&7[&cアドバンスピッケル&7] &e&lLv.3" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
     set {mine.items::33} to unbreakable diamond pickaxe of efficiency 14 named "&7[&cアドバンスピッケル&7] &e&lLv.4" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
     set {mine.items::34} to unbreakable diamond pickaxe of efficiency 15 named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベル階へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::35} to glowing stick named "&dポータル設定用棒"
 
     clear {mine.require::*}
     set {mine.require::2} to {mine.items::0}
@@ -1316,3 +1317,69 @@ function mine_thread_throw(type: string) :: object:
         return true if nupo_calc_random({@maboroshi_ingot_drop_p}, {@maboroshi_ingot_drop_c})
         return false
     return false
+
+#以下ポータル処理
+on player move:
+    set metadata value "mine_last_location" of player to location of player
+
+command /admin_mine_portal_set_connection [<integer>]:
+    permission: admin
+    permission message: &c権限がありません。
+    trigger:
+        if arg-1 is not set:
+            send "&4&l! &c優先番号を指定してください。" to player
+        else if name of player's tool is not name of {mine.items::35}:
+            send "&4&l! &c優先番号の設定にはポータル設定用棒を持っている必要があります。" to player
+        else:
+            set tag "mine_stick_portal_connection_id" of nbt compound of player's tool to arg-1
+            send "&2&l! &a優先番号を &f%arg-1% &aに設定しました。" to player
+
+on right click:
+    if name of player's tool is name of {mine.items::35}:
+        set {_id} to tag "mine_stick_portal_connection_id" of nbt compound of player's tool
+        if {_id} is not set:
+            send "&4&l! &c宛先が指定されていません。/admin_mine_portal_set_connection <優先番号>で指定してください。" to player
+        else:
+            set {_bid} to tag "mine_portal_connection_id" of nbt compound of targeted block
+            if {_bid} is set:
+                clear tag "mine_portal_connection_id" of nbt compound of targeted block
+                send "結果: NBT削除" to player
+            else:
+                set tag "mine_portal_connection_id" of nbt compound of targeted block to {_id}
+                send "結果: NBT設定 (%{_id}%)" to player
+
+on portal:
+    cancel event
+    set {_pblock} to block 0.5 south player if block 0.5 south player is nether portal block
+    set {_pblock} to block 0.5 north player if block 0.5 north player is nether portal block
+    set {_pblock} to block 0.5 west player if block 0.5 west player is nether portal block
+    set {_pblock} to block 0.5 east player if block 0.5 east player is nether portal block
+    {_pblock} is set
+    set {_connection} to tag "mine_portal_connection_id" of nbt compound of {_pblock}
+    if {_connection} is not set:
+        send action bar "&4&l! &cこのポータルにはテレポート先が設定されていません。" to player
+    else:
+        set {_waitingtime} to 3
+        sound_portal_wait(player)
+        send action bar "&a動かずにお待ちください.... &a&l%{_waitingtime} %秒" to player
+        set {_defloc} to location of player
+        set {_sec} to 2
+        set {_n} to 0 
+        loop ({_waitingtime})*20 times:
+            set {_diffloc} to distance between {_defloc} and (metadata value "mine_last_location" of player)
+            if {_diffloc} > 0.5:
+                if block at player is not nether portal block:
+                    sound_portal_failed(player)
+                    send action bar "&cテレポートがキャンセルされました。" to player
+                    exit loop
+            add 1 to {_n}
+            if {_sec} is not 0:
+                if mod({_n}, 20) = 0:
+                    sound_portal_wait(player)
+                    send action bar "&a動かずにお待ちください.... &a&l%{_sec}%秒" to player
+                    remove 1 from {_sec}
+            wait a tick
+        if {_sec} is 0:
+            send action bar "&aテレポートしました！" to player
+            teleport player to location of {mine.generic::lobbyloc::%{_connection}%}
+            sound_portal_success(player)

@@ -41,3 +41,12 @@ function sound_notification(p: player):
 
 function sound_enchanted(p: player):
     play sound "entity.player.levelup" with volume 0.5 to {_p}
+
+function sound_portal_wait(p: player):
+    play sound "entity.experience_orb.pickup" to {_p}
+
+function sound_portal_success(p :player):
+    play sound "entity.player.levelup" with volume 0.5 to {_p}
+
+function sound_portal_failed(p: player):
+    sound_error({_p})
