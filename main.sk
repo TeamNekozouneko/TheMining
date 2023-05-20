@@ -697,6 +697,7 @@ on right click:
     cancel event if event-block is barrel
     cancel event if event-block is oak trapdoor
     cancel event if event-block is spruce trapdoor
+    cancel event if event-block is mangrove trapdoor
 
 #以下定期システム
 every 30 minute:
