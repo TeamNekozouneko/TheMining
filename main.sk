@@ -608,9 +608,11 @@ on hunger meter change:
 on drop:
     #send event-item to player
     player is not op
+    set {_whitelist::*} to 24 and 25 and 26 and 27 and 28 and 29
     loop {mine.items::*}:
         if event-item is loop-value:
-            add 1 to {_n}
+            if {_whitelist::*} doesn't contain (loop-index parsed as integer):
+                add 1 to {_n}
     if {_n} is set:
         cancel event
         send action bar "&4&l! &cこのアイテムは捨てることができません。" to player
