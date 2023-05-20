@@ -42,11 +42,11 @@ on load:
     set {mine.items::16} to unbreakable diamond pickaxe of efficiency 10 named "&7[&aビギナーピッケル&7] &e&lLv.5" with lore "&aエメラルド&7が掘れるようになった！" with nbt compound from "{mine_price: 2200}" with enchants flag hidden
     set {mine.items::17} to glowing coal ore named "&a圧縮石炭" with nbt compound from "{mine_price: 0}"
     set {mine.items::18} to diamond pickaxe named "&7[&cアドバンスピッケル&7]"
-    set {mine.items::19} to spider eye named "&7[&cビギナーピッケルを溶かしたもの&7]" with lore "&7どうやって素手でこれを・・・" with nbt compound from "{mine_recipe_price:1500}"
+    set {mine.items::19} to spider eye named "&7[&cビギナーピッケルを溶かしたもの&7]" with lore "&7どうやって素手でこれを・・・"
     set {mine.items::20} to brick named "&7[&cアドバンスピッケルの素&7]"
     set {mine.items::21} to unbreakable diamond pickaxe of efficiency 6 named "&7[&cアドバンスピッケル&7] &e&lLv.1" with lore "&8&l黒曜石&7が掘れるようになった！" and "&7とある村人から作り方を教わるんだ..." with enchants flag hidden
     set {mine.items::22} to glowing blaze rod named "&6&l破壊の王 &7[クリックして使う]" with lore "&7これを鉱石などに向けてクリックすると" and "&7周囲の鉱石を徐々に溶かしてしまう。"
-    set {mine.items::23} to netherite ingot named "&7[ &cネザライト &7]" with lore "&7固く鋭いぞ...." with nbt compound from "{mine_recipe_price:4000}"
+    set {mine.items::23} to netherite ingot named "&7[ &cネザライト &7]" with lore "&7固く鋭いぞ...."
     set {mine.items::24} to cobblestone named "&a丸石"
     set {mine.items::25} to coal named "&a石炭"
     set {mine.items::26} to raw iron named "&a鉄"
@@ -122,6 +122,10 @@ on load:
     add "&eこんにちは～、私はここの売店で働いてるんです～" to {mine.seller_telled::*}
     add "&eいろんな基本的なものはここで買ったり、売ったりできます！" to {mine.seller_telled::*}
     add "&eお気軽に話しかけてくださいね～" to {mine.seller_telled::*}
+
+    clear {mine.recipe_price::*}
+    set {mine.recipe_price::19} to 1500
+    set {mine.recipe_price::23} to 4000
 
     #！！！売却値段は必ず1つあたりの値段を入力すること！！！
     set {mine.seller.sellprice::24} to 0.1
@@ -1152,7 +1156,7 @@ function mine_recipe_page(p: player, page: integer):
     set {_items::*} to 19 and 23
     set {_n} to 10
     loop {_items::*}:
-        set {_price} to tag "mine_recipe_price" of nbt compound of {mine.items::%loop-value%}
+        set {_price} to {mine.recipe_price::%loop-value%}
         if {mine.players::%{_p}'s uuid%::recipes::*} contains loop-value:
             set slot {_n} of {_p}'s current inventory to {mine.items::%loop-value%} with lore (lore of {mine.items::%loop-value%}) and "&r" and "&a習得済み" and "&7[ クリックしてレシピを見る ]" with nbt compound from "{mine_page:%{_page}%, mine_index:%loop-value%, mine_type:0}"
         else:
