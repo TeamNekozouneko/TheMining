@@ -11,7 +11,7 @@ command /fx:
         set slot 13 of player's current inventory to chest named "&d&l1$&dを売る" with nbt compound from "{fx_sell:1}"
         set slot 14 of player's current inventory to chest named "&d&l10$&dを売る" with nbt compound from "{fx_sell:10}"
         set slot 15 of player's current inventory to chest named "&d&l100$&dを売る" with nbt compound from "{fx_sell:100}"
-        set slot 23 of player's current inventory to chest named "&d&lすべてのドルを売る"
+        set slot 1 of player's current inventory to chest named "&d&lすべてのドルを売る"
         set slot 16 of player's current inventory to barrier named "&c&lこの画面を閉じる" 
         set slot 17 of player's current inventory to red terracotta named "&c&l損益をリセットする" 
         
