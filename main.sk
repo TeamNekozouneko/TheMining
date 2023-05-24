@@ -14,7 +14,6 @@ Options:
     menu_seller_title: &c&lTheMining &7- &f売店屋
     menu_seller_sell_title: &c&lTheMining &7- &f売店屋 &7- &fアイテム売却
     menu_prestige_title: &c&lTheMining &7- &fプレステージ
-    mine_quest_title: &c&lTheMining &7- &fクエストマスター
 
     slot: true #スロットSkriptと連携するかどうか
 
@@ -182,12 +181,6 @@ on load:
     clear {mine.enchant_result::*}
     add {mine.items::23} to {mine.enchant_result::1::*}
     add {mine.items::21} to {mine.enchant_result::2::*}
-
-    clear {mine.quests::*}
-    set {mine.quests::1} to "鉱石または石を20000回採掘する"
-
-    clear {mine.quest_reward::*}
-    set {mine.quest_reward::1::*} to "money_10000"
 
 on join:
     clear metadata value "mine_add_orerange" of player
@@ -758,7 +751,9 @@ function mine_reset_player(p: player):
         clear {mine.pboost::%{_p}'s uuid%::%loop-index%}
     clear {mine.pskills::%{_p}'s uuid%::*}
     clear {mine.pselskill::%{_p}'s uuid%}
+    clear {mine.player_quests::%{_p}'s uuid%::*}
     clear {mine.players::%{_p}'s uuid%::*}
+    clear {mine.player_quest_data::%{_p}'s uuid%::*}
     set {_p}'s money to 0
 
 function mine_resetlv_player(p: player, lv: integer):
@@ -927,6 +922,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 mine_boost_thread_wait({_p}, 2, {_money})
                 mine_skill_thread_wait({_p}, 1, {_b})
                 mine_skill_thread_wait({_p}, 2, {_b})
+            mine_quest_thread({_p}, "BREAK", 1)
             return true
     else if {_p} is not op:
         return false
@@ -1202,7 +1198,7 @@ function mine_boost_thread_wait(p: player, index: integer, v: number = 0):
     else if {_index} is 3:
         set {_l} to {mine.pboost::%{_p}'s uuid%::%{_index}%}
         {_l} > 0
-        apply potion of haste of tier {_l} without particles to {_p} for 1 second
+        apply potion of haste of tier {_l} without particles to {_p} for 3 second
 
 function mine_skill_thread_wait(p: player, index: integer, v: object):
     if {mine.pselskill::%{_p}'s uuid%} is "%{_index}%":
@@ -1522,16 +1518,4 @@ function mine_open_prestige(p: player):
         set slot 4 of {_p}'s current inventory to beacon named "&6&lプレステージ条件" with lore {_conditions::*}
         set slot 13 of {_p}'s current inventory to diamond pickaxe named "&6&lプレステージ" with lore {_lores::*} 
 
-#以下クエスト処理
-on npc right click:
-    player is op
-    if npc name is "&aクエストマスター &7[クリック]":
-        sound_opened(player)
-        mine_open_quest(player)
 
-function mine_open_quest(p: player):
-    open chest inventory with 3 row named "{@mine_quest_title}" to {_p}
-    set {_n} to 10
-    loop {mine.quests::*}:
-        set slot {_n} of {_p}'s current inventory to paper named "&eクエスト"
-        add 1 to {_n}

@@ -1,0 +1,129 @@
+Options:
+    mine_quest_title: &c&lTheMining &7- &fクエストマスター
+    
+on load:
+    clear {mine.quests::*}
+    set {mine.quests::1} to "鉱石または石を20000回採掘する"
+
+    clear {mine.quest_max::*}
+    set {mine.quest_max::1} to 20000
+
+    clear {mine.quest_reward::*}
+    set {mine.quest_reward::1::*} to "money_10000"
+
+on npc right click:
+    player is op
+    if npc name is "&aクエストマスター &7[クリック]":
+        sound_opened(player)
+        mine_open_quest(player)
+
+on inventory click:
+    if name of player's current inventory is "{@mine_quest_title}":
+        cancel event
+        set {_index} to tag "mine_index" of nbt compound of event-item
+        if {_index} is set:
+            #論理テスト
+            if {mine.player_quests::%player's uuid%::*} contains {_index}:
+                send "&4&l! &cすでにこのクエストは受注しています。" to player
+                sound_error(player)
+            else:
+                send "&2&l! &aクエストを受注しました！" to player
+                sound_success(player)
+                add {_index} to {mine.player_quests::%player's uuid%::*}
+                set {mine.player_quest_data::%player's uuid%::%{_index}%} to 0
+            mine_open_quest(player)
+
+function mine_open_quest(p: player):
+    open chest inventory with 3 row named "{@mine_quest_title}" to {_p}
+    mine_open_quest_refancy({_p})
+
+function mine_open_quest_refancy(p: player):
+    set {_b} to 10
+    set {_n} to {_b}
+    loop {mine.quests::*}: #クエスト表示
+        continue if mine_quest_conditions({_p}, loop-index parsed as integer) = false #クエスト対象のフィルタリング
+        if {mine.player_quests::%{_p}'s uuid%::*} contains (loop-index parsed as integer):
+            if {mine.players::%{_p}'s uuid%::quest_done::*} contains (loop-index parsed as integer):
+                add "&8&l≫ &7%loop-value%" to {_lores::*}
+                add "&r" to {_lores::*}
+                add "&3&m&l=&b 報酬" to {_lores::*}
+                loop {_rewards::*}: #報酬の描写
+                    add "&3&l・&b%loop-value-2%" to {_lores::*}
+                add "&r" to {_lores::*}
+                add "&aこのクエストは完了しています！" to {_lores::*}
+                set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
+                add 1 to {_n}
+            else:
+                loop {mine.quest_reward::%loop-index%::*}: #報酬を変数から解析
+                    set {_tmp::*} to loop-value-2 split at "_"
+                    add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
+                    add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
+
+                add "&8&l≫ &7%loop-value%" to {_lores::*}
+                add "&7(&3%{mine.player_quest_data::%{_p}'s uuid%::%loop-index parsed as integer%}%&7/%{mine.quest_max::%loop-index parsed as integer%}%)" to {_lores::*}
+                add "&r" to {_lores::*}
+                add "&3&m&l=&b 報酬" to {_lores::*}
+                loop {_rewards::*}: #報酬の描写
+                    add "&3&l・&b%loop-value-2%" to {_lores::*}
+                add "&r" to {_lores::*}
+                add "&a現在クエストを受注しています！" to {_lores::*}
+                set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
+                add 1 to {_n}
+        else:
+            loop {mine.quest_reward::%loop-index%::*}: #報酬を変数から解析
+                set {_tmp::*} to loop-value-2 split at "_"
+                add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
+                add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
+
+            add "&8&l≫ &7%loop-value%" to {_lores::*}
+            add "&r" to {_lores::*}
+            add "&3&m&l=&b 報酬" to {_lores::*}
+            loop {_rewards::*}: #報酬の描写
+                add "&3&l・&b%loop-value-2%" to {_lores::*}
+            add "&r" to {_lores::*}
+            add "&cこのクエストはまだ受注していません" to {_lores::*}
+            add "&e[ クリックして受注する ]" to {_lores::*}
+            set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
+            add 1 to {_n}
+
+function mine_quest_conditions(p: player, i: integer) :: boolean:
+    return true if {_i} = 1
+    return false
+
+function mine_quest_thread(p: player, type: string, v: integer):
+    stop if {_p} is not set
+    if {_type} = "BREAK":
+        mine_quest_thread({_p}, "A1", {_v})
+    if {_type} = "A1":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 1:
+            add {_v} to {mine.player_quest_data::%{_p}'s uuid%::1}
+
+every second:    
+    loop all players:
+        if name of loop-player's current inventory is "{@mine_quest_title}":
+            mine_open_quest_refancy(loop-player)
+        loop {mine.quests::*}: #クエスト表示
+            exit if mine_quest_conditions(loop-player, loop-index parsed as integer) = false #クエスト対象のフィルタリング
+            if {mine.players::%loop-player's uuid%::quest_done::*} doesn't contain (loop-index parsed as integer):
+                if {mine.player_quests::%loop-player's uuid%::*} contains (loop-index parsed as integer):
+                    if {mine.quest_max::%loop-index%} <= {mine.player_quest_data::%loop-player's uuid%::%loop-index%}:
+                        #達成した処理 (loop-indexでクエスト番号を取得)
+                        sound_quest_success(loop-player)
+                        loop {mine.quest_reward::%loop-index%::*}: #報酬を変数から解析
+                            set {_tmp::*} to loop-value-3 split at "_"
+                            add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
+                            add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
+                        send "&r" to loop-player
+                        send "&3&l[ &b&lクエスト達成！ &3&l]" to loop-player
+                        send "&r" to loop-player
+                        send "&8&l≫ &7%{mine.quests::%loop-index%}%" to loop-player
+                        send "&r" to loop-player
+                        send "&3&m&l=&b 報酬" to loop-player
+                        loop {_rewards::*}: #報酬の描写
+                            send "&3&l・&b%loop-value-3%" to loop-player
+                        send "&r" to loop-player
+                        clear {mine.player_quest_data::%loop-player's uuid%::%loop-index%}
+                        add (loop-index parsed as integer) to {mine.players::%loop-player's uuid%::quest_done::*}
+                        #以下報酬の反映
+                        add ({_tmp::2} parsed as number) to loop-player's money if {_tmp::1} is "money"
+                        add ({_tmp::2} parsed as number) to {mine.exp::%loop-player's uuid%} if {_tmp::1} is "exp"

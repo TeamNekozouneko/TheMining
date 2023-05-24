@@ -53,3 +53,7 @@ function sound_portal_failed(p: player):
 
 function sound_do_skill(p: player):
     play sound "minecraft:entity.blaze.shoot" to {_p}
+
+function sound_quest_success(p: player):
+    play sound "entity.player.levelup" to {_p}
+    play sound "entity.firework_rocket.twinkle" with volume 0.5 to {_p}
