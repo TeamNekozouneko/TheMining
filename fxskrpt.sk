@@ -1,41 +1,67 @@
 command /fx:
     trigger:
         open chest inventory with 3 row named "&6&lForeign Exchange" to player
-        set slot 0 of player's current inventory to lectern named "&2&l現在の＄価格表示" with lore "&2&l現在の1＄価格は&6&l%{fx.rate}%円&2&lです。"
-        set slot 10 of player's current inventory to glowstone named "&b&l＄を買う" 
-        set slot 13 of player's current inventory to chest named "&d&l＄を売る" 
+        set {_pmi} to "&b&l+%{fx.rate}-({fx.original_jpy.%player%}/{fx.dollar.%player%})%" if {fx.rate}-({fx.original_jpy.%player%}/{fx.dollar.%player%}) > 0
+        set {_pmi} to "&c&l%{fx.rate}-({fx.original_jpy.%player%}/{fx.dollar.%player%})%" if {fx.rate}-({fx.original_jpy.%player%}/{fx.dollar.%player%}) < 0
+        set {_pmi} to "±0" if {fx.rate}-({fx.original_jpy.%player%}/{fx.dollar.%player%}) = 0
+        set slot 0 of player's current inventory to lectern named "&2&l現在の$価格表示" with lore "&a&l現在の1$価格は&6&l%{fx.rate}%円&a&lです。" and "&a&l所有しているドル: &6&l%{fx.dollar.%player%}%ドル (%{fx.rate}*{fx.dollar.%player%}%円分)" and "&a&l損益: %{_pmi}%円"
+        set slot 10 of player's current inventory to glowstone named "&b&l1$&bを買う" with nbt compound from "{fx_buy:1}"
+        set slot 11 of player's current inventory to glowstone named "&b&l10$&bを買う" with nbt compound from "{fx_buy:10}"
+        set slot 12 of player's current inventory to glowstone named "&b&l100$&bを買う" with nbt compound from "{fx_buy:100}"
+        set slot 13 of player's current inventory to chest named "&d&l1$&dを売る" with nbt compound from "{fx_sell:1}"
+        set slot 14 of player's current inventory to chest named "&d&l10$&dを売る" with nbt compound from "{fx_sell:10}"
+        set slot 15 of player's current inventory to chest named "&d&l100$&dを売る" with nbt compound from "{fx_sell:100}"
         set slot 16 of player's current inventory to barrier named "&c&lこの画面を閉じる" 
+        set slot 17 of player's current inventory to red terracotta named "&c&l損益をリセットする" 
         
 on inventory click:
     if name of player's current inventory contain "&6&lForeign Exchange":
         cancel event
-        if clicked slot is 0:
+        #if clicked slot is 0:
+        #    close player's inventory
+        #    send "&7[&b&lF&3&lX&7] &a&l現在の&a1&l$価格は&6&l%{fx.rate}%円&a&lです。"
+        set {_buy} to tag "fx_buy" of nbt compound of event-item
+        if {_buy} is set:
+            if player's money >= {fx.rate}*{_buy}:
+                send "&7[&b&lF&3&lX&7] &a&l%{_buy}%$を%{fx.rate}*{_buy}%円で購入しました！"
+                add {fx.rate}*{_buy} to {fx.original_jpy.%player%}
+                remove {fx.rate}*{_buy} from player's money
+                add {_buy} to {fx.dollar.%player%}
+            else:
+                send "&7[&b&lF&3&lX&7] &cお金が足りません。" to player
+        
+        set {_sell} to tag "fx_sell" of nbt compound of event-item
+        if {_sell} is set:
+            if {fx.dollar.%player%} >= {_sell}:
+                send "&7[&b&lF&3&lX&7] &a&l1$を%{fx.rate}*{_sell}%円で売却しました！"
+                add {fx.rate}*{_sell} to player's money
+                remove {fx.rate}*{_sell} from {fx.original_jpy.%player%}
+                remove {_sell} from {fx.dollar.%player%}
+            else:
+                send "&7[&b&lF&3&lX&7] &cあなたは%{_sell}%ドルを持っていません。" to player
+            
+        if name of event-item is "&c&lこの画面を閉じる" :
             close player's inventory
-            send "&7[&b&lF&3&lX&7] &a&l現在の&a1&l＄価格は&6&l%{fx.rate}%円&a&lです。"
+        if name of event-item is "&c&l損益をリセットする" :
+            send "&7[&b&lF&3&lX&7] &a損益をリセットしました。" to player
+            set {fx.original_jpy.%player%} to {fx.rate}*{fx.dollar.%player%}
             
-        if clicked slot is 10:
-            if player's money >= {fx.rate}:
-                send "&7[&b&lF&3&lX&7] &a&l1$を購入しました！"
-                remove {fx.rate} from player's money
-                add 1 to {fx.dollar.%player%}
-            
-        if clicked slot is 13:
-            if {fx.dollar.%player%} >= 1:
-                send "&7[&b&lF&3&lX&7] &a&l1$を売っちゃいました！"
-                add {fx.rate} to player's money
-                remove 1 from {fx.dollar.%player%}
-            
-        if clicked slot is 16:
-            close player's inventory
-            
-every 10 seconds:
+every 5 seconds:
     send a request to "http://fx.mybluemix.net/"
     set {_resp} to the last http response
     set {_body} to {_resp}'s body
     copy json {_body} to {_data::*}
     set {fx.rate} to {_data::rate::USDJPY}
+
+every second:
+    loop all players:
+        if name of loop-player's current inventory is "&6&lForeign Exchange":
+            set {_pmi} to "&b&l+%{fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar.%loop-player%})%" if {fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar.%loop-player%}) > 0
+            set {_pmi} to "&c&l%{fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar.%loop-player%})%" if {fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar.%loop-player%}) < 0
+            set {_pmi} to "±0" if {fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar.%loop-player%}) = 0
+            set slot 0 of loop-player's current inventory to lectern named "&2&l現在の$価格表示" with lore "&a&l現在の1$価格は&6&l%{fx.rate}%円&a&lです。" and "&a&l所有しているドル: &6&l%{fx.dollar.%loop-player%}%ドル (%{fx.rate}*{fx.dollar.%loop-player%}%円分)" and "&a&l損益: %{_pmi}%円"
     
 command /fxlist:
     trigger:
-        send "&7[&b&lF&3&lX&7] &a&lあなたは現在&6&l%{fx.dollar.%player%}%＄&a&lを所持しています。"
+        send "&7[&b&lF&3&lX&7] &a&lあなたは現在&6&l%{fx.dollar.%player%}%$&a&lを所持しています。"
 	
