@@ -11,6 +11,7 @@ command /fx:
         set slot 13 of player's current inventory to chest named "&d&l1$&dを売る" with nbt compound from "{fx_sell:1}"
         set slot 14 of player's current inventory to chest named "&d&l10$&dを売る" with nbt compound from "{fx_sell:10}"
         set slot 15 of player's current inventory to chest named "&d&l100$&dを売る" with nbt compound from "{fx_sell:100}"
+        set slot 23 of player's current inventory to chest named "&d&lすべてのドルを売る"
         set slot 16 of player's current inventory to barrier named "&c&lこの画面を閉じる" 
         set slot 17 of player's current inventory to red terracotta named "&c&l損益をリセットする" 
         
@@ -45,6 +46,14 @@ on inventory click:
         if name of event-item is "&c&l損益をリセットする" :
             send "&7[&b&lF&3&lX&7] &a損益をリセットしました。" to player
             set {fx.original_jpy.%player%} to {fx.rate}*{fx.dollar.%player%}
+        if name of event-item is "&d&lすべてのドルを売る":
+            if {fx.dollar.%player%} >= 1:
+                add {fx.rate}*{fx.dollar.%player%} to player's money
+                remove {fx.rate}*{fx.dollar.%player%} from {fx.original_jpy.%player%}
+                send "&7[&b&lF&3&lX&7] &aすべての所有するドルを売却しました。&7合計: %{fx.rate}*{fx.dollar.%player%}%円" to player
+                set {fx.dollar.%player%} to 0
+            else:
+                send "&7[&b&lF&3&lX&7] &cあなたはドルを持っていません。" to player
             
 every 5 seconds:
     send a request to "http://fx.mybluemix.net/"
