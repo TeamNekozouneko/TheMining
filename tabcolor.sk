@@ -40,8 +40,8 @@ function tabbar_areyouok3(p: player):
 on inventory click:
 	if name of player's current inventory is "➜ &b&lTAB色選択":
 		cancel event
-		set {_a} to tag "price" of nbt item compound of clicked item
-		set {_b} to tag "color" of nbt item compound of clicked item
+		set {_a} to tag "price" of nbt compound of clicked item
+		set {_b} to tag "color" of nbt compound of clicked item
 		set metadata value "price" of player to {_a}
 		if name of clicked item is "&f白色":
 			close player's inventory
@@ -64,8 +64,8 @@ on inventory click:
 			tabbar_areyouok(player, {_b})
 	else if name of player's current inventory is "➜ &b&lTAB色契約変更":
 		cancel event
-		set {_a} to tag "price" of nbt item compound of clicked item
-		set {_b} to tag "color" of nbt item compound of clicked item
+		set {_a} to tag "price" of nbt compound of clicked item
+		set {_b} to tag "color" of nbt compound of clicked item
 		set metadata value "price" of player to {_a}
 		if name of clicked item is "&f白色":
 			tabbar_areyouok3(player)

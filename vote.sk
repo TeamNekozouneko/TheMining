@@ -1,0 +1,128 @@
+#必須アドオン
+#・skript-votifier-hook
+#・SkBee
+
+options:
+    vote_prefix:&7----------- [ &a&l投票通知&7 ] ------------------
+    vote_suffix:&7------------------------------------------
+    vote_message_broadcast:&aさんが投票しました！
+    vote_thanks:&a投票ありがとうございます！&a&l50ポイント&aが付与されました。%nl%&a&l/point&aでポイント数の確認、&a&l/voteshop&aでポイントを利用できます。
+    vote_processing_error:&c大変申し訳ございません。投票の完了処理ができませんでした。サポートセンターへお問い合わせください。
+    vote_processing_error_ops:&4[&c 投票処理エラー &4]%nl%&c投票処理中にエラーが発生したため、投票を完了できませんでした。%nl%/admin_vote_show_errorlogにてエラーを解決してください。
+    vote_message_1:&aさんが投票してくれました！
+    vote_message_2:&6Minecraft.JP&eで投票すると様々な物が買える%nl%ポイントが手に入ります！%nl%おすすめなのはスロットの確率が上がる券です！%nl%みなさんもぜひ投票してみてください！
+    vote_menu_shop_title:&2&l》 &a投票ショップ &2&l《
+    vote_menu_shopedit_title:&2&l》 &aアイテムを編集して閉じてください &2&l《
+
+every second:
+    loop all players:
+        if {vote.players::%loop-player's uuid%} is not set:
+            set {vote.players::%loop-player's uuid%} to 0
+
+command /admin_vote_show_errorlog:
+    permission: admin
+    trigger:
+        send "&7投票エラーログ一覧" to player
+        loop {vote.errorlog::*}:
+            send "%loop-value%" to player
+        send "&7- 終 -" to player
+
+command /admin_vote_items:
+    permission: admin
+    trigger:
+        vote_edit_shop(player)
+
+command /admin_vote_price [<integer>]:
+    permission: admin
+    trigger:
+        if player's tool is air:
+            send "&4&l! &c価格設定をするアイテムを持ってください。" to player
+        else if arg-1 is not set:
+            send "&2&l! &a持っているアイテムの価格をなしに設定しました。" to player
+            clear tag "vote_price" of nbt compound of player's tool
+        else if arg-1 is set:
+            send "&2&l! &a持っているアイテムの価格を &f%arg-1%ポイント &aに設定しました。" to player
+            set tag "vote_price" of nbt compound of player's tool to arg-1
+
+command /point:
+    trigger:
+        send "&a所持している投票ポイント&2: &a&l%{vote.players::%player's uuid%}%&aポイント" to player
+
+command /voteshop:
+    trigger:
+        vote_open_shop(player)
+
+on inventory close:
+    if name of player's current inventory is "{@vote_menu_shopedit_title}":
+        send "&2&l! &a編集を適応しました。" to player
+        clear {vote.items::*}
+        loop all items in player's current inventory:
+            add loop-item to {vote.items::*}
+
+on inventory click:
+    if name of player's current inventory is "{@vote_menu_shop_title}":
+        cancel event
+        set {_index} to tag "vote_index" of nbt compound of event-item
+        set {_price} to tag "vote_price" of nbt compound of event-item
+        if {_price} and {_index} is set:
+            if {vote.players::%player's uuid%} >= {_price}:
+                remove {_price} from {vote.players::%player's uuid%}
+                set {_item} to {vote.items::%{_index}%}
+                clear tag "vote_index" of nbt compound of {_item}
+                clear tag "vote_price" of nbt compound of {_item}
+                give {_item} to player
+                send "&2&l! &a購入しました！" to player
+            else:
+                send "&4&l! &c所持ポイントが不足しています。" to player
+
+on votifier vote:
+    set {_n} to 0
+    set {_name} to voter username of event-vote
+    set {_p} to {_name} parsed as player
+
+    loop all offline players: #MCIDからUUIDへの変換
+        if name of loop-value is (voter username of event-vote):
+            set {_uuid} to loop-value's uuid
+            exit loop
+        add 1 to {_n}
+        if {_n} > 100:
+            set {_n} to 0
+            wait a tick
+
+    if {_name} is set:
+        if {_uuid} is set:
+            send "{@vote_prefix}" to all players
+            send "&r" to all players
+            send "%{_name}%{@vote_message_1}" to all players
+            send "&r" to all players
+            send "{@vote_message_2}" to all players
+            send "&r" to all players
+            send "{@vote_suffix}" to all players
+            send "{@vote_thanks}" to {_p}
+            add 50 to {vote.players::%{_uuid}%}
+        else: #UUIDの取得の失敗
+            vote_error_throw({_p}, "E0", {_name}, {_uuid})
+    else: #名前取得の失敗
+        vote_error_throw({_p}, "E1", {_name}, {_uuid})
+
+function vote_error_throw(p: player, err: string, name: string, uuid: string):
+    if {_p} is set:
+        send "{@vote_processing_error} (%{_err}%)" to {_p}
+    add "&c[%{_err}%] (%unix timestamp of now%) PDATA:%{_p}%, NAME:%{_name}%, UUID:%{_uuid}%" to {vote.errorlog::*}
+    send "{@vote_processing_error_ops}" to ops
+
+function vote_open_shop(p: player):
+    open chest inventory with 3 row named "{@vote_menu_shop_title}" to {_p}
+    set {_n} to 0
+    loop {vote.items::*}:
+        set {_price} to tag "vote_price" of nbt compound of loop-value
+        {_price} is set
+        set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&r" and "&e値段: &6%{_price}%ポイント" and "&e[ クリックして購入 ]" with nbt compound from "{vote_index:%loop-index%}"
+        add 1 to {_n}
+
+function vote_edit_shop(p: player):
+    open chest inventory with 3 row named "{@vote_menu_shopedit_title}" to {_p}
+    set {_n} to 0
+    loop {vote.items::*}:
+        set slot {_n} of {_p}'s current inventory to loop-value
+        add 1 to {_n}

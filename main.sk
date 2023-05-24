@@ -1,3 +1,6 @@
+#必須ライブラリ
+#・nupo_calc_lib.sk
+
 Options:
     oremenu_title: &c&lThe Mining &7- &f鉱石の設定
     oremenu_remove_title: &c&lThe Mining &7- &f鉱石範囲の削除
@@ -10,8 +13,16 @@ Options:
     menu_recipe_content_title: &c&lTheMining &7- &fレシピ
     menu_seller_title: &c&lTheMining &7- &f売店屋
     menu_seller_sell_title: &c&lTheMining &7- &f売店屋 &7- &fアイテム売却
+    menu_prestige_title: &c&lTheMining &7- &fプレステージ
+    mine_quest_title: &c&lTheMining &7- &fクエストマスター
 
     slot: true #スロットSkriptと連携するかどうか
+
+    #以下値設定
+    maboroshi_ingot_drop_p: 1
+    maboroshi_ingot_drop_c: 100000
+    #maboroshi_ingot_drop設定ではpが確率分母、cが確率分子を示しています。
+    #確率演算については、nupo_calc_lib.skを参照してください。
 
 on load:
     clear {mine.items::*}
@@ -33,17 +44,23 @@ on load:
     set {mine.items::16} to unbreakable diamond pickaxe of efficiency 10 named "&7[&aビギナーピッケル&7] &e&lLv.5" with lore "&aエメラルド&7が掘れるようになった！" with nbt compound from "{mine_price: 2200}" with enchants flag hidden
     set {mine.items::17} to glowing coal ore named "&a圧縮石炭" with nbt compound from "{mine_price: 0}"
     set {mine.items::18} to diamond pickaxe named "&7[&cアドバンスピッケル&7]"
-    set {mine.items::19} to spider eye named "&7[&cビギナーピッケルを溶かしたもの&7]" with lore "&7どうやって素手でこれを・・・" with nbt compound from "{mine_recipe_price:1500}"
+    set {mine.items::19} to spider eye named "&7[&cビギナーピッケルを溶かしたもの&7]" with lore "&7どうやって素手でこれを・・・"
     set {mine.items::20} to brick named "&7[&cアドバンスピッケルの素&7]"
-    set {mine.items::21} to unbreakable diamond pickaxe of efficiency 6 named "&7[&cアドバンスピッケル&7] &e&lLv.1" with lore "&8&l黒曜石&7が掘れるようになった！" and "&7とある村人から作り方を教わるんだ..." with enchants flag hidden
+    set {mine.items::21} to unbreakable diamond pickaxe of efficiency 10 named "&7[&cアドバンスピッケル&7] &e&lLv.1" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
     set {mine.items::22} to glowing blaze rod named "&6&l破壊の王 &7[クリックして使う]" with lore "&7これを鉱石などに向けてクリックすると" and "&7周囲の鉱石を徐々に溶かしてしまう。"
-    set {mine.items::23} to netherite ingot named "&7[ &cネザライト &7]" with lore "&7固く鋭いぞ...." with nbt compound from "{mine_recipe_price:4000}"
+    set {mine.items::23} to netherite ingot named "&7[ &cネザライト &7]" with lore "&7固く鋭いぞ...."
     set {mine.items::24} to cobblestone named "&a丸石"
     set {mine.items::25} to coal named "&a石炭"
     set {mine.items::26} to raw iron named "&a鉄"
     set {mine.items::27} to diamond named "&aダイヤモンド"
     set {mine.items::28} to emerald named "&a&lエメラルド"
     set {mine.items::29} to obsidian named "&7&l黒曜石"
+    set {mine.items::30} to magma cream named "&7[ &d&l幻のインゴット &7]" with lore "&7ごく稀に鉱石を掘ると発掘できるようだ..." and "&7原材料は未だに不明だそう"
+    set {mine.items::31} to unbreakable diamond pickaxe of efficiency 12 named "&7[&cアドバンスピッケル&7] &e&lLv.2" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::32} to unbreakable diamond pickaxe of efficiency 13 named "&7[&cアドバンスピッケル&7] &e&lLv.3" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::33} to unbreakable diamond pickaxe of efficiency 14 named "&7[&cアドバンスピッケル&7] &e&lLv.4" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::34} to unbreakable diamond pickaxe of efficiency 15 named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
+    set {mine.items::35} to glowing stick named "&dポータル設定用棒"
 
     clear {mine.require::*}
     set {mine.require::2} to {mine.items::0}
@@ -60,7 +77,30 @@ on load:
     set {mine.require::15} to {mine.items::14}
     set {mine.require::16} to {mine.items::15}
     set {mine.require::19} to {mine.items::16}
+    set {mine.require::31} to {mine.items::21}
+    set {mine.require::32} to {mine.items::31}
+    set {mine.require::33} to {mine.items::32}
+    set {mine.require::34} to {mine.items::33}
 
+    clear {mine.upgrade_price::*}
+    set {mine.upgrade_price::2} to 300
+    set {mine.upgrade_price::3} to 800
+    set {mine.upgrade_price::5} to 0
+    set {mine.upgrade_price::6} to 0
+    set {mine.upgrade_price::7} to 0
+    set {mine.upgrade_price::8} to 0
+    set {mine.upgrade_price::9} to 0
+    set {mine.upgrade_price::17} to 0
+    set {mine.upgrade_price::12} to 1200
+    set {mine.upgrade_price::13} to 1600
+    set {mine.upgrade_price::14} to 1800
+    set {mine.upgrade_price::15} to 2000
+    set {mine.upgrade_price::16} to 2200
+    set {mine.upgrade_price::31} to 4000
+    set {mine.upgrade_price::32} to 4500
+    set {mine.upgrade_price::33} to 5000
+    set {mine.upgrade_price::34} to 5500
+ 
     clear {mine.orewhite::*}
     add {mine.ores::emerald_ore} to {mine.orewhite::0::*}
     add {mine.ores::obsidian} to {mine.orewhite::0::*}
@@ -113,6 +153,11 @@ on load:
     add "&eいろんな基本的なものはここで買ったり、売ったりできます！" to {mine.seller_telled::*}
     add "&eお気軽に話しかけてくださいね～" to {mine.seller_telled::*}
 
+    clear {mine.recipe_price::*}
+    set {mine.recipe_price::19} to 1500
+    set {mine.recipe_price::23} to 4000
+    set {mine.recipe_price::21} to 5000
+
     #！！！売却値段は必ず1つあたりの値段を入力すること！！！
     set {mine.seller.sellprice::24} to 0.1
     set {mine.seller.sellprice::25} to 0.5
@@ -126,8 +171,34 @@ on load:
     set {mine.seller.sellprice::7} to 2*64
     set {mine.seller.sellprice::9} to 5*64
     set {mine.seller.sellprice::8} to 8*64
+
+    clear {mine.enchant::*}
+    set {mine.enchant_range} to 2
+    add {mine.items::30} to {mine.enchant::1::*}
+    add 8 of {mine.items::5} to {mine.enchant::1::*}
+    add {mine.items::19} to {mine.enchant::2::*}
+    add {mine.items::23} to {mine.enchant::2::*}
+
+    clear {mine.enchant_result::*}
+    add {mine.items::23} to {mine.enchant_result::1::*}
+    add {mine.items::21} to {mine.enchant_result::2::*}
+
+    clear {mine.quests::*}
+    set {mine.quests::1} to "鉱石または石を20000回採掘する"
+
+    clear {mine.quest_reward::*}
+    set {mine.quest_reward::1::*} to "money_10000"
+
 on join:
     clear metadata value "mine_add_orerange" of player
+
+command /admin_inv [<player>]:
+    permission: admin
+    trigger:
+        if arg-1 is not set:
+            send "&4&l! &cプレイヤー指定しやがれ小僧" to player
+        else:
+            open arg-1's inventory to player
 
 command /mine [<text>] [<text>] [<integer>]:
     permission: admin
@@ -149,8 +220,14 @@ command /mine [<text>] [<text>] [<integer>]:
         else if arg-1 is "stop_update":
             set {mine.temp::stopupdate} to true
         else if arg-1 is "setlobby":
-            set {mine.generic::lobbyloc} to location of player
-            send "&2&l! &aあなたの場所を初期スポーンに設定しました。" to player
+            if arg-2 is not set:
+                send "&4&l! &c優先番号を設定してください。" to player
+            else if arg-3 is 1:
+                clear {mine.generic::lobbyloc::%arg-2%}
+                send "&2&l! &aスポーン番号 &f%arg-2%番 &aのスポーンをクリアしました。" to player
+            else:
+                set {mine.generic::lobbyloc::%arg-2%} to location of player
+                send "&2&l! &aあなたの場所を &f%arg-2%番 &aスポーンに設定しました。" to player
         else if arg-1 is "give":
             if {mine.items::%arg-2%} is set:
                 give {mine.items::%arg-2%} to player
@@ -171,12 +248,14 @@ command /mine [<text>] [<text>] [<integer>]:
             else:
                 mine_resetlv_player(arg-2 parsed as player, arg-3)
                 send "&2&l! &aリセットしました。" to player
+        else if arg-1 is "lobby":
+            mine_teleport_lobby(player, arg-2)
         else:
             mine_show_help(player)
 
 command /spawn:
     trigger:
-        teleport player to location of {mine.generic::lobbyloc}
+        teleport player to location of {mine.generic::lobbyloc::1}
         send "&2&l! &aスポーンにテレポートしました。" to player
 
 on inventory click:
@@ -195,8 +274,8 @@ on inventory click:
         cancel event
         set {_tab} to tag "mine_tab" of nbt compound of event-item
         set {_page} to tag "mine_page" of nbt compound of event-item
-        set {_tag} to tag "mine_price" of nbt compound of event-item
         set {_index} to tag "mine_item_index" of nbt compound of event-item
+        set {_tag} to {mine.upgrade_price::%{_index}%}
         if {_tag} is set:
             if player's money >= {_tag}:
                 #send {_index} to player
@@ -360,6 +439,22 @@ on inventory close:
                 send "&4&l! &cGUIを閉じたため溶解が中止されました。" to player
             else if {_i} is not air:
                 give {_i} to player
+    else if name of player's current inventory is "{@menu_enchant_title}":
+        set {_i} to slot 10 of player's current inventory
+        set {_i2} to slot 11 of player's current inventory
+        if {_i} is not air:
+            give {_i} to player
+        if {_i2} is not air:
+            give {_i2} to player
+
+function mine_teleport_lobby(p: player, num: string):
+    if {_num} is not set:
+        send "&4&l! &c優先番号を指定してください。" to {_p}
+    else if {mine.generic::lobbyloc::%{_num}%} is not set:
+        send "&4&l! &cこの優先番号は登録されていません。" to {_p}
+    else:
+        teleport {_p} to location of {mine.generic::lobbyloc::%{_num}%}
+        send "&2&l! &aテレポートしました。" to {_p}
 
 function mine_open_oremenu(p: player):
     open chest inventory with 6 row named "{@oremenu_title}" to {_p}
@@ -369,6 +464,10 @@ function mine_open_oremenu(p: player):
         add 1 to {_n}
     set slot 48 of {_p}'s current inventory to green terracotta named "&a&l鉱石範囲の追加" with lore "&7[ クリックして追加する ]"
     set slot 50 of {_p}'s current inventory to red terracotta named "&c&l鉱石範囲の削除" with lore "&7[ クリックして削除する ]"
+    set {_n} to 0
+    loop {mine.orerange_list::*}:
+        set slot {_n} of {_p}'s current inventory to chest named "&eID: &6%loop-value%"
+        add 1 to {_n}
 
 function mine_show_help(p: player):
     send "&f&m&l----------  &f&l[ &c&lThe Mining &f&l]  &f&m&l----------" to {_p}
@@ -379,7 +478,8 @@ function mine_show_help(p: player):
     send "&4&l・&c/mine stop_clear &8- &f鉱石のクリアを停止します。" to {_p}
     send "&4&l・&c/mine update &8- &fすべての鉱石の範囲を再生成します。" to {_p}
     send "&4&l・&c/mine stop_update &8- &f鉱石の再生成を停止します。" to {_p}
-    send "&4&l・&c/mine setlobby &8- &f今いる場所を初期地点として設定します。" to {_p}
+    send "&4&l・&c/mine setlobby <優先番号> &8- &f今いる場所を地点として設定します。" to {_p}
+    send "&4&l・&c/mine lobby <優先番号> &8- &f優先番号に登録された場所へテレポートします。" to {_p}
     send "&4&l・&c/mine resetplayer <プレイヤー> &8- &fプレイヤーのデータを初期化します。" to {_p}
     send "&4&l・&c/mine resetlv <プレイヤー> <指定値> &8- &fプレイヤーのレベルとEXPデータを指定値に設定します。" to {_p}
 
@@ -395,7 +495,7 @@ on place:
         add {_id} to {mine.orerange_list::*}
         set {mine.orerange::%{_id}%::1} to {_m}
         set {mine.orerange::%{_id}%::2} to location of event-block
-        send "&2&l! &a鉱石の範囲を追加しました！" to player
+        send "&2&l! &a鉱石の範囲を追加しました！ ID: %{_id}%" to player
         clear metadata value "mine_add_orerange" of player
 
 function mine_settings_add_orerange(p :player):
@@ -410,6 +510,7 @@ function mine_settings_remove_orerange(p :player):
         set {_l1} to mine_convert_location2text({mine.orerange::%loop-value%::1})
         set {_l2} to mine_convert_location2text({mine.orerange::%loop-value%::2})
         set slot {_n} of {_p}'s current inventory to gold ore named "&eID: &6%loop-value%" with lore "&7範囲1: &f%{_l1}%", "&7範囲2: &f%{_l2}%", "&r", "&c[ クリックして削除する ]" and "&4&l※ &c&l一度消すと元には戻せません！" with nbt compound from "{mine_rangeid: %loop-value%}"
+        add 1 to {_n}
 
 function mine_remove_range(p: player, id: integer):
     if {mine.orerange_list::*} contains {_id}:
@@ -460,7 +561,9 @@ function mine_update_allrange_nm():
             loop all players in radius 2 of loop-block:
                 add 1 to {_n}
             {_n} is not set
-            
+            set {_blocks::*} to air and stone and coal ore and iron ore and diamond ore and emerald ore and obsidian
+            {_blocks::*} contains loop-block
+
             set {_num} to random integer between 1 and 100
             if {mine.oretype::%loop-value-1%} is 1:
                 if {_num} is between 1 and 15:
@@ -497,7 +600,7 @@ function mine_update_allrange_nm():
                 clear {mine.temp::stopupdate}
                 exit
             add 1 to {_bf}
-            if {_bf} >= 100:
+            if {_bf} >= 300:
                 set {_bf} to 0
                 wait a tick
 
@@ -561,12 +664,25 @@ on damage:
     victim is a player
     cancel event
 
+on craft:
+    player is not op
+    cancel event
+
 on place:
     player is not op
     cancel event
 
 on hunger meter change:
     cancel event
+
+command /pickaxe:
+    trigger:
+        if (unix timestamp of now)-{mine.players::%player's uuid%::lastgetpickaxe} < 86400:
+            send "&4&l! &c初期ピッケルを再入手できるのは、1日に1回のみです。" to player
+        else:
+            set {mine.players::%player's uuid%::lastgetpickaxe} to unix timestamp of now
+            send "&2&l! &a初期ピッケルを入手しました！" to player
+            give {mine.items::0} to player
 
 every tick:
     loop all players:
@@ -589,9 +705,11 @@ on hunger meter change:
 on drop:
     #send event-item to player
     player is not op
+    set {_whitelist::*} to 24 and 25 and 26 and 27 and 28 and 29
     loop {mine.items::*}:
         if event-item is loop-value:
-            add 1 to {_n}
+            if {_whitelist::*} doesn't contain (loop-index parsed as integer):
+                add 1 to {_n}
     if {_n} is set:
         cancel event
         send action bar "&4&l! &cこのアイテムは捨てることができません。" to player
@@ -605,7 +723,7 @@ every 1 second:
         mine_scoreboardUpdate(loop-player)
 
 on first join:
-    teleport player to location of {mine.generic::lobbyloc}
+    teleport player to location of {mine.generic::lobbyloc::1}
     send title "&m     &f&l ようこそ" with subtitle "&bᴡᴇʟᴄᴏᴍᴇ ᴛᴏ &c&lThe Mining" to player
     loop 5 times:
         send "&r" to player
@@ -660,6 +778,16 @@ function mine_convert_level2price(level: integer, def: integer) :: number:
         add sqrt({_def})*5 to {_n}
     return {_n}
 
+function mine_is_space_inventory(p: player) :: boolean:
+    set {_n} to 0
+    set {_n2} to 0
+    loop 36 times:
+        if slot {_n} of {_p}'s inventory is air:
+            add 1 to {_n2}
+        add 1 to {_n}
+    return false if {_n2} is 0
+    return true
+
 function mine_scoreboardUpdate(p: player):
     wipe {_p}'s sidebar
     set name of sidebar of {_p} to "&c&lThe Mining"
@@ -672,8 +800,17 @@ function mine_scoreboardUpdate(p: player):
     set score "&8¦¦  &e所持金: &6&l%(({_p}'s money)*10)/10%円" in sidebar of {_p} to 1
     set score "&8¦¦  &6" in sidebar of {_p} to 0
 
+on right click:
+    player is not op
+    cancel event if event-block is crafting table
+    cancel event if event-block is barrel
+    cancel event if event-block is oak trapdoor
+    cancel event if event-block is spruce trapdoor
+    cancel event if event-block is mangrove trapdoor
+    cancel event if event-block is a shulker box
+
 #以下定期システム
-every 30 minute:
+every 15 minute:
     send "&4&l! &cマップ上の鉱石がすべて補填されます。" to all players
     mine_update_allrange_nm()
 
@@ -683,8 +820,10 @@ every 5 minute:
     add "アップグレードNPCでピッケルを強化しよう！" to {_notes::*}
     add "/afkコマンドで放置もできるって？！" to {_notes::*}
     add "採掘場で帰れなくなった？/spawnコマンドで一気に帰ろう！" to {_notes::*}
+    add "レシピが分からない？レシピの渡来人が教えてくれるんだって！" to {_notes::*}
+    add "アイテムが一杯なんだって？売店屋が鉱石を買い取ってくれるよ！" to {_notes::*}
     set {_note} to random element out of {_notes::*}
-    send "&7&l[&e定期&7&l] &r%{_note}%" to all players
+    send "&7[ &e定期 &7] &r%{_note}%" to all players
 
 #以下採掘システム
 on first join:
@@ -707,6 +846,19 @@ on break:
     if event-entity is a player:
         if mine_break(player, event-block) is false:
             cancel event
+        if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
+#ドロップしてなくす方が多数いたため、デフォルトはインベントリー付与で、満杯時にはpickupへ保存
+#            drop {mine.items::30} at player
+#            sound_notification(player)
+#            send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to player
+            sound_notification(player)
+            if mine_is_space_inventory(player):
+                send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to player
+                give {mine.items::30} to player
+            else:
+                send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to player
+                send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to player
+                add {mine.items::30} to {pickup.%player's uuid%::*}
 
 function mine_break(p: player, b: block, thread_bypass: boolean = false) :: boolean:
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
@@ -718,6 +870,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 add 1 to {_tb_b}
             add 1 to {_tb_d}
         if {_tb_b} is {_tb_d}:
+            {_p} is not op
             send action bar "&4&l! &c採掘場では地表からしか採掘できません。" to {_p}
             return false
     if {@slot} is true:
@@ -810,11 +963,11 @@ function mine_open_upgrade(p: player, tab: integer, page: integer):
         else if {_tab} is 3:
             set {_list::*} to 12 and 13 and 14 and 15 and 16
         else if {_tab} is 4:
-            set {_list::*} to 21
+            set {_list::*} to 21 and 31 and 32 and 33 and 34
 
     set {_n} to 28
     loop {_list::*}:
-        set {_tag} to tag "mine_price" of nbt compound of {mine.items::%loop-value%}
+        set {_tag} to {mine.upgrade_price::%loop-value%}
         if {_tag} is not set:
             set slot {_n} of {_p}'s current inventory to {mine.items::%loop-value%} with lore (lore of {mine.items::%loop-value%}) and "&8&m-------------------------------" and "&cこのアイテムは購入できません"
         else:
@@ -831,7 +984,7 @@ function mine_open_upgrade(p: player, tab: integer, page: integer):
 on right click:
     if event-block is enchanting table:
         cancel event
-        player is op
+#        player is op
         mine_enchant_open(player)
     else if event-block is anvil:
         cancel event
@@ -940,16 +1093,63 @@ every 5 tick:
                         add 1 to {_n2}
                         wait 5 tick
         else if name of loop-player's current inventory is "{@menu_enchant_title}":
-            if slot 10 of loop-player's current inventory is air:
+            if (slot 10 of loop-player's current inventory) and (slot 11 of loop-player's current inventory) is air:
                 set {_slots::*} to 13 and 14 and 15 and 16 and 17 and 5 and 23
                 loop {_slots::*}:
                     set slot (loop-value-2) of loop-player-1's current inventory to red stained glass pane named "&c該当のアイテムを入れてください"
             else:
-                set slot 5 of loop-player's current inventory to gray stained glass pane named "&c"
-                set slot 23 of loop-player's current inventory to gray stained glass pane named "&c"
-                set {_slots::*} to 13 and 14 and 15 and 16 and 17
-                loop {_slots::*}:
-                    set slot (loop-value-2) of loop-player-1's current inventory to green stained glass pane named "&aエンチャント可能"
+                set {_n} to 0
+                loop {mine.enchant_range} times:
+                    add 1 to {_n}
+                    set {_n2} to 0
+                    loop {mine.enchant::%{_n}%::*}:
+                        if loop-value-3 is (slot 10 of loop-player-1's current inventory) or (slot 11 of loop-player-1's current inventory):
+                            add 1 to {_n2}
+                    if {_n2} is size of {mine.enchant::%{_n}%::*}:
+                        set slot 5 of loop-player's current inventory to gray stained glass pane named "&c"
+                        set slot 23 of loop-player's current inventory to gray stained glass pane named "&c"
+                        set {_slots::*} to 13 and 14 and 15 and 16 and 17
+                        loop {_slots::*}:
+                            set slot (loop-value-3) of loop-player-1's current inventory to air
+                        set {_n3} to 13
+                        loop {mine.enchant_result::%{_n}%::*}:
+                            clear {_n5}
+                            loop {mine.items::*}:
+                                if loop-value-4 is loop-value-3:
+                                    set {_n5} to loop-index-2
+                            if {mine.players::%loop-player-1's uuid%::recipes::*} contains ({_n5} parsed as integer):
+                                set slot {_n3} of loop-player-1's current inventory to loop-value-3 with lore "&r" and "&e[ クリックしてエンチャント ]" with nbt compound from "{mine_index:%{_n}%, mine_cindex:%{_n3}-12%}"
+                                add 1 to {_n3}
+                            else:
+                                set slot {_n3} of loop-player-1's current inventory to red stained glass pane named "&cエンチャント不可能" with lore "&7&lあなたはこのアイテムを" and "&7&l習得していません。"
+                                add 1 to {_n3}
+                        exit loop
+                    else:
+                        set {_slots::*} to 13 and 14 and 15 and 16 and 17 and 5 and 23
+                        loop {_slots::*}:
+                            set slot (loop-value-3) of loop-player-1's current inventory to red stained glass pane named "&cエンチャント不可能" with lore "&7この組み合わせは扱えません"
+
+on inventory click:
+    if name of player's current inventory is "{@menu_enchant_title}":
+        cancel event if name of event-item is "&c" or "&c該当のアイテムを入れてください" or "&cエンチャント不可能"
+        set {_index} to tag "mine_index" of nbt compound of event-item
+        set {_cindex} to tag "mine_cindex" of nbt compound of event-item
+        if {_index} and {_cindex} is set:
+            cancel event
+
+            set {_n} to 0 #以下適合性による論理チェック
+            loop {mine.enchant_range} times:
+                add 1 to {_n}
+                set {_n2} to 0
+                loop {mine.enchant::%{_n}%::*}:
+                    if loop-value-2 is (slot 10 of player's current inventory) or (slot 11 of player's current inventory):
+                        add 1 to {_n2}
+                if {_n2} is size of {mine.enchant::%{_n}%::*}:
+                    set slot 10 of player's current inventory to air
+                    set slot 11 of player's current inventory to air
+                    give {mine.enchant_result::%{_index}%::%{_cindex}%} to player
+                    sound_enchanted(player)
+                    send "&2&l! &aエンチャントしました！" to player
 
 #以下スキル
 command /skill:
@@ -1039,7 +1239,7 @@ function mine_special_item(p: player, i: integer):
     if {_i} is 0:
         send "&2&l! &a破壊の王を発動しました！" to {_p}
         remove 1 of {mine.items::22} from {_p}'s inventory
-        play sound "minecraft:entity.blaze.shoot" to {_p}
+        sound_do_skill({_p})
         loop all blocks in radius 6 around {_p}:
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
@@ -1051,7 +1251,7 @@ on right click:
 
 #以下「レシピの渡来人」処理
 on npc right click:
-    player is op
+    #player is op
     if npc name is "&d&lレシピの渡来人 &7[クリック]":
         if {mine.players::%player's uuid%::recipe_telled} is set:
             sound_opened(player)
@@ -1061,10 +1261,10 @@ on npc right click:
 
 function mine_recipe_page(p: player, page: integer):
     open chest inventory with 6 row named "{@menu_recipe_title}" to {_p}
-    set {_items::*} to 19 and 23
+    set {_items::*} to 19 and 23 and 21
     set {_n} to 10
     loop {_items::*}:
-        set {_price} to tag "mine_recipe_price" of nbt compound of {mine.items::%loop-value%}
+        set {_price} to {mine.recipe_price::%loop-value%}
         if {mine.players::%{_p}'s uuid%::recipes::*} contains loop-value:
             set slot {_n} of {_p}'s current inventory to {mine.items::%loop-value%} with lore (lore of {mine.items::%loop-value%}) and "&r" and "&a習得済み" and "&7[ クリックしてレシピを見る ]" with nbt compound from "{mine_page:%{_page}%, mine_index:%loop-value%, mine_type:0}"
         else:
@@ -1097,14 +1297,21 @@ function mine_recipe_content(p: player, index: integer):
         add {mine.items::16} to {_recipes::*}
         add anvil named "&c鍛冶屋&aで溶解する" to {_recipes::*}
     else if {_index} is 23:
-        add {mine.items::16} to {_recipes::*}
-        add anvil named "&c鍛冶屋&aで溶解する" to {_recipes::*}
+        add {mine.items::30} to {_recipes::*}
+        set {_additional_recipes::1} to 8 of {mine.items::5}
+        add enchanting table named "&d&lエンチャント台&aでエンチャントする" to {_recipes::*}
+    else if {_index} is 21:
+        add {mine.items::19} to {_recipes::*}
+        add {mine.items::23} to {_additional_recipes::*}
+        add enchanting table named "&d&lエンチャント台&aでエンチャントする" to {_recipes::*}
 
     #レシピ情報の描写
     if size of {_recipes::*} is 1:
         set {_n} to 29
         loop {_recipes::*}:
             set slot {_n} of {_p}'s current inventory to loop-value
+            if {_additional_recipes::%loop-index%} is set:
+                set slot {_n}-9 of {_p}'s current inventory to {_additional_recipes::%loop-index%}
             set slot {_n}+2 of {_p}'s current inventory to {_arrow}
             add 3 to {_n}
         set slot {_n}+1 of {_p}'s current inventory to {mine.items::%{_index}%}
@@ -1112,6 +1319,9 @@ function mine_recipe_content(p: player, index: integer):
         set {_n} to 29
         loop {_recipes::*}:
             set slot {_n} of {_p}'s current inventory to loop-value
+            #send {_additional_recipes::%loop-index%} to {_p}
+            if {_additional_recipes::%loop-index%} is set:
+                set slot {_n}-9 of {_p}'s current inventory to {_additional_recipes::%loop-index%}
             set slot {_n}+1 of {_p}'s current inventory to {_arrow}
             add 2 to {_n}
         set slot {_n}+0 of {_p}'s current inventory to {mine.items::%{_index}%}
@@ -1172,4 +1382,156 @@ function mine_seller_open_sell(p: player):
     set {_n} to 36
     loop 9 times:
         set slot {_n} of {_p}'s current inventory to gray stained glass pane named "&c"
+        add 1 to {_n}
+
+#スレッド処理
+function mine_thread_throw(type: string) :: object:
+    if {_type} is "MINE_MABOROSHI_INGOT_DROP":
+        return true if nupo_calc_random({@maboroshi_ingot_drop_p}, {@maboroshi_ingot_drop_c})
+        return false
+    return false
+
+#以下ポータル処理
+on player move:
+    set metadata value "mine_last_location" of player to location of player
+
+command /admin_mine_portal_set_connection [<integer>]:
+    permission: admin
+    permission message: &c権限がありません。
+    trigger:
+        if arg-1 is not set:
+            send "&4&l! &c優先番号を指定してください。" to player
+        else if name of player's tool is not name of {mine.items::35}:
+            send "&4&l! &c優先番号の設定にはポータル設定用棒を持っている必要があります。" to player
+        else:
+            set tag "mine_stick_portal_connection_id" of nbt compound of player's tool to arg-1
+            send "&2&l! &a優先番号を &f%arg-1% &aに設定しました。" to player
+
+on right click:
+    if name of player's tool is name of {mine.items::35}:
+        set {_id} to tag "mine_stick_portal_connection_id" of nbt compound of player's tool
+        if {_id} is not set:
+            send "&4&l! &c宛先が指定されていません。/admin_mine_portal_set_connection <優先番号>で指定してください。" to player
+        else:
+            set {_bid} to tag "mine_portal_connection_id" of nbt compound of targeted block
+            if {_bid} is set:
+                clear tag "mine_portal_connection_id" of nbt compound of targeted block
+                send "結果: NBT削除" to player
+            else:
+                set tag "mine_portal_connection_id" of nbt compound of targeted block to {_id}
+                send "結果: NBT設定 (%{_id}%)" to player
+
+function mine_portal_conditions(p: player, n: integer) :: boolean:
+    return false if {_p} is not set
+    return false if {_n} is not set
+    return false if {mine.generic::lobbyloc::%{_n}%} is not set
+    #以下条件設定
+    return true if {_n} is 1
+    if {_n} is 2:
+        if {mine.level::%{_p}'s uuid%} >= 200:
+            if {mine.players::%{_p}'s uuid%::recipes::*} contains 21:
+                return true
+        return false
+    else if {_n} is 3:
+        return true
+    return false
+
+on portal:
+    cancel event
+    set {_pblock} to block 0.5 south player if block 0.5 south player is nether portal block
+    set {_pblock} to block 0.5 north player if block 0.5 north player is nether portal block
+    set {_pblock} to block 0.5 west player if block 0.5 west player is nether portal block
+    set {_pblock} to block 0.5 east player if block 0.5 east player is nether portal block
+    {_pblock} is set
+    set {_connection} to tag "mine_portal_connection_id" of nbt compound of {_pblock}
+    if {_connection} is not set:
+        sound_portal_failed(player)
+        send action bar "&4&l! &cこのポータルにはテレポート先が設定されていません。" to player
+    else if mine_portal_conditions(player, {_connection}) = false:
+        sound_portal_failed(player)
+        send action bar "&4&l! &cテレポート条件を満たしていません。" to player
+    else:
+        set {_waitingtime} to 3
+        sound_portal_wait(player)
+        send action bar "&a動かずにお待ちください.... &a&l%{_waitingtime} %秒" to player
+        set {_defloc} to location of player
+        set {_sec} to 2
+        set {_n} to 0 
+        loop ({_waitingtime})*20 times:
+            set {_diffloc} to distance between {_defloc} and (metadata value "mine_last_location" of player)
+            if {_diffloc} > 0.5:
+                if block at player is not nether portal block:
+                    sound_portal_failed(player)
+                    send action bar "&cテレポートがキャンセルされました。" to player
+                    exit loop
+            add 1 to {_n}
+            if {_sec} is not 0:
+                if mod({_n}, 20) = 0:
+                    sound_portal_wait(player)
+                    send action bar "&a動かずにお待ちください.... &a&l%{_sec}%秒" to player
+                    remove 1 from {_sec}
+            wait a tick
+        if {_sec} is 0:
+            send action bar "&aテレポートしました！" to player
+            teleport player to location of {mine.generic::lobbyloc::%{_connection}%}
+            sound_portal_success(player)
+
+#以下プレステージ処理
+on npc right click:
+    player is op
+    if npc name is "&f&l- ??? -":
+        sound_opened(player)
+        mine_open_prestige(player)
+
+function mine_open_prestige(p: player):
+    open chest inventory with 3 row named "{@menu_prestige_title}" to {_p}
+    if {_prestige} is true:
+        add "&eプレステージをすることでより多くの" to {_lores::*}
+        add "&e機能を使うことができます。" to {_lores::*}
+        add "&r" to {_lores::*}
+        add "&8&l- &c&lプレステージ後の動作" to {_lores::*}
+        add "&4&l・&cピッケル、レベル、お金がリセットされます" to {_lores::*}
+        add "&4&l・&cインベントリー、エンダーチェストは保持されます" to {_lores::*}
+        add "&4&l・&c投票ポイントは保持されます" to {_lores::*}
+        add "&r" to {_lores::*}
+        add "&e[ ≫ クリックしてプレステージする ]" to {_lores::*}
+        add "&eプレステージを行うには以下の条件" to {_conditions::*}
+        add "&eを満たしている必要があります。" to {_conditions::*}
+        add "&r" to {_conditions::*}
+        add "&8&l- &c&lプレステージ条件" to {_conditions::*}
+        add "&4&l・&cレベルが300以上であること" to {_conditions::*}
+        add "&4&l・&cレベルクエストをすべて達成していること" to {_conditions::*}
+        set slot 4 of {_p}'s current inventory to beacon named "6f&lプレステージ条件" with lore {_conditions::*}
+        set slot 13 of {_p}'s current inventory to diamond pickaxe named "&6&lプレステージ" with lore {_lores::*} 
+    else:
+        add "&eプレステージをすることでより多くの" to {_lores::*}
+        add "&e機能を使うことができます。" to {_lores::*}
+        add "&r" to {_lores::*}
+        add "&8&l- &c&lプレステージ後の動作" to {_lores::*}
+        add "&4&l・&cピッケル、レベル、お金がリセットされます" to {_lores::*}
+        add "&4&l・&cインベントリー、エンダーチェストは保持されます" to {_lores::*}
+        add "&4&l・&c投票ポイントは保持されます" to {_lores::*}
+        add "&r" to {_lores::*}
+        add "&e[ × 条件を満たしていません ]" to {_lores::*}
+        add "&eプレステージを行うには以下の条件" to {_conditions::*}
+        add "&eを満たしている必要があります。" to {_conditions::*}
+        add "&r" to {_conditions::*}
+        add "&8&l- &c&lプレステージ条件" to {_conditions::*}
+        add "&4&l・&cレベルが300以上であること" to {_conditions::*}
+        add "&4&l・&cレベルクエストをすべて達成していること" to {_conditions::*}
+        set slot 4 of {_p}'s current inventory to beacon named "&6&lプレステージ条件" with lore {_conditions::*}
+        set slot 13 of {_p}'s current inventory to diamond pickaxe named "&6&lプレステージ" with lore {_lores::*} 
+
+#以下クエスト処理
+on npc right click:
+    player is op
+    if npc name is "&aクエストマスター &7[クリック]":
+        sound_opened(player)
+        mine_open_quest(player)
+
+function mine_open_quest(p: player):
+    open chest inventory with 3 row named "{@mine_quest_title}" to {_p}
+    set {_n} to 10
+    loop {mine.quests::*}:
+        set slot {_n} of {_p}'s current inventory to paper named "&eクエスト"
         add 1 to {_n}

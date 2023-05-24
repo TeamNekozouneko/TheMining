@@ -1,3 +1,6 @@
+options:
+    mine_align: true #採掘システムと連携するかどうか
+
 on join:
     clear metadata value "slot_create_set_name" of player
     clear metadata value "slot_set_price" of player
@@ -383,10 +386,19 @@ function slot_spin(p: player, name: text):
             set {_world} to world of {slot.info::%{_name}%::button}
             set {_coord} to location at {_x}, {_y}, {_z} in world {_world}
             set block at location of {_coord} to air
+            set {_breq::*} to {slot.info::%{_name}%::content::*}
+            set {_bsize} to size of {_breq::*}
+            
+            #25%アイテム処理
+            if slot_is_specialitem_doing({_p}, 1) = true:
+                loop {_bsize} times:
+                    chance of 25%:
+                        remove (random element out of {_breq::*}) from {_breq::*}
+
             loop 3 times:
                 add 1 to {_n}
                 loop 30 times:
-                    slot_random_place({_p}, {_name}, {_n})
+                    slot_random_place({_p}, {_name}, {_n}, {_breq::*})
                     sound_slot_spinning({_p})
                     wait a tick
                 sound_slot_placed({_p})
@@ -403,22 +415,34 @@ function slot_spin(p: player, name: text):
         sound_error({_p})
         send "&c設定が不十分なため、このスロットは回せません。" to {_p}
 
-function slot_random_place(p: player, name: text, step: integer):
+function slot_random_place(p: player, name: text, step: integer, breq: objects):
     if {_step} is 1:
         set {_n} to 0
         loop 3 times:
             add 1 to {_n}
-            set {_b} to random element out of {slot.info::%{_name}%::content::*}
+            if {_breq::*} is not set:
+                set {_bs::*} to {slot.info::%{_name}%::content::*}
+            else:
+                set {_bs::*} to {_breq::*}
+            set {_b} to random element out of {_bs::*}
             set block at location of {slot.info::%{_name}%::location::%{_n}%} to {_b}
     else if {_step} is 2:
         set {_n} to 1
         loop 2 times:
             add 1 to {_n}
-            set {_b} to random element out of {slot.info::%{_name}%::content::*}
+            if {_breq::*} is not set:
+                set {_bs::*} to {slot.info::%{_name}%::content::*}
+            else:
+                set {_bs::*} to {_breq::*}
+            set {_b} to random element out of {_bs::*}
             set block at location of {slot.info::%{_name}%::location::%{_n}%} to {_b}
     else if {_step} is 3:
         set {_n} to 3
-        set {_b} to random element out of {slot.info::%{_name}%::content::*}
+        if {_breq::*} is not set:
+            set {_bs::*} to {slot.info::%{_name}%::content::*}
+        else:
+            set {_bs::*} to {_breq::*}
+        set {_b} to random element out of {_bs::*}
         set block at location of {slot.info::%{_name}%::location::%{_n}%} to {_b}
 
 function slot_if_hit(name: text) :: boolean:
@@ -464,3 +488,41 @@ on break:
             add 1 to {_n}
     if {_n} is set:
         cancel event
+
+#以下特殊アイテムの処理
+
+command /admin_slot_get [<integer>]:
+    permission: admin
+    trigger:
+        {@mine_align} = true
+        if arg-1 is not set:
+            send "&4&l! &cアイテム番号を入力してください。" to player
+        else if {slot.specialitems::%arg-1%} is not set:
+            send "&4&l! &cこのアイテム番号は登録されていません。" to player
+        else:
+            send "&2&l! &a入手しました。" to player
+            give {slot.specialitems::%arg-1%} to player
+
+#アイテム登録
+on load:
+    {@mine_align} = true
+    set {slot.specialitems::1} to glowing paper named "&e25%%確率上昇券" with lore "&7これを使用することで1時間の間" and "&7すべてのスロットの当たる確率が25%%上昇します。" and "&e[ 右クリックして使用する ]"
+
+#アイテム動作処理
+on right click:
+    {@mine_align} = true
+    if 1 of player's tool is {slot.specialitems::1}:
+        if slot_is_specialitem_doing(player, 1): 
+            send "&4&l! &cすでにこのアイテムの効果を発動しています。" to player
+        else:
+            remove 1 of {slot.specialitems::1} from player's tool
+            send "&2&l! &a%name of {slot.specialitems::1}%&aを発動しました！" to player
+            sound_do_skill(player)
+            set {mine.players::%player's uuid%::slot_last_used.1} to unix timestamp of now
+
+function slot_is_specialitem_doing(p: player, id: integer) :: boolean:
+    return false if {_id} is not set
+    return false if {_p} is not set
+    if (unix timestamp of now)-{mine.players::%{_p}'s uuid%::slot_last_used.1} < 60*60*1:
+        return true
+    return false

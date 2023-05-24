@@ -35,3 +35,21 @@ function sound_click(p: player):
 
 function sound_telling(p: player):
     play sound "entity.experience_orb.pickup" to {_p}
+
+function sound_notification(p: player):
+    play sound "block.anvil.land" with pitch 2 to {_p}
+
+function sound_enchanted(p: player):
+    play sound "entity.player.levelup" with volume 0.5 to {_p}
+
+function sound_portal_wait(p: player):
+    play sound "entity.experience_orb.pickup" to {_p}
+
+function sound_portal_success(p :player):
+    play sound "entity.player.levelup" with volume 0.5 to {_p}
+
+function sound_portal_failed(p: player):
+    sound_error({_p})
+
+function sound_do_skill(p: player):
+    play sound "minecraft:entity.blaze.shoot" to {_p}

@@ -1,0 +1,41 @@
+command /fx:
+    trigger:
+        open chest inventory with 3 row named "&6&lForeign Exchange" to player
+        set slot 0 of player's current inventory to lectern named "&2&l現在の＄価格表示" with lore "&2&l現在の1＄価格は&6&l%{fx.rate}%円&2&lです。"
+        set slot 10 of player's current inventory to glowstone named "&b&l＄を買う" 
+        set slot 13 of player's current inventory to chest named "&d&l＄を売る" 
+        set slot 16 of player's current inventory to barrier named "&c&lこの画面を閉じる" 
+        
+on inventory click:
+    if name of player's current inventory contain "&6&lForeign Exchange":
+        cancel event
+        if clicked slot is 0:
+            close player's inventory
+            send "&7[&b&lF&3&lX&7] &a&l現在の&a1&l＄価格は&6&l%{fx.rate}%円&a&lです。"
+            
+        if clicked slot is 10:
+            if player's money >= {fx.rate}:
+                send "&7[&b&lF&3&lX&7] &a&l1$を購入しました！"
+                remove {fx.rate} from player's money
+                add 1 to {fx.dollar.%player%}
+            
+        if clicked slot is 13:
+            if {fx.dollar.%player%} >= 1:
+                send "&7[&b&lF&3&lX&7] &a&l1$を売っちゃいました！"
+                add {fx.rate} to player's money
+                remove 1 from {fx.dollar.%player%}
+            
+        if clicked slot is 16:
+            close player's inventory
+            
+every 10 seconds:
+    send a request to "http://fx.mybluemix.net/"
+    set {_resp} to the last http response
+    set {_body} to {_resp}'s body
+    copy json {_body} to {_data::*}
+    set {fx.rate} to {_data::rate::USDJPY}
+    
+command /fxlist:
+    trigger:
+        send "&7[&b&lF&3&lX&7] &a&lあなたは現在&6&l%{fx.dollar.%player%}%＄&a&lを所持しています。"
+	
