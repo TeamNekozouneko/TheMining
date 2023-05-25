@@ -4,12 +4,17 @@ Options:
 on load:
     clear {mine.quests::*}
     set {mine.quests::1} to "鉱石または石を20000回採掘する"
+    set {mine.quests::2} to "ピッケルをアップグレードする"
 
     clear {mine.quest_max::*}
     set {mine.quest_max::1} to 20000
+    set {mine.quest_max::2} to 3
 
     clear {mine.quest_reward::*}
-    set {mine.quest_reward::1::*} to "money_10000"
+    add "money_5000" to {mine.quest_reward::1::*}
+    add "exp_1000" to {mine.quest_reward::1::*}
+    add "money_5000" to {mine.quest_reward::2::*}
+    add "exp_1500" to {mine.quest_reward::2::*}
 
 on npc right click:
     player is op
@@ -42,8 +47,15 @@ function mine_open_quest_refancy(p: player):
     set {_n} to {_b}
     loop {mine.quests::*}: #クエスト表示
         continue if mine_quest_conditions({_p}, loop-index parsed as integer) = false #クエスト対象のフィルタリング
+        clear {_rewards::*}
+        clear {_lores::*}
+        loop {mine.quest_reward::%loop-index%::*}: #報酬を変数から解析
+            set {_tmp::*} to loop-value-2 split at "_"
+            add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
+            add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
         if {mine.player_quests::%{_p}'s uuid%::*} contains (loop-index parsed as integer):
             if {mine.players::%{_p}'s uuid%::quest_done::*} contains (loop-index parsed as integer):
+                clear {_lores::*}
                 add "&8&l≫ &7%loop-value%" to {_lores::*}
                 add "&r" to {_lores::*}
                 add "&3&m&l=&b 報酬" to {_lores::*}
@@ -54,11 +66,7 @@ function mine_open_quest_refancy(p: player):
                 set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
                 add 1 to {_n}
             else:
-                loop {mine.quest_reward::%loop-index%::*}: #報酬を変数から解析
-                    set {_tmp::*} to loop-value-2 split at "_"
-                    add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
-                    add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
-
+                clear {_lores::*}
                 add "&8&l≫ &7%loop-value%" to {_lores::*}
                 add "&7(&3%{mine.player_quest_data::%{_p}'s uuid%::%loop-index parsed as integer%}%&7/%{mine.quest_max::%loop-index parsed as integer%}%)" to {_lores::*}
                 add "&r" to {_lores::*}
@@ -70,6 +78,8 @@ function mine_open_quest_refancy(p: player):
                 set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
                 add 1 to {_n}
         else:
+            clear {_lores::*}
+            clear {_rewards::*}
             loop {mine.quest_reward::%loop-index%::*}: #報酬を変数から解析
                 set {_tmp::*} to loop-value-2 split at "_"
                 add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
@@ -88,15 +98,21 @@ function mine_open_quest_refancy(p: player):
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
     return true if {_i} = 1
+    return true if {_i} = 2
     return false
 
-function mine_quest_thread(p: player, type: string, v: integer):
+function mine_quest_thread(p: player, type: string, v: object):
     stop if {_p} is not set
     if {_type} = "BREAK":
         mine_quest_thread({_p}, "A1", {_v})
-    if {_type} = "A1":
+    else if {_type} = "BUY":
+        mine_quest_thread({_p}, "A2", {_v}) if {_v} is 0 or 2 or 3 or 12 or 13 or 14 or 15 or 16 or 21 or 31 or 32 or 33 or 34
+    else if {_type} = "A1":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 1:
             add {_v} to {mine.player_quest_data::%{_p}'s uuid%::1}
+    else if {_type} = "A2":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 2:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::2}
 
 every second:    
     loop all players:
@@ -126,4 +142,4 @@ every second:
                         add (loop-index parsed as integer) to {mine.players::%loop-player's uuid%::quest_done::*}
                         #以下報酬の反映
                         add ({_tmp::2} parsed as number) to loop-player's money if {_tmp::1} is "money"
-                        add ({_tmp::2} parsed as number) to {mine.exp::%loop-player's uuid%} if {_tmp::1} is "exp"
+                        remove ({_tmp::2} parsed as number) from {mine.exp::%loop-player's uuid%} if {_tmp::1} is "exp"

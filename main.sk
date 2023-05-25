@@ -193,6 +193,11 @@ command /admin_inv [<player>]:
         else:
             open arg-1's inventory to player
 
+command /admin_mine_remove_level [<player>] [<integer>]:
+    permission: admin
+    trigger:
+        remove arg-2 from {mine.level::%arg-1's uuid%}
+
 command /mine [<text>] [<text>] [<integer>]:
     permission: admin
     trigger:
@@ -289,6 +294,7 @@ on inventory click:
                             give {mine.items::%{_index}%} to player
                             send "&2&l! &a購入しました。" to player
                             sound_success(player)
+                            mine_quest_thread(player, "BUY", {_index})
                         else:
                             sound_error(player)
                             if item amount of {mine.require::%{_index}%} is 1:
@@ -300,6 +306,7 @@ on inventory click:
                         give {mine.items::%{_index}%} to player
                         send "&2&l! &a購入しました。" to player
                         sound_success(player)
+                        mine_quest_thread(player, "BUY", {_index})
             else:
                 send "&4&l! &c所持金が不足しています。" to player
                 sound_error(player)
@@ -679,13 +686,18 @@ command /pickaxe:
 
 every tick:
     loop all players:
-        if {mine.exp::%loop-player's uuid%} <= 0:
-            set {_diff} to abs({mine.exp::%loop-player's uuid%})
-            if mine_convert_level2exp({mine.level::%loop-player's uuid%})-{_diff} > 0:
+        loop 50 times:
+            if {mine.exp::%loop-player's uuid%} <= 0:
+                set {_diff} to abs({mine.exp::%loop-player's uuid%})
+                #if mine_convert_level2exp({mine.level::%loop-player's uuid%})-{_diff} > 0:
                 add 1 to {mine.level::%loop-player's uuid%}
-                add mine_convert_level2exp({mine.level::%loop-player's uuid%})-{_diff} to {mine.exp::%loop-player's uuid%}
-                play sound "entity.player.levelup" to loop-player
-                send title "&e&lレベルアップ！" with subtitle "&b&l%{mine.level::%loop-player's uuid%}%&3レベルになりました。" to loop-player
+                set {mine.exp::%loop-player's uuid%} to mine_convert_level2exp({mine.level::%loop-player's uuid%})-{_diff}
+                set {_cache} to mine_convert_level2exp({mine.level::%loop-player's uuid%})-{_diff}
+            else:
+                exit loop
+        {_cache} is set
+        play sound "entity.player.levelup" to loop-player
+        send title "&e&lレベルアップ！" with subtitle "&b&l%{mine.level::%loop-player's uuid%}%&3レベルになりました。" to loop-player
 
 every 2 tick:
     loop all players:
