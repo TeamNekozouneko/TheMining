@@ -12,9 +12,9 @@ on load:
 
     clear {mine.quest_reward::*}
     add "money_5000" to {mine.quest_reward::1::*}
-    add "exp_1000" to {mine.quest_reward::1::*}
-    add "money_5000" to {mine.quest_reward::2::*}
-    add "exp_1500" to {mine.quest_reward::2::*}
+    add "exp_1500" to {mine.quest_reward::1::*}
+    add "money_2500" to {mine.quest_reward::2::*}
+    add "exp_800" to {mine.quest_reward::2::*}
 
 on npc right click:
     player is op

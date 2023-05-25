@@ -6,11 +6,11 @@ options:
     vote_prefix:&7----------- [ &a&l投票通知&7 ] ------------------
     vote_suffix:&7------------------------------------------
     vote_message_broadcast:&aさんが投票しました！
-    vote_thanks:&a投票ありがとうございます！&a&l50ポイント&aが付与されました。%nl%&a&l/point&aでポイント数の確認、&a&l/voteshop&aでポイントを利用できます。
+    vote_thanks:&a投票ありがとうございます！&a&l30ポイント&aが付与されました。%nl%&a&l/point&aでポイント数の確認、&a&l/voteshop&aでポイントを利用できます。
     vote_processing_error:&c大変申し訳ございません。投票の完了処理ができませんでした。サポートセンターへお問い合わせください。
     vote_processing_error_ops:&4[&c 投票処理エラー &4]%nl%&c投票処理中にエラーが発生したため、投票を完了できませんでした。%nl%/admin_vote_show_errorlogにてエラーを解決してください。
     vote_message_1:&aさんが投票してくれました！
-    vote_message_2:&6Minecraft.JP&eで投票すると様々な物が買える%nl%ポイントが手に入ります！%nl%おすすめなのはスロットの確率が上がる券です！%nl%みなさんもぜひ投票してみてください！
+    vote_message_2:&6Minecraft.JP&eや&6monocraft.net&eで投票すると様々な物が買える%nl%ポイントが手に入ります！%nl%おすすめなのはスロットの確率が上がる券です！%nl%みなさんもぜひ投票してみてください！
     vote_menu_shop_title:&2&l》 &a投票ショップ &2&l《
     vote_menu_shopedit_title:&2&l》 &aアイテムを編集して閉じてください &2&l《
 
@@ -99,7 +99,7 @@ on votifier vote:
             send "&r" to all players
             send "{@vote_suffix}" to all players
             send "{@vote_thanks}" to {_p}
-            add 50 to {vote.players::%{_uuid}%}
+            add 30 to {vote.players::%{_uuid}%}
         else: #UUIDの取得の失敗
             vote_error_throw({_p}, "E0", {_name}, {_uuid})
     else: #名前取得の失敗
