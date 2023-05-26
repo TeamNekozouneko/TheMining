@@ -251,11 +251,16 @@ command /mine [<text>] [<text>] [<integer>]:
         else:
             mine_show_help(player)
 
-command /spawn [<number>]:
+command /spawn [<text>]:
     trigger:
-        set {_n} to arg-1
+        set {_n} to arg-1 parsed as number
         set {_n} to 1 if arg-1 is not set
-        if {mine.generic::lobbyloc::%{_n}%} is not set:
+        if arg-1 is "help":
+            send "&3&l&m-----------&7 [ &bスポーン &7] &3&l&m-----------" to player
+            send "&3&l・&b1&7: &b初期スポーン" to player
+            send "&3&l・&b2&7: &b採掘場 Lv.2" to player
+            send "&3&l・&b3&7: &bギャンブル場" to player
+        else if {mine.generic::lobbyloc::%{_n}%} is not set:
             send "&4&l! &cこの場所は存在しません。" to player
             sound_portal_failed(player)
         else if mine_portal_conditions(player, {_n}) = true:
