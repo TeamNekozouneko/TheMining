@@ -13,7 +13,6 @@ Options:
     menu_recipe_content_title: &c&lTheMining &7- &fレシピ
     menu_seller_title: &c&lTheMining &7- &f売店屋
     menu_seller_sell_title: &c&lTheMining &7- &f売店屋 &7- &fアイテム売却
-    menu_prestige_title: &c&lTheMining &7- &fプレステージ
 
     slot: true #スロットSkriptと連携するかどうか
 
@@ -880,19 +879,6 @@ on break:
     if event-entity is a player:
         if mine_break(player, event-block) is false:
             cancel event
-        if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
-#ドロップしてなくす方が多数いたため、デフォルトはインベントリー付与で、満杯時にはpickupへ保存
-#            drop {mine.items::30} at player
-#            sound_notification(player)
-#            send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to player
-            sound_notification(player)
-            if mine_is_space_inventory(player):
-                send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to player
-                give {mine.items::30} to player
-            else:
-                send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to player
-                send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to player
-                add {mine.items::30} to {pickup.%player's uuid%::*}
 
 function mine_break(p: player, b: block, thread_bypass: boolean = false) :: boolean:
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
@@ -962,6 +948,17 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 mine_skill_thread_wait({_p}, 1, {_b})
                 mine_skill_thread_wait({_p}, 2, {_b})
             mine_quest_thread({_p}, "BREAK", 1)
+
+            if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
+                sound_notification({_p})
+                if mine_is_space_inventory({_p}):
+                    send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
+                    give {mine.items::30} to {_p}
+                else:
+                    send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
+                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+                    add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
+
             return true
     else if {_p} is not op:
         return false
@@ -1511,51 +1508,5 @@ on portal:
             send action bar "&aテレポートしました！" to player
             teleport player to location of {mine.generic::lobbyloc::%{_connection}%}
             sound_portal_success(player)
-
-#以下プレステージ処理
-on npc right click:
-    player is op
-    if npc name is "&f&l- ??? -":
-        sound_opened(player)
-        mine_open_prestige(player)
-
-function mine_open_prestige(p: player):
-    open chest inventory with 3 row named "{@menu_prestige_title}" to {_p}
-    if {_prestige} is true:
-        add "&eプレステージをすることでより多くの" to {_lores::*}
-        add "&e機能を使うことができます。" to {_lores::*}
-        add "&r" to {_lores::*}
-        add "&8&l- &c&lプレステージ後の動作" to {_lores::*}
-        add "&4&l・&cピッケル、レベル、お金がリセットされます" to {_lores::*}
-        add "&4&l・&cインベントリー、エンダーチェストは保持されます" to {_lores::*}
-        add "&4&l・&c投票ポイントは保持されます" to {_lores::*}
-        add "&r" to {_lores::*}
-        add "&e[ ≫ クリックしてプレステージする ]" to {_lores::*}
-        add "&eプレステージを行うには以下の条件" to {_conditions::*}
-        add "&eを満たしている必要があります。" to {_conditions::*}
-        add "&r" to {_conditions::*}
-        add "&8&l- &c&lプレステージ条件" to {_conditions::*}
-        add "&4&l・&cレベルが300以上であること" to {_conditions::*}
-        add "&4&l・&cレベルクエストをすべて達成していること" to {_conditions::*}
-        set slot 4 of {_p}'s current inventory to beacon named "6f&lプレステージ条件" with lore {_conditions::*}
-        set slot 13 of {_p}'s current inventory to diamond pickaxe named "&6&lプレステージ" with lore {_lores::*} 
-    else:
-        add "&eプレステージをすることでより多くの" to {_lores::*}
-        add "&e機能を使うことができます。" to {_lores::*}
-        add "&r" to {_lores::*}
-        add "&8&l- &c&lプレステージ後の動作" to {_lores::*}
-        add "&4&l・&cピッケル、レベル、お金がリセットされます" to {_lores::*}
-        add "&4&l・&cインベントリー、エンダーチェストは保持されます" to {_lores::*}
-        add "&4&l・&c投票ポイントは保持されます" to {_lores::*}
-        add "&r" to {_lores::*}
-        add "&e[ × 条件を満たしていません ]" to {_lores::*}
-        add "&eプレステージを行うには以下の条件" to {_conditions::*}
-        add "&eを満たしている必要があります。" to {_conditions::*}
-        add "&r" to {_conditions::*}
-        add "&8&l- &c&lプレステージ条件" to {_conditions::*}
-        add "&4&l・&cレベルが300以上であること" to {_conditions::*}
-        add "&4&l・&cレベルクエストをすべて達成していること" to {_conditions::*}
-        set slot 4 of {_p}'s current inventory to beacon named "&6&lプレステージ条件" with lore {_conditions::*}
-        set slot 13 of {_p}'s current inventory to diamond pickaxe named "&6&lプレステージ" with lore {_lores::*} 
 
 

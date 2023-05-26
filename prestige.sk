@@ -1,0 +1,47 @@
+Options:
+    menu_prestige_title: &c&lTheMining &7- &fプレステージ
+
+on npc right click:
+    player is op
+    if npc name is "&f&l- ??? -":
+        sound_opened(player)
+        mine_open_prestige(player)
+
+function mine_open_prestige(p: player):
+    open chest inventory with 3 row named "{@menu_prestige_title}" to {_p}
+    if {_prestige} is true:
+        add "&eプレステージをすることでより多くの" to {_lores::*}
+        add "&e機能を使うことができます。" to {_lores::*}
+        add "&r" to {_lores::*}
+        add "&8&l- &c&lプレステージ後の動作" to {_lores::*}
+        add "&4&l・&cピッケル、レベル、お金がリセットされます" to {_lores::*}
+        add "&4&l・&cインベントリー、エンダーチェストは保持されます" to {_lores::*}
+        add "&4&l・&c投票ポイントは保持されます" to {_lores::*}
+        add "&r" to {_lores::*}
+        add "&e[ ≫ クリックしてプレステージする ]" to {_lores::*}
+        add "&eプレステージを行うには以下の条件" to {_conditions::*}
+        add "&eを満たしている必要があります。" to {_conditions::*}
+        add "&r" to {_conditions::*}
+        add "&8&l- &c&lプレステージ条件" to {_conditions::*}
+        add "&4&l・&cレベルが300以上であること" to {_conditions::*}
+        add "&4&l・&cレベルクエストをすべて達成していること" to {_conditions::*}
+        set slot 4 of {_p}'s current inventory to beacon named "6f&lプレステージ条件" with lore {_conditions::*}
+        set slot 13 of {_p}'s current inventory to diamond pickaxe named "&6&lプレステージ" with lore {_lores::*} 
+    else:
+        add "&eプレステージをすることでより多くの" to {_lores::*}
+        add "&e機能を使うことができます。" to {_lores::*}
+        add "&r" to {_lores::*}
+        add "&8&l- &c&lプレステージ後の動作" to {_lores::*}
+        add "&4&l・&cピッケル、レベル、お金がリセットされます" to {_lores::*}
+        add "&4&l・&cインベントリー、エンダーチェストは保持されます" to {_lores::*}
+        add "&4&l・&c投票ポイントは保持されます" to {_lores::*}
+        add "&r" to {_lores::*}
+        add "&e[ × 条件を満たしていません ]" to {_lores::*}
+        add "&eプレステージを行うには以下の条件" to {_conditions::*}
+        add "&eを満たしている必要があります。" to {_conditions::*}
+        add "&r" to {_conditions::*}
+        add "&8&l- &c&lプレステージ条件" to {_conditions::*}
+        add "&4&l・&cレベルが300以上であること" to {_conditions::*}
+        add "&4&l・&cレベルクエストをすべて達成していること" to {_conditions::*}
+        set slot 4 of {_p}'s current inventory to beacon named "&6&lプレステージ条件" with lore {_conditions::*}
+        set slot 13 of {_p}'s current inventory to diamond pickaxe named "&6&lプレステージ" with lore {_lores::*} 
