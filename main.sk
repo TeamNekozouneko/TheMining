@@ -251,10 +251,20 @@ command /mine [<text>] [<text>] [<integer>]:
         else:
             mine_show_help(player)
 
-command /spawn:
+command /spawn [<number>]:
     trigger:
-        teleport player to location of {mine.generic::lobbyloc::1}
-        send "&2&l! &aスポーンにテレポートしました。" to player
+        set {_n} to arg-1
+        set {_n} to 1 if arg-1 is not set
+        if {mine.generic::lobbyloc::%{_n}%} is not set:
+            send "&4&l! &cこの場所は存在しません。" to player
+            sound_portal_failed(player)
+        else if mine_portal_conditions(player, {_n}) = true:
+            teleport player to location of {mine.generic::lobbyloc::%{_n}%}
+            send "&2&l! &aテレポートしました。" to player
+            sound_portal_success(player)
+        else:
+            send "&4&l! &cこの場所にテレポートする条件を満たしていません。" to player
+            sound_portal_failed(player)
 
 on inventory click:
     if name of player's current inventory is "{@oremenu_title}":
