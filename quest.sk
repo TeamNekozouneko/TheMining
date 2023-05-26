@@ -5,19 +5,23 @@ on load:
     clear {mine.quests::*}
     set {mine.quests::1} to "鉱石または石を20000回採掘する"
     set {mine.quests::2} to "ピッケルをアップグレードする"
+    set {mine.quests::3} to "エンチャントを使用する"
 
     clear {mine.quest_max::*}
     set {mine.quest_max::1} to 20000
     set {mine.quest_max::2} to 3
+    set {mine.quest_max::3} to 1
 
     clear {mine.quest_reward::*}
     add "money_5000" to {mine.quest_reward::1::*}
     add "exp_1500" to {mine.quest_reward::1::*}
     add "money_2500" to {mine.quest_reward::2::*}
     add "exp_800" to {mine.quest_reward::2::*}
+    add "money_3000" to {mine.quest_reward::3::*}
+    add "exp_1000" to {mine.quest_reward::3::*}
 
 on npc right click:
-    player is op
+    #player is op
     if npc name is "&aクエストマスター &7[クリック]":
         sound_opened(player)
         mine_open_quest(player)
@@ -99,6 +103,7 @@ function mine_open_quest_refancy(p: player):
 function mine_quest_conditions(p: player, i: integer) :: boolean:
     return true if {_i} = 1
     return true if {_i} = 2
+    return true if {_i} = 3
     return false
 
 function mine_quest_thread(p: player, type: string, v: object):
@@ -107,12 +112,17 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A1", {_v})
     else if {_type} = "BUY":
         mine_quest_thread({_p}, "A2", {_v}) if {_v} is 0 or 2 or 3 or 12 or 13 or 14 or 15 or 16 or 21 or 31 or 32 or 33 or 34
+    else if {_type} = "ENCHANT":
+        mine_quest_thread({_p}, "A3", {_v})
     else if {_type} = "A1":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 1:
             add {_v} to {mine.player_quest_data::%{_p}'s uuid%::1}
     else if {_type} = "A2":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 2:
             add 1 to {mine.player_quest_data::%{_p}'s uuid%::2}
+    else if {_type} = "A3":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 3:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::3}
 
 every second:    
     loop all players:
