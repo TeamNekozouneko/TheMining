@@ -2,6 +2,8 @@ options:
 	pre: <##fb9700>&oP<##fcb01a>&or<##fcc833>&oe<##fde14d>&om<##fcc833>&oi<##fcb01a>&ou<##fb9700>&om
 command /tabcolor:
 	trigger:
+		send "&cこの機能はこのサーバーでは利用できません。"
+		stop
 		tabbar(player)
 function tabbar(p: player):
 	set {_u} to uuid of {_p}
