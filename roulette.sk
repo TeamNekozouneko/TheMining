@@ -1,0 +1,695 @@
+# Roulette Skript by Yeahn#4269
+# from Nekozouneko Developer Team
+options:
+    pre: &a[&6ルーレット&a]&f
+    # システムメッセージの最初につくメッセージです。
+    minplayers: 1
+    # ルーレットの開始に必要な人数です。
+    autorepair: true
+    # システムがなんらかの原因で急停止した場合、その復元作業を自動で行う設定です。 true にしておくことを強くおすすめします。
+
+command /roulette_admin [<text>] [<text>]:
+    trigger:
+        if arg-1 is "underprotocol":
+            if {underprotocol::%player%} is not set:
+                set {underprotocol::%player%} to true
+                send "{@pre} &c1.19.3以下の設定を適用しました。"
+            else:
+                delete {underprotocol::%player%}
+                send "{@pre} &a1.19.4以上の設定に戻しました。"
+        else:
+            if player has permission "sk.roulette_admin":
+                if {rouletteadminaccept::%player%} is not set:
+                    send "&cRoulette Admin 注意事項"
+                    send ""
+                    send "&fこのコマンドは&c管理者&f、さらにいうのであれば&5一部の開発者&f専用となります。"
+                    send "&f専用のインタフェースはありませんし、全てはCLIとなります。"
+                    send "&fそれでも良ければもう1度 /roulette_admin でコマンド一覧を見れます。"
+                    send ""
+                    send "&5Developer &eYeahn"
+                    set {rouletteadminaccept::%player%} to true
+                else:
+                    if arg-1 is not set:
+                        send "&cRoulette Admin - Commands List"
+                        send "&f/roulette_admin create <Name> &eRegisters new Roulette."
+                        send "&f/roulette_admin remove <Name> &eRemove roulette from the database."
+                        send "&f/roulette_admin addseat <Name> &eAdd seat for the specified roulette."
+                        send "&f/roulette_admin center <Name> &eSets a center of the roulette."
+                        send "&f/roulette_admin disable <Name> &eDisable the specified roulette."
+                        send "&f/roulette_admin enable <Name> &eEnable the specified roulette."
+                    else if arg-1 is "create": 
+                        if arg-2 is not set:
+                            send "&cこのコマンドには引数2が必要です。"
+                        else if {roulettes::*} contains arg-2:
+                            send "&c同名のルーレットが既に存在します。"
+                        else:
+                            add arg-2 to {roulettes::*}
+                            send "&aルーレット %arg-2% &aを登録しました。"
+                    else if arg-1 is "remove":
+                        if arg-2 is not set:
+                            send "&cこのコマンドには引数2が必要です。"
+                        else if {roulettes::*} contains arg-2:
+                            remove arg-2 from {roulettes::*}
+                            delete holo object "rouletteinfoholo.%arg-2%"
+                            send "&aルーレット %arg-2% &aを削除しました。"
+                        else:
+                            send "&cそのルーレットは存在しません。"
+                    else if arg-1 is "addseat":
+                        if metadata value "addseat" of player is set:
+                            delete metadata value "addseat" of player
+                            send "&aモードを終了しました。"
+                        else if arg-2 is not set:
+                            send "&cこのコマンドには引数2が必要です。"
+                        else if {roulettes::*} does not contain arg-2:
+                            send "&cそのような名前のルーレットは見つかりませんでした。"
+                        else:
+                            set metadata value "addseat" of player to arg-2
+                            send "&a追加モードに入りました。%arg-2%&aの席をすべて壊してください。"
+                    else if arg-1 is "center":
+                        if arg-2 is not set:
+                            send "&cこのコマンドには引数2が必要です。"
+                        else if {roulettes::*} does not contain arg-2:
+                            send "&cそのような名前のルーレットは見つかりませんでした。"
+                        else:
+                            set {roulette.center::%arg-2%} to location of player
+                            send "&aルーレット %arg-2% &aの中心位置を %player's location% &aに設定しました。"
+                    else if arg-1 is "disable":
+                        if arg-2 is not set:
+                            send "&cこのコマンドには引数2が必要です。"
+                        else if {roulettes::*} does not contain arg-2:
+                            send "&cそのような名前のルーレットは見つかりませんでした。"
+                        else:
+                            set {roulette.disabled::%arg-2%} to true
+                            send "&aルーレット %arg-2% &aを無効にしました。"
+                    else if arg-1 is "enable":
+                        if arg-2 is not set:
+                            send "&cこのコマンドには引数2が必要です。"
+                        else if {roulettes::*} does not contain arg-2:
+                            send "&cそのような名前のルーレットは見つかりませんでした。"
+                        else:
+                            delete {roulette.disabled::%arg-2%} 
+                            send "&aルーレット %arg-2% &aを有効にしました。"
+            else:
+                send "{@pre} &c実行する権限がありません。"    
+on skript start:
+    set {roulette.first} to true
+on load:
+    wait 1 tick
+    {roulette.first} is true
+    delete {roulette.first}
+    loop {roulettes::*}:
+        roulette_holo(loop-value)
+        if {roulette.status::%loop-value%} is set:
+            send "&c--------------------------------------------------------" to console
+            send "&c UNEXPECTED ERROR OCCURRED." to console
+            send "&cSever was stopped while roulette is working." to console
+            send "" to console
+            send "&c* Error Log:" to console
+            send "&cTYPE: %{roulette.status::%loop-value%}%" to console
+            send "&cPLAYERS: %{roulette.%loop-value%.players::*}%" to console
+            if {roulette.status::%loop-value%} is "playing":
+                send "&cPLAYER INFO:" to console
+                loop {roulette.%loop-value%.players::*}:
+                    send "&c- %loop-value-2%: %{roulette.kake::%loop-value-2%}%&cJPY" to console
+            send "&c* End of Log." to console
+            if {@autorepair} is true:
+                send "&cAutomatic repairing will be executed shortly." to console
+            send "&c%now%" to console
+            send "&c--------------------------------------------------------" to console
+            if {@autorepair} is true:
+                if {roulette.status::%loop-value%} is "starting":
+                    delete {roulette.starttimer::%loop-value%}
+                else if {roulette.status::%loop-value%} is "playing":
+                    loop {roulette.%loop-value%.players::*}:
+                        add {roulette.kake::%loop-value-2%} to loop-value-2's money
+                        delete {roulette.kake::%loop-value-2%}
+                        delete holo object "roulette.%loop-value-2%"
+                loop {roulette.seats.%loop-value%::*}:
+                    delete {roulette.seattaken::%loop-value-2%}
+                    add location 0.75 meter below loop-value-2 to {_seats::*}
+                loop all entities:
+                    if loop-entity is armor stand:
+                        if {_seats::*} contains location of loop-entity:
+                            kill loop-entity
+                        else if loop-entity's helmet is redstone torch:
+                            set {_loc1} to location of loop-entity 
+                            set yaw of {_loc1} to 0
+                            set pitch of {_loc1} to 0
+                            set {_loc2} to location 2.1 meter below block at {roulette.center::%loop-value-1%}
+                            set yaw of {_loc2} to 0
+                            set pitch of {_loc2} to 0
+
+                            if "%{_loc1}%" is "%{_loc2}%":
+                                kill loop-entity
+                    else if display block data of loop-entity is set:
+                        if distance between loop-entity and {roulette.center::%loop-value-1%} is less than 3:
+                            kill loop-entity
+                delete {roulette.status::%loop-value%}
+                delete {roulette.%loop-value%.players::*}
+                roulette_holo(loop-value)
+                send "&aAutomated repairing was successfully executed." to console
+
+on break:
+    if metadata value "addseat" of player is set:
+        cancel event
+        set {_id} to metadata value "addseat" of player
+        if {roulette.seats.%{_id}%::*} contains location of event-block:
+            send "&cその位置の席は既に登録されています。"
+        else:
+            add location of event-block to {roulette.seats.%{_id}%::*}
+            send "&a追加しました。"
+    else:
+        loop {roulettes::*}:
+            if {roulette.seats.%loop-value%::*} contains location of event-block:
+                remove location of event-block from {roulette.seats.%loop-value%::*}
+on rightclick:
+    loop {roulettes::*}:
+        if {roulette.seats.%loop-value%::*} contains location of event-block:
+            set {_id} to loop-value
+            exit loop
+    {_id} is set
+    cancel event
+    if {roulette.status::%{_id}%} is "playing":
+        send "{@pre} &cそのルーレットは現在進行中です。終了までお待ちください。"
+    else if player's money is less than 100:
+        send "{@pre} &c最低でも100円が手持ちに入っている必要があります。"
+    else if metadata value "rouletteplaying" of player is set:
+        send "{@pre} &c現在参加しているものを先に退出してからにしてください。"
+    else if {roulette.setattaken::%{_id}%} is true:
+        send "{@pre} &cその席はすでに利用されています。"
+    else if {roulette.disabled::%{_id}%} is true:
+        send "{@pre} &cそのルーレットは現在無効化されています。"
+    else:
+        set metadata value "rouletteplaying" of player to {_id}
+        set {_loc} to location of event-block
+        set y-coordinate of {_loc} to y-coordinate of {_loc} - 0.75
+        spawn armor stand at {_loc} with nbt nbt compound from "{Small:1b,NoGravity:1b,Invisible:1b}"
+        set {_entity} to last spawned armor stand
+        make the player ride {_entity}
+        set {roulette.seattaken::%{_loc}%} to true
+        set metadata value "rideby" of {_entity} to player
+        if "%player%" starts with "BE_":
+            send "{@pre} &6ルーレットへようこそ！"
+        else:
+            if {underprotocol::%player%} is true:
+                send "&6ルーレットにようこそ！ <command:/roulette_admin underprotocol>&c[1.19.4以上の設定に戻す場合はこちらをクリック]<reset>"
+            else:
+                send "&6ルーレットにようこそ！ <command:/roulette_admin underprotocol>&c[1.19.3以下の方はこちらを押すことを推奨します]<reset>"
+        roulettejoin(player, {_id})
+
+on dismount:
+    if metadata value "rouletteplaying" of player is set:
+        loop all armor stands:
+            metadata value "rideby" of loop-entity is player
+            set {_entity} to loop-entity
+        set {_meta} to metadata value "rouletteplaying" of player
+        if {roulette.status::%{_meta}%} is "playing":
+            wait 1 tick
+            make the player ride {_entity}
+            send "&cルーレット中は抜け出すことができません。お待ちください。"
+        else:
+            roulettequit(player, {_meta})
+every 1 second:
+    loop {roulettes::*}:
+        if {roulette.status::%loop-value%} is "starting":
+            remove 1 from {roulette.starttimer::%loop-value%}
+            if {roulette.starttimer::%loop-value%} is less than 1:
+                set {_completed} to 0
+                loop {roulette.%loop-value%.players::*}:
+                    metadata value "betcompleted" of loop-value-2 is true
+                    add 1 to {_completed}
+                if {_completed} is less than {@minplayers}:
+                    set {roulette.starttimer::%loop-value%} to 20
+                    send "{@pre} &c賭けが終わっているプレイヤーが最低人数に達していないため開始タイマーが元に戻りました。" to {roulette.%loop-value%.players::*}
+                else:
+                    startroulette(loop-value)
+            else:
+                send action bar "{@pre} &f開始まで: &b&l%{roulette.starttimer::%loop-value%}%" to {roulette.%loop-value%.players::*}
+    loop all players:
+        if loop-player has red wool:
+            remove 64 of red wool named "&0" from loop-player's inventory
+        if loop-player has white wool:
+            remove 64 of white wool named "&0" from loop-player's inventory
+        if loop-player has redstone torch:
+            remove 64 of redstone torch named "&cルーレット中！" from loop-player's inventory
+
+function roulettejoin(p: player, id: text):
+    add {_p} to {roulette.%{_id}%.players::*}
+    if {roulette.status::%{_id}%} is "starting":
+        if {roulette.starttimer::%{_id}%} is less than 15:
+            if difference between metadata value "joinspamprot" of {_p} and unix timestamp of now is more than 10:
+                set {roulette.starttimer::%{_id}%} to 20
+            else if metadata value "joinspamprot" of {_p} is not set:
+                set {roulette.starttimer::%{_id}%} to 20
+    else:
+        if number of {roulette.%{_id}%.players::*} is more than or equal to {@minplayers}:
+            set {roulette.status::%{_id}%} to "starting"
+            set {roulette.starttimer::%{_id}%} to 20
+    send "{@pre} &e%{_p}% &fが参加しました。" to {roulette.%{_id}%.players::*}
+    roulette_setbet({_p}, "type")
+
+function roulettequit(p: player, id: text):
+    remove {_p} from {roulette.%{_id}%.players::*}
+    loop all armor stands:
+        metadata value "rideby" of loop-entity is {_p}
+        set {_entity} to loop-entity
+    set {_meta} to metadata value "rouletteplaying" of {_p}
+    set {_loc} to block at location of {_p}
+    delete {roulette.seattaken::%{_loc}%}
+    kill {_entity}
+    delete metadata value "rouletteplaying" of {_p}
+    set metadata value "joinspamprot" of {_p} to unix timestamp of now
+    send "{@pre} &e%{_p}% &fが退出しました。" to {roulette.%{_id}%.players::*}
+    if {roulette.status::%{_id}%} is "starting":
+        if number of {roulette.%{_id}%.players::*} is less than {@minplayers}:
+            delete {roulette.status::%{_id}%}
+            send "{@pre} &c人数不足により開始をキャンセルしました。" to {roulette.%{_id}%.players::*}
+function roulette_setbet(p: player, type: text):
+    if {_type} is "type":
+        open chest with 3 rows named "{@pre} &r賭けの形式を選択" to {_p}
+        set slot 12 of {_p}'s current inventory to gold ingot named "&6一点賭け" with lore "&71つの数字に賭けます。" and "&e当選時の賞金倍率: 60倍"
+        set slot 14 of {_p}'s current inventory to iron ingot named "&6Odd / Even" with lore "&7奇数または偶数に賭けます。" and "&e当選時の賞金倍率: 1.5倍"
+    else if {_type} is "numberask":
+        if metadata value "numberask" of {_p} is not set:
+            set metadata value "numberask" of {_p} to 1
+        set {_now} to metadata value "numberask" of {_p}
+        open chest with 4 row named "{@pre} &r賭ける数字の記入: &6&l%{_now}%" to {_p}
+        tenkey({_p})
+        set slot 26 of {_p}'s current inventory to lime wool named "&a完了"
+    else if {_type} is "oddeven":
+        open chest with 3 rows named "{@pre} &r奇数または偶数を選択" to {_p}
+        set slot 11 of {_p}'s current inventory to red wool named "&c奇数" with lore "&7奇数に賭けます。"
+        set slot 15 of {_p}'s current inventory to black wool named "&b偶数" with lore "&7偶数に賭けます。"
+    else if {_type} is "howmuch":
+        if metadata value "nowkakekin" of {_p} is not set:
+            set metadata value "nowkakekin" of {_p} to 100
+        set {_now} to metadata value "nowkakekin" of {_p}
+        open chest with 4 row named "{@pre} &r賭け金の記入: &6&l%{_now}%&6&l円" to {_p}
+        tenkey({_p})
+        if {_now} is less than 100:
+            set slot 26 of {_p}'s current inventory to gray wool named "&8完了" with lore "&e100円以上である必要があります。"
+        else if {_now} is more than {_p}'s money:
+            set slot 26 of {_p}'s current inventory to gray wool named "&8完了" with lore "&e手持ちに合う金額で必要があります。"
+        else:
+            set slot 26 of {_p}'s current inventory to lime wool named "&a完了"
+function tenkey(p: player):
+    set slot 3 of {_p}'s current inventory to black wool named "&b7"
+    set slot 4 of {_p}'s current inventory to black wool named "&b8"
+    set slot 5 of {_p}'s current inventory to black wool named "&b9"
+    set slot 12 of {_p}'s current inventory to black wool named "&b4"
+    set slot 13 of {_p}'s current inventory to black wool named "&b5"
+    set slot 14 of {_p}'s current inventory to black wool named "&b6"
+    set slot 21 of {_p}'s current inventory to black wool named "&b1"
+    set slot 22 of {_p}'s current inventory to black wool named "&b2"
+    set slot 23 of {_p}'s current inventory to black wool named "&b3"
+    set slot 31 of {_p}'s current inventory to black wool named "&b0"
+    set slot 16 of {_p}'s current inventory to arrow named "&cBackSpace"
+on inventory click:
+    if name of player's current inventory is "{@pre} &r賭けの形式を選択":
+        cancel event
+        if name of event-item is "&6一点賭け":
+            set metadata value "roulette_type" of player to "onepoint"
+            roulette_setbet(player, "numberask")
+        else if name of event-item is "&6Odd / Even":
+            set metadata value "roulette_type" of player to "oddeven"
+            roulette_setbet(player, "oddeven")
+    else if name of player's current inventory is "{@pre} &r奇数または偶数を選択":
+        cancel event
+        if name of event-item is "&c奇数":
+            set metadata value "roulette_obj" of player to "odd"
+            roulette_setbet(player, "howmuch")
+        else if name of event-item is "&b偶数":
+            set metadata value "roulette_obj" of player to "even"
+            roulette_setbet(player, "howmuch")
+    else if name of player's current inventory contains "{@pre} &r賭ける数字の記入":
+        cancel event
+        if type of event-item is black wool:
+            set {_n} to uncolored name of event-item
+            set {_now} to metadata value "numberask" of player
+            set {_now2} to "%{_now}%%{_n}%" parsed as integer
+            if {_now2} is more than 100:
+                set {_now2} to 100
+            set metadata value "numberask" of player to {_now2}
+            roulette_setbet(player, "numberask")
+        else if name of event-item is "&cBackSpace":
+            set {_now} to metadata value "numberask" of player
+            set {_now} to "%{_now}%"
+            if length of {_now} is 1:
+                set {_after} to 0
+            else:
+                set {_n} to subtext of {_now} from character 1 to (the length of {_now} - 1)
+                set {_after} to {_n} parsed as integer
+            set metadata value "numberask" of player to {_after}
+            roulette_setbet(player, "numberask")
+        else if name of event-item is "&a完了":
+            set metadata value "roulette_obj" of player to metadata value "numberask" of player
+            roulette_setbet(player, "howmuch")
+    else if name of player's current inventory is "{@pre} &rルーレット！":
+        cancel event
+    else if name of player's current inventory contains "{@pre} &r賭け金の記入":
+        cancel event
+        if type of event-item is black wool:
+            set {_n} to uncolored name of event-item
+            set {_now} to metadata value "nowkakekin" of player
+            set {_now2} to "%{_now}%%{_n}%" parsed as integer
+            if {_now2} is more than 10000:
+                set {_now2} to 10000
+            set metadata value "nowkakekin" of player to {_now2}
+            roulette_setbet(player, "howmuch")
+        else if name of event-item is "&cBackSpace":
+            set {_now} to metadata value "nowkakekin" of player
+            set {_now} to "%{_now}%"
+            if length of {_now} is 1:
+                set {_after} to 0
+            else:
+                set {_n} to subtext of {_now} from character 1 to (the length of {_now} - 1)
+                set {_after} to {_n} parsed as integer
+            set metadata value "nowkakekin" of player to {_after}
+            roulette_setbet(player, "howmuch")
+        else if name of event-item is "&a完了":
+            set {roulette.kake::%player%} to metadata value "nowkakekin" of player
+            set metadata value "betcompleted" of player to true
+            close player's inventory
+
+on inventory close:
+    metadata value "rouletteplaying" of player is set
+    if name of event-inventory is "{@pre} &rルーレット！":
+        wait 1 tick
+        set {_meta} to metadata value "rouletteplaying" of player
+        openroulette(player, {_meta})
+        wait 5 tick
+        remove 64 of red wool named "&0" from player's inventory
+        remove 64 of white wool named "&0" from player's inventory
+    else if metadata value "betcompleted" of player is not set:
+        name of event-inventory is not "Crafting"
+        wait 1 tick
+        name of player's current inventory is "Crafting"
+        roulettequit(player, metadata value "rouletteplaying" of player)
+
+function roulette_holo(id: text):
+    delete holo object "rouletteinfoholo.%{_id}%"
+    create holo object "&6&l- ルーレット -;&5By Nekozo Dev (Yeahn);&f;&7[ &f椅子に右クリックで参加 &7]" with id "rouletteinfoholo.%{_id}%" at location 1 meter above block at {roulette.center::%{_id}%}
+function openroulette(p: player, id: text):
+    set metadata value "roulettespgui" of {_p} to {_id}
+    open chest with 5 rows named "{@pre} &rルーレット！" to {_p}
+    set {_rows::*} to 1 and 2 and 3 and 4 and 5 and 6 and 7 and 16 and 25 and 34 and 43 and 42 and 41 and 40 and 39 and 38 and 37 and 28 and 19 and 10
+    loop {_rows::*}:
+        set slot loop-value of {_p}'s current inventory to white wool named "&0"
+    set slot 22 of {_p}'s current inventory to redstone torch named "&cルーレット中！"
+function rouletteguiupd(id: text, woolnum: integer):
+    set {_rows::*} to 1 and 2 and 3 and 4 and 5 and 6 and 7 and 16 and 25 and 34 and 43 and 42 and 41 and 40 and 39 and 38 and 37 and 28 and 19 and 10
+    loop {roulette.%{_id}%.players::*}:
+        metadata value "roulettespgui" of loop-value is {_id}
+        set slot {_rows::*} of loop-value's current inventory to white wool named "&0"
+        set slot {_rows::%{_woolnum}%} of loop-value's current inventory to red wool named "&0"
+function startroulette(id: text):
+    set {roulette.status::%{_id}%} to "befstart"
+    loop all players:
+        metadata value "rouletteplaying" of loop-player is {_id}
+        {roulette.%{_id}%.players::*} contains loop-player
+        if metadata value "betcompleted" of loop-value is not set:
+            roulettequit(loop-value, {_id})
+            send "{@pre} &c&l賭けの制限時間内に掛け金の設定が終わらなかったため、強制的に退出となりました。" to loop-value
+        else:
+            remove {roulette.kake::%loop-value%} from loop-value's money
+            delete metadata value "betcompleted" of loop-value
+    set {_players::*} to {roulette.%{_id}%.players::*}
+    delete holo object "rouletteinfoholo.%{_id}%"
+    set {roulette.status::%{_id}%} to "playing"
+    loop {_players::*}:
+        create client side holo object "&6&l- ルーレット -;&f;&f準備中.." with id "roulette.%loop-value%" at location 1 meter above block at {roulette.center::%{_id}%} to loop-value
+    spawn armor stand at {roulette.center::%{_id}%} with nbt nbt compound from "{Small:1b,Invisible:1b}"
+    set {_armor} to last spawned armor stand
+    set {_yaw} to -180
+    loop 20 times:
+        set {_loc} to location of {_armor}
+        set yaw of {_loc} to {_yaw}
+        set pitch of {_loc} to 0
+        teleport {_armor} to {_loc}
+        set {_pos} to location 2 meter forward {_armor}
+        add {_pos} to {_locs::*}
+        add 18 to {_yaw}
+    kill {_armor}
+    loop {_locs::*}:
+        le spawn block display at loop-value
+        set {_entity} to last spawned entity
+        set display block data of {_entity} to white_wool
+        set display scale of {_entity} to vector(0.3,0.3,0.3)
+        add {_entity} to {_wools::*}
+    wait 1 second
+    loop {_players::*}:
+        edit holo object "roulette.%loop-value%" to "&6&l- ルーレット -;&f;&f3"
+        play sound "ui.button.click" to loop-value
+    wait 1 second
+    loop {_players::*}:
+        edit holo object "roulette.%loop-value%" to "&6&l- ルーレット -;&f;&f2"
+        play sound "ui.button.click" to loop-value
+    wait 1 second
+    loop {_players::*}:
+        edit holo object "roulette.%loop-value%" to "&6&l- ルーレット -;&f;&f1"
+        play sound "ui.button.click" to loop-value
+    wait 1 second
+    loop {_players::*}:
+        set {_obj} to metadata value "roulette_obj" of loop-value
+        if {_obj} is "odd":
+            edit holo object "roulette.%loop-value%" to "&6&l- ルーレット -;&f;&fあたり: &6&n現在ロール中！;&fあなたの賭け: 奇数"
+        else if {_obj} is "even":
+            edit holo object "roulette.%loop-value%" to "&6&l- ルーレット -;&f;&fあたり: &6&n現在ロール中！;&fあなたの賭け: 偶数"
+        else:
+            edit holo object "roulette.%loop-value%" to "&6&l- ルーレット -;&f;&fあたり: &6&n現在ロール中！;&fあなたの賭け: %{_obj}%"
+        if "%loop-value%" starts with "BE_":
+            openroulette(loop-value, {_id})
+        else if {underprotocol::%loop-value%} is true:
+            openroulette(loop-value, {_id})
+    spawn armor stand at location 2.1 meter below block at {roulette.center::%{_id}%} with nbt nbt compound from "{Pose:{Head:[90f,0f,0f]},NoGravity:1b,Invisible:1b}"
+    set {_torch} to last spawned armor stand
+    set helmet of {_torch} to redstone torch
+    set {_correct} to correctnum({_id})
+    set {_min} to 10
+    set {_max} to 20
+    set {_needlooptick} to 2
+    set {_lastwool} to 0
+    loop 200 times:
+        set {_loc} to location of {_torch}
+        set {_n} to random integer between {_min} and {_max}
+        set {_roll} to {_n} * (3.6)
+        set {_yaw} to (yaw of {_loc}) + {_roll}
+        if {_yaw} is more than 360:
+            set {_yaw} to {_yaw} - 360
+        set pitch of {_loc} to 0
+        set yaw of {_loc} to {_yaw}
+        teleport {_torch} to {_loc}
+        set {_woolyaw} to {_yaw} + 140
+        if {_woolyaw} is more than 360:
+            set {_woolyaw} to {_woolyaw} - 360
+        set {_wool} to floor({_woolyaw} / 18) + 1
+        if {_woolmin} is less than 1:
+            set {_woolmin} to 20
+        set display block data of {_wools::*} to white_wool
+        set display block data of {_wools::%{_wool}%} to red_wool
+        rouletteguiupd({_id}, {_wool})
+        set {_now} to floor({_yaw} / 3.6)
+        if {_lastwool} is not {_wool}:
+            set {_lastwool} to {_wool}
+            play sound "ui.button.click" to {_players::*}
+        add 1 to {_looptick}
+        send action bar "&6&l&n%{_now}%" to {_players::*}
+        if {_looptick} is more than {_needlooptick}:
+            set {_needlooptick} to {_needlooptick} * 2
+            remove 1 from {_min}
+            remove 2 from {_max}
+            delete {_looptick}
+        wait 2 tick
+    loop 100 times:
+        set {_loc} to location of {_torch}
+        if {_gaps} is more than 20:
+            set {_n} to random integer between 1 and 5
+            set {_yaw} to (yaw of {_loc}) + (3.6 * {_n})
+        else:
+            set {_yaw} to (yaw of {_loc}) + 3.6
+        if {_yaw} is more than 360:
+            set {_yaw} to {_yaw} - 360
+        set pitch of {_loc} to 0
+        set yaw of {_loc} to {_yaw}
+        teleport {_torch} to {_loc}
+        set {_woolyaw} to {_yaw} + 180
+        if {_woolyaw} is more than 360:
+            set {_woolyaw} to {_woolyaw} - 360
+        set {_wool} to floor({_woolyaw} / 18) + 1
+        if {_woolmin} is less than 1:
+            set {_woolmin} to 20
+        set display block data of {_wools::*} to white_wool
+        set display block data of {_wools::%{_wool}%} to red_wool
+        rouletteguiupd({_id}, {_wool})
+        set {_now} to floor({_yaw} / 3.6)
+        send action bar "&6&l&n???" to {_players::*}
+        if {_now} is {_correct}:
+            exit loop
+        else:
+            set {_gaps} to difference between {_now} and {_correct} 
+        if {_lastwool} is not {_wool}:
+            set {_lastwool} to {_wool}
+            play sound "ui.button.click" to {_players::*}
+        wait 2 tick
+    play sound "entity.firework_rocket.twinkle" to {_players::*}
+    send "{@pre}" to {_players::*}
+    send "{@pre} &f今回のあたり: %{_correct}%" to {_players::*}
+    send "{@pre}" to {_players::*}
+
+    loop {_players::*}:
+        set {_obj} to metadata value "roulette_obj" of loop-value
+        if {_obj} is "odd":
+            edit holo object "roulette.%loop-value%" to "&6&l- ルーレット -;&f;&fあたり: &6&n%{_correct}%;&fあなたの賭け: 奇数"
+            if mod({_correct}, 2) is 1:
+                set {_money} to {roulette.kake::%loop-value%} * 1.5
+                add {_money} to loop-value's money
+                send "{@pre} &f%loop-value% &fがEven / Oddで &6&l%{_money}% &f円のあたりを出しました！" to {_players::*}
+                add loop-value to {_winners::*}
+                set {_b} to true
+        else if {_obj} is "even":
+            edit holo object "roulette.%loop-value%" to "&6&l- ルーレット -;&f;&fあたり: &6&n%{_correct}%;&fあなたの賭け: 偶数"
+            if {_correct} is divisible by 2:
+                set {_money} to {roulette.kake::%loop-value%} * 1.5
+                add {_money} to loop-value's money
+                send "{@pre} &f%loop-value% &fがEven / Oddで &6&l%{_money}% &f円のあたりを出しました！" to {_players::*}
+                add loop-value to {_winners::*}
+                set {_b} to true
+        else:
+            edit holo object "roulette.%loop-value%" to "&6&l- ルーレット -;&f;&fあたり: &6&n%{_correct}%;&fあなたの賭け: %{_obj}%"
+            if {_correct} is {_obj}:
+                set {_money} to {roulette.kake::%loop-value%} * 60
+                add {_money} to loop-value's money
+                send "{@pre} &f%loop-value% &fが一転賭けで &6&l%{_money}% &f円のあたりを出しました！" to {_players::*}
+                add loop-value to {_winners::*}
+                set {_c} to true
+    if {_c} is true:
+        set {_preid} to createdata({_id}, {_correct}, "C", {_winners::*})
+    else if {_b} is true:
+        set {_preid} to createdata({_id}, {_correct}, "B", {_winners::*})
+    else:
+        set {_winners::*} to "<EMPTY>"
+        set {_preid} to createdata({_id}, {_correct}, "A", {_winners::*})
+    wait 3 seconds
+    loop {_players::*}:
+        send "{@pre} &cこの試合のデータはID 「%{_preid}%&c」で保存されました。" to loop-value
+        delete metadata value "rouletteplaying" of loop-value
+        make loop-value dismount
+        delete holo object "roulette.%loop-value%"
+        close loop-value's inventory
+        delete {roulette.kake::%loop-value%}
+        set {_loc} to block at location of loop-value
+        delete {roulette.seattaken::%{_loc}%}
+        loop all armor stands:
+            metadata value "rideby" of loop-entity is loop-value-1
+            kill loop-entity
+    delete {roulette.%{_id}%.players::*}
+    delete {roulette.status::%{_id}%}
+    kill {_wools::*}
+    kill {_torch}
+    roulette_holo({_id})
+command /roulette_idmanage [<text>] [<text>]:
+    permission: sk.Admin
+    trigger:
+        if arg-1 is not set:
+            send "&e/roulette_idmanage list <A,B,C> &fARG-2で指定されたものから始まるIDの数を表示します"
+            send "&e/roulette_idmanage showdata <id> &FIDで格納されている情報を取得します"
+        else if arg-1 is "list":
+            if arg-2 is not set:
+                send "{@pre} &cA,B,Cを指定してください。"
+            else:
+                loop {roulette.ids::*}:
+                    if loop-value starts with arg-2:
+                        add loop-value to {_list::*}
+                if number of {_list::*} is 0:
+                    send "{@pre} &c%arg-2%&cから始まるIDは見つかりませんでした。"
+                else:
+                    send "{@pre} &f%arg-2%&fは%arg-2%&f%number of {_list::*}%&fまでのデータが存在します。"
+        else if arg-1 is "showdata":
+            if arg-2 is not set:
+                send "{@pre} &cIDを指定してください。"
+            else:
+                send "{@pre} &f【%arg-2%&f 格納データ情報】"
+                send "UNIX: %{roulettedata.%arg-2%::unix}%"
+                send "CORRECT: %{roulettedata.%arg-2%::correct}%"
+                send "ROULETTE ID: %{roulettedata.%arg-2%::id}%"
+                send "WINNERS: %{roulettedata.%arg-2%::winners::*}%"
+                send "PLAYERS AND THEIR BETS:"
+                loop {roulettedata.%arg-2%::players::*}:
+                    set {_bet} to {roulettedata.%arg-2%.bet::%loop-value%}
+                    set {_betmoney} to {roulettedata.%arg-2%.betmoney::%loop-value%}
+                    send "%loop-value%: %{_bet}%, %{_betmoney}%"
+                send "&cEND OF LOG."
+function createdata(id: text, correct: integer, prefix: text, winners: objects) :: text:
+    add 1 to {rouletteprefix::%{_prefix}%}
+    set {_preid} to "%{_prefix}%%{rouletteprefix::%{_prefix}%}%"
+    set {roulettedata.%{_preid}%::unix} to unix timestamp of now
+    set {roulettedata.%{_preid}%::correct} to {_correct}
+    set {roulettedata.%{_preid}%::id} to {_id}
+    loop {_winners::*}:
+        set {roulettedata.%{_preid}%.bet::%loop-value%} to metadata value "roulette_obj" of loop-value
+    set {roulettedata.%{_preid}%::winners::*} to {_winners::*}
+    set {roulettedata.%{_preid}%::players::*} to {roulette.%{_id}%.players::*}
+    loop {roulette.%{_id}%.players::*}:
+        set {roulettedata.%{_preid}%.bet::%loop-value%} to metadata value "roulette_obj" of loop-value
+        set {roulettedata.%{_preid}%.betmoney::%loop-value%} to {roulette.kake::%loop-value%}
+    add {_preid} to {roulette.ids::*}
+    return {_preid}
+function correctnum(id: text) :: integer: # ここがいわゆる裏操作的なプログラムです。
+    set {_numbers::*} to numbers from 0 and 100
+    loop {_numbers::*}:
+        set {_percent::%loop-value%} to 5
+    set {_recent::*} to recentroulette(5)
+    loop {_recent::*}:
+        remove 3 from {_percent::%{roulettedata.%loop-value%::correct}%} 
+        loop {roulettedata.%loop-value%::winners::*}:
+            metadata value "roulette_obj" of loop-value-2 is not "odd"
+            metadata value "roulette_obj" of loop-value-2 is not "even"
+            if {roulette.%{_id}%.players::*} contains loop-value-2:
+                set {_meta} to metadata value "roulette_obj" of loop-value-2
+                remove 1 from {_percent::%{_meta}%}
+                remove 1 from {_percent::%{_meta} - 1%}
+                remove 1 from {_percent::%{_meta} + 1%}
+    loop {roulette.%{_id}%.players::*}:
+        add loop-value's money to {_total}
+        add 1 to {_totalplayers}
+    set {_avg} to {_total} / {_totalplayers}
+    delete {_total}
+    loop {roulette.%{_id}%.players::*}:
+        set {_minus} to (loop-value's money - {_avg}) ^ 2
+        add {_minus} to {_total}
+    set {_deviation} to sqrt({_total})
+    loop {roulette.%{_id}%.players::*}:
+        if loop-value's money is less than {_deviation}:
+            set {_meta} to metadata value "roulette_obj" of loop-value
+            if {_meta} is "odd":
+                loop {_numbers::*}:
+                    if loop-value-2 is divisible by 2:
+                        remove 1 from {_percent::%loop-value-2%}
+            else if {_meta} is "even":
+                loop {_numbers::*}:
+                    if mod(loop-value-2, 2) is 1:
+                        remove 1 from {_percent::%loop-value-2%}
+            else:
+                add 2 to {_percent::%{_meta}%}
+                add 2 to {_percent::%{_meta} - 1%}
+                add 2 to {_percent::%{_meta} + 1%}
+    loop 100 times:
+        loop {_numbers::*}:
+            chance of {_percent::%loop-value-2%}%:
+                add loop-value-2 to {_passed::*}
+        if {_passed::*} is set:
+            exit loop
+    set {_correct} to random element out of {_passed::*}
+    return {_correct}
+function recentroulette(datas: integer) :: objects:
+    loop {roulette.ids::*}:
+        add {roulettedata.%loop-value%::unix} to {_unix::*}
+        set {_id::%{roulettedata.%loop-value%::unix}%} to loop-value
+    set {_unix::*} to reversed sorted {_unix::*}
+    set {_n} to 0
+    loop {_unix::*}:
+        add {_id::%loop-value%} to {_return::*}
+        add 1 to {_n}
+        if {_n} is more than or equal to {_datas}:
+            exit loop
+    return {_return::*}

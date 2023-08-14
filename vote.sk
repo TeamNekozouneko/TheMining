@@ -14,6 +14,9 @@ options:
     vote_menu_shop_title:&2&l》 &a投票ショップ &2&l《
     vote_menu_shopedit_title:&2&l》 &aアイテムを編集して閉じてください &2&l《
 
+on load:
+    vote_unregister_recipe()
+
 every second:
     loop all players:
         if {vote.players::%loop-player's uuid%} is not set:
@@ -44,6 +47,18 @@ command /admin_vote_price [<integer>]:
             send "&2&l! &a持っているアイテムの価格を &f%arg-1%ポイント &aに設定しました。" to player
             set tag "vote_price" of nbt compound of player's tool to arg-1
 
+command /admin_vote_item_tag [<text>]:
+    permission: admin
+    trigger:
+        if player's tool is air:
+            send "&4&l! &c特殊タグを設定するアイテムを持ってください。" to player
+        else if arg-1 is not set:
+            send "&2&l! &a持っているアイテムの特殊タグをクリアしました。" to player
+            clear tag "vote_sitem" of nbt compound of player's tool
+        else if arg-1 is set:
+            send "&2&l! &a持っているアイテムの特殊タグを &f%arg-1% &aに設定しました。" to player
+            set tag "vote_sitem" of nbt compound of player's tool to arg-1
+
 command /point:
     trigger:
         send "&a所持している投票ポイント&2: &a&l%{vote.players::%player's uuid%}%&aポイント" to player
@@ -66,11 +81,16 @@ on inventory click:
         set {_price} to tag "vote_price" of nbt compound of event-item
         if {_price} and {_index} is set:
             if {vote.players::%player's uuid%} >= {_price}:
-                remove {_price} from {vote.players::%player's uuid%}
-                set {_item} to {vote.items::%{_index}%}
-                clear tag "vote_index" of nbt compound of {_item}
-                clear tag "vote_price" of nbt compound of {_item}
-                give {_item} to player
+                set {_stag} to tag "vote_sitem" of nbt compound of event-item
+                if {_stag} is set:
+                    remove {_price} from {vote.players::%player's uuid%}
+                    vote_thread(player, {_stag})
+                else:
+                    remove {_price} from {vote.players::%player's uuid%}
+                    set {_item} to {vote.items::%{_index}%}
+                    clear tag "vote_index" of nbt compound of {_item}
+                    clear tag "vote_price" of nbt compound of {_item}
+                    give {_item} to player
                 send "&2&l! &a購入しました！" to player
             else:
                 send "&4&l! &c所持ポイントが不足しています。" to player
@@ -100,6 +120,7 @@ on votifier vote:
             send "{@vote_suffix}" to all players
             send "{@vote_thanks}" to {_p}
             add 30 to {vote.players::%{_uuid}%}
+            set {vote.playerdata::%{_uuid}%::LASTVOTE} to unix timestamp of now
         else: #UUIDの取得の失敗
             vote_error_throw({_p}, "E0", {_name}, {_uuid})
     else: #名前取得の失敗
@@ -126,3 +147,40 @@ function vote_edit_shop(p: player):
     loop {vote.items::*}:
         set slot {_n} of {_p}'s current inventory to loop-value
         add 1 to {_n}
+
+function vote_thread(p: player, type: string) :: boolean:
+    return false if {_p} is not set
+    return false if {_type} is not set
+    if {_type} is "EXP_BOOST":
+        send "&2&l! &aEXPブーストを購入しました！ (15分間)" to {_p}
+        set {vote.playerdata::%{_p}'s uuid%::EXP_BOOST} to unix timestamp of now
+        return true
+    else if {_type} is "RECIPE":
+        send "&2&l! &a特殊レシピを購入しました！" to {_p}
+        send "&6&l! &e特殊レシピ &7- &6%{_p}%&eさんが特殊レシピを投票ショップより解放しました！%nl%&e現在から15分の間、追加された特殊レシピを使用できます。" to all players
+        vote_register_recipe()
+        set {_t} to unix timestamp of now
+        set {vote.recipe} to {_t}
+        loop 60*15 times:
+            if {vote.recipe} is not {_t}:
+                exit loop
+            wait 1 second
+        if {vote.recipe} is {_t}:
+            vote_unregister_recipe()
+        exit
+
+on player pickup xp:
+    if (unix timestamp of now)-{vote.playerdata::%{_p}'s uuid%::EXP_BOOST} < 60*15:
+        cancel event
+        add (event-number)*2 to player's xp
+
+function vote_register_recipe():
+    register new shaped recipe for enchanted golden apple using gold block, gold block, gold block, gold block, apple, gold block, gold block, gold block and gold block with id "vote:enchanted_golden_apple"
+
+function vote_unregister_recipe():
+    remove recipe "vote:enchanted_golden_apple"
+
+on join:
+    player is not op
+    if (unix timestamp of now)-{vote.playerdata::%player's uuid%::LASTVOTE} < 60*60*12:
+        set the join message to "&d&k|&d| &d投票者 &d|&d&k| &6%player%&eさんが参加しました。"

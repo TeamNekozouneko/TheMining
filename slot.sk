@@ -407,6 +407,7 @@ function slot_spin(p: player, name: text):
                 add {slot.info::%{_name}%::award} to {_p}'s money
                 send title "" with subtitle "&6当たり！" to {_p}
                 send "&aスロットで当たったため &f%{slot.info::%{_name}%::award}%円 &aを受け取りました。" to {_p}
+                mine_quest_thread({_p}, "SLOT_HIT", 0)
             set block at location of {_coord} to {_button}
         else:
             sound_error({_p})

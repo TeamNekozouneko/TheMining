@@ -958,6 +958,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                     send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
                     send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
                     add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
+                mine_quest_thread({_p}, "MABOROSHI_DROP", 0)
 
             return true
     else if {_p} is not op:

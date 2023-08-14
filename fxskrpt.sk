@@ -1,11 +1,11 @@
 command /fx:
     trigger:
         open chest inventory with 3 row named "&6&lForeign Exchange" to player
-        set {_pmi} to "&b&l+%({fx.rate}-({fx.original_jpy.%player%}/{fx.dollar.%player%}))*{fx.dollar.%player%}%" if {fx.rate}-({fx.original_jpy.%player%}/{fx.dollar.%player%}) > 0
-        set {_pmi} to "&c&l%({fx.rate}-({fx.original_jpy.%player%}/{fx.dollar.%player%}))*{fx.dollar.%player%}%" if {fx.rate}-({fx.original_jpy.%player%}/{fx.dollar.%player%}) < 0
-        set {_pmi} to "±0" if {fx.rate}-({fx.original_jpy.%player%}/{fx.dollar.%player%}) = 0
-        set {_pmi} to "&7測定不可 " if {fx.dollar.%player%} <= 0
-        set slot 0 of player's current inventory to lectern named "&2&l現在の$価格表示" with lore "&a&l現在の1$価格は&6&l%{fx.rate}%円&a&lです。" and "&a&l所有しているドル: &6&l%{fx.dollar.%player%}%ドル (%{fx.rate}*{fx.dollar.%player%}%円分)" and "&a&l損益: %{_pmi}%円"
+        set {_pmi} to "&b&l+%({fx.rate}-({fx.original_jpy.%player%}/{fx.dollar_v2.%player%}))*{fx.dollar_v2.%player%}%" if {fx.rate}-({fx.original_jpy.%player%}/{fx.dollar_v2.%player%}) > 0
+        set {_pmi} to "&c&l%({fx.rate}-({fx.original_jpy.%player%}/{fx.dollar_v2.%player%}))*{fx.dollar_v2.%player%}%" if {fx.rate}-({fx.original_jpy.%player%}/{fx.dollar_v2.%player%}) < 0
+        set {_pmi} to "±0" if {fx.rate}-({fx.original_jpy.%player%}/{fx.dollar_v2.%player%}) = 0
+        set {_pmi} to "&7測定不可 " if {fx.dollar_v2.%player%} <= 0
+        set slot 0 of player's current inventory to lectern named "&2&l現在の$価格表示" with lore "&a&l現在の1$価格は&6&l%{fx.rate}%円&a&lです。" and "&a&l所有しているドル: &6&l%{fx.dollar_v2.%player%}%ドル (%{fx.rate}*{fx.dollar_v2.%player%}%円分)" and "&a&l損益: %{_pmi}%円"
         set slot 10 of player's current inventory to glowstone named "&b&l1$&bを買う" with nbt compound from "{fx_buy:1}"
         set slot 11 of player's current inventory to glowstone named "&b&l10$&bを買う" with nbt compound from "{fx_buy:10}"
         set slot 12 of player's current inventory to glowstone named "&b&l100$&bを買う" with nbt compound from "{fx_buy:100}"
@@ -22,23 +22,26 @@ on inventory click:
         #if clicked slot is 0:
         #    close player's inventory
         #    send "&7[&b&lF&3&lX&7] &a&l現在の&a1&l$価格は&6&l%{fx.rate}%円&a&lです。"
+        if {fx.rate} is not set:
+            send "&4&l! &cFXレートに不具合が発生したため、取引できませんでした。" to player
+            exit
         set {_buy} to tag "fx_buy" of nbt compound of event-item
         if {_buy} is set:
             if player's money >= {fx.rate}*{_buy}:
                 send "&7[&b&lF&3&lX&7] &a&l%{_buy}%$を%{fx.rate}*{_buy}%円で購入しました！"
                 add {fx.rate}*{_buy} to {fx.original_jpy.%player%}
                 remove {fx.rate}*{_buy} from player's money
-                add {_buy} to {fx.dollar.%player%}
+                add {_buy} to {fx.dollar_v2.%player%}
             else:
                 send "&7[&b&lF&3&lX&7] &cお金が足りません。" to player
         
         set {_sell} to tag "fx_sell" of nbt compound of event-item
         if {_sell} is set:
-            if {fx.dollar.%player%} >= {_sell}:
+            if {fx.dollar_v2.%player%} >= {_sell}:
                 send "&7[&b&lF&3&lX&7] &a&l1$を%{fx.rate}*{_sell}%円で売却しました！"
                 add {fx.rate}*{_sell} to player's money
-                remove {fx.original_jpy.%player%}/{fx.dollar.%player%} from {fx.original_jpy.%player%}
-                remove {_sell} from {fx.dollar.%player%}
+                remove {fx.original_jpy.%player%}/{fx.dollar_v2.%player%} from {fx.original_jpy.%player%}
+                remove {_sell} from {fx.dollar_v2.%player%}
             else:
                 send "&7[&b&lF&3&lX&7] &cあなたは%{_sell}%ドルを持っていません。" to player
             
@@ -46,33 +49,40 @@ on inventory click:
             close player's inventory
         if name of event-item is "&c&l損益をリセットする" :
             send "&7[&b&lF&3&lX&7] &a損益をリセットしました。" to player
-            set {fx.original_jpy.%player%} to {fx.rate}*{fx.dollar.%player%}
+            set {fx.original_jpy.%player%} to {fx.rate}*{fx.dollar_v2.%player%}
         if name of event-item is "&d&lすべてのドルを売る":
-            if {fx.dollar.%player%} >= 1:
-                add {fx.rate}*{fx.dollar.%player%} to player's money
-                remove {fx.original_jpy.%player%}/{fx.dollar.%player%} from {fx.original_jpy.%player%}
-                send "&7[&b&lF&3&lX&7] &aすべての所有するドルを売却しました。&7合計: %{fx.rate}*{fx.dollar.%player%}%円" to player
-                set {fx.dollar.%player%} to 0
+            if {fx.dollar_v2.%player%} >= 1:
+                add {fx.rate}*{fx.dollar_v2.%player%} to player's money
+                remove {fx.original_jpy.%player%}/{fx.dollar_v2.%player%} from {fx.original_jpy.%player%}
+                send "&7[&b&lF&3&lX&7] &aすべての所有するドルを売却しました。&7合計: %{fx.rate}*{fx.dollar_v2.%player%}%円" to player
+                set {fx.dollar_v2.%player%} to 0
             else:
                 send "&7[&b&lF&3&lX&7] &cあなたはドルを持っていません。" to player
             
+command /admin_fx_set_token [<text>]:
+    permission: admin
+    trigger:
+        set {fx.token} to arg-1
+
 every 5 seconds:
-    send a request to "http://fx.mybluemix.net/"
+    send a request to "http://nekozouneko.net/get_fx.php?token=%{fx.token}%"
     set {_resp} to the last http response
     set {_body} to {_resp}'s body
     copy json {_body} to {_data::*}
-    set {fx.rate} to {_data::rate::USDJPY}
+    set {fx.rate} to {_data::rate} parsed as number
 
 every second:
     loop all players:
+        if {fx.dollar_v2.%loop-player%} is not set:
+            set {fx.dollar_v2.%loop-player%} to 0
         if name of loop-player's current inventory is "&6&lForeign Exchange":
-            set {_pmi} to "&b&l+%({fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar.%loop-player%}))*{fx.dollar.%loop-player%}%" if {fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar.%loop-player%}) > 0
-            set {_pmi} to "&c&l%({fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar.%loop-player%}))*{fx.dollar.%loop-player%}%" if {fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar.%loop-player%}) < 0
-            set {_pmi} to "±0" if {fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar.%loop-player%}) = 0
-            set {_pmi} to "&7測定不可 " if {fx.dollar.%loop-player%} <= 0
-            set slot 0 of loop-player's current inventory to lectern named "&2&l現在の$価格表示" with lore "&a&l現在の1$価格は&6&l%{fx.rate}%円&a&lです。" and "&a&l所有しているドル: &6&l%{fx.dollar.%loop-player%}%ドル (%{fx.rate}*{fx.dollar.%loop-player%}%円分)" and "&a&l損益: %{_pmi}%円"
+            set {_pmi} to "&b&l+%({fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar_v2.%loop-player%}))*{fx.dollar_v2.%loop-player%}%" if {fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar_v2.%loop-player%}) > 0
+            set {_pmi} to "&c&l%({fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar_v2.%loop-player%}))*{fx.dollar_v2.%loop-player%}%" if {fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar_v2.%loop-player%}) < 0
+            set {_pmi} to "±0" if {fx.rate}-({fx.original_jpy.%loop-player%}/{fx.dollar_v2.%loop-player%}) = 0
+            set {_pmi} to "&7測定不可 " if {fx.dollar_v2.%loop-player%} <= 0
+            set slot 0 of loop-player's current inventory to lectern named "&2&l現在の$価格表示" with lore "&a&l現在の1$価格は&6&l%{fx.rate}%円&a&lです。" and "&a&l所有しているドル: &6&l%{fx.dollar_v2.%loop-player%}%ドル (%{fx.rate}*{fx.dollar_v2.%loop-player%}%円分)" and "&a&l損益: %{_pmi}%円"
     
 command /fxlist:
     trigger:
-        send "&7[&b&lF&3&lX&7] &a&lあなたは現在&6&l%{fx.dollar.%player%}%$&a&lを所持しています。"
+        send "&7[&b&lF&3&lX&7] &a&lあなたは現在&6&l%{fx.dollar_v2.%player%}%$&a&lを所持しています。"
 	
