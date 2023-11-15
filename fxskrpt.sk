@@ -32,7 +32,7 @@ on inventory click:
                 add {fx.rate}*{_buy} to {fx.original_jpy.%player%}
                 remove {fx.rate}*{_buy} from player's money
                 add {_buy} to {fx.dollar_v2.%player%}
-                mine_quest_thread(player, "FXTRADE")
+                mine_quest_thread(player, "FXTRADE", 1)
             else:
                 send "&7[&b&lF&3&lX&7] &cお金が足りません。" to player
         
