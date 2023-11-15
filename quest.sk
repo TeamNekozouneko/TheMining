@@ -112,7 +112,7 @@ function mine_open_quest_refancy(p: player):
             add 1 to {_n}
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
-    return true if {_i} = 1 or 2 or 3 or 4 or 6
+    return true if {_i} = 1 or 2 or 3 or 4
     return false
 
 function mine_quest_thread(p: player, type: string, v: object):
