@@ -8,6 +8,7 @@ on load:
     set {mine.quests::3} to "エンチャントを使用する"
     set {mine.quests::4} to "幻のインゴットを見つける"
     set {mine.quests::5} to "スロットで当たりを出す"
+    set {mine.quests::6} to "$を購入する"
 
     clear {mine.quest_max::*}
     set {mine.quest_max::1} to 20000
@@ -15,6 +16,7 @@ on load:
     set {mine.quest_max::3} to 1
     set {mine.quest_max::4} to 1
     set {mine.quest_max::5} to 1
+    set {mine.quest_max::6} to 1
 
     clear {mine.quest_reward::*}
     add "money_5000" to {mine.quest_reward::1::*}
@@ -26,6 +28,8 @@ on load:
     add "money_10000" to {mine.quest_reward::4::*}
     add "exp_3000" to {mine.quest_reward::4::*}
     add "money_3000" to {mine.quest_reward::5::*}
+    add "money_1000" to {mine.quest_reward::6::*}
+    add "exp_500" to {mine.quest_reward::6::*}
 
 on npc right click:
     #player is op
@@ -108,7 +112,7 @@ function mine_open_quest_refancy(p: player):
             add 1 to {_n}
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
-    return true if {_i} = 1 or 2 or 3 or 4
+    return true if {_i} = 1 or 2 or 3 or 4 or 5
     return false
 
 function mine_quest_thread(p: player, type: string, v: object):
@@ -121,6 +125,8 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A3", {_v})
     else if {_type} = "MABOROSHI_DROP":
         mine_quest_thread({_p}, "A4", {_v})
+    else if {_type} = "FXTRADE":
+        mine_quest_thread({_p}, "A5", {_v})
     else if {_type} = "A1":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 1:
             add {_v} to {mine.player_quest_data::%{_p}'s uuid%::1}
@@ -133,7 +139,9 @@ function mine_quest_thread(p: player, type: string, v: object):
     else if {_type} = "A4":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 4:
             add 1 to {mine.player_quest_data::%{_p}'s uuid%::4}
-
+    else if {_type} = "A5":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 5:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::5}
 every second:    
     loop all players:
         if name of loop-player's current inventory is "{@mine_quest_title}":
