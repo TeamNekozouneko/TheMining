@@ -8,7 +8,7 @@ on load:
     set {mine.quests::3} to "エンチャントを使用する"
     set {mine.quests::4} to "幻のインゴットを見つける"
     set {mine.quests::5} to "スロットで当たりを出す"
-    set {mine.quests::6} to "$を購入する"
+    #set {mine.quests::6} to "$を購入する"
 
     clear {mine.quest_max::*}
     set {mine.quest_max::1} to 20000
