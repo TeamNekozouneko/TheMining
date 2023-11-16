@@ -360,6 +360,8 @@ function gatya_open(p: player, name: text):
                 gatya_roll_process({_p}, {_name}, 20, 3)
                 wait 60 tick
                 gatya_result_process({_p}, {_name})
+                wait 10 tick
+                mine_quest_thread({_P}, "GATYA", 1)
             else:
                 sound_error({_p})
                 send "&cお金が足りません。&7(%{gatya.info::%{_name}%::price}-{_p}'s money%円不足)" to {_p}
