@@ -753,6 +753,8 @@ every 1 second:
     loop all players:
         mine_scoreboardUpdate(loop-player)
 
+
+
 on first join:
     teleport player to location of {mine.generic::lobbyloc::1}
     send title "&m     &f&l ようこそ" with subtitle "&bᴡᴇʟᴄᴏᴍᴇ ᴛᴏ &c&lThe Mining" to player
@@ -948,6 +950,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 mine_skill_thread_wait({_p}, 1, {_b})
                 mine_skill_thread_wait({_p}, 2, {_b})
             mine_quest_thread({_p}, "BREAK", 1)
+            mine_quest_thread({_p}, "BREAK2", 1)
 
             if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
                 sound_notification({_p})
@@ -1509,5 +1512,6 @@ on portal:
             send action bar "&aテレポートしました！" to player
             teleport player to location of {mine.generic::lobbyloc::%{_connection}%}
             sound_portal_success(player)
-
-
+#クエスト用
+on chat:
+    mine_quest_thread(player, "CHAT", 1)        
