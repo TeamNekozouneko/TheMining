@@ -950,7 +950,6 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 mine_skill_thread_wait({_p}, 1, {_b})
                 mine_skill_thread_wait({_p}, 2, {_b})
             mine_quest_thread({_p}, "BREAK", 1)
-            mine_quest_thread({_p}, "BREAK2", 1)
 
             if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
                 sound_notification({_p})
