@@ -130,7 +130,7 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A3", {_v})
     else if {_type} = "MABOROSHI_DROP":
         mine_quest_thread({_p}, "A4", {_v})
-    else if {_type} = "BREAK2":
+    else if {_type} = "BREAK":
         mine_quest_thread({_p}, "A6", {_v})
     else if {_type} = "CHAT":
         mine_quest_thread({_p}, "A7", {_v})
