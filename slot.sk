@@ -394,6 +394,18 @@ function slot_spin(p: player, name: text):
                 loop {_bsize} times:
                     chance of 25%:
                         remove (random element out of {_breq::*}) from {_breq::*}
+            if slot_is_specialitem_doing({_p}, 2) = true:
+                loop {_bsize} times:
+                    chance of 20%:
+                        remove (random element out of {_breq::*}) from {_breq::*}
+            if slot_is_specialitem_doing({_p}, 3) = true:
+                loop {_bsize} times:
+                    chance of 50%:
+                        remove (random element out of {_breq::*}) from {_breq::*}
+            if slot_is_specialitem_doing({_p}, 4) = true:
+                loop {_bsize} times:
+                    chance of 100%:
+                        remove (random element out of {_breq::*}) from {_breq::*}
 
             loop 3 times:
                 add 1 to {_n}
@@ -508,6 +520,9 @@ command /admin_slot_get [<integer>]:
 on load:
     {@mine_align} = true
     set {slot.specialitems::1} to glowing paper named "&e25%%確率上昇券" with lore "&7これを使用することで1時間の間" and "&7すべてのスロットの当たる確率が25%%上昇します。" and "&e[ 右クリックして使用する ]"
+    set {slot.specialitems::2} to {mine.rewards::2}
+    set {slot.specialitems::3} to {mine.rewards::3}
+    set {slot.specialitems::4} to {mine.rewards::4}
 
 #アイテム動作処理
 on right click:
@@ -520,6 +535,30 @@ on right click:
             send "&2&l! &a%name of {slot.specialitems::1}%&aを発動しました！" to player
             sound_do_skill(player)
             set {mine.players::%player's uuid%::slot_last_used.1} to unix timestamp of now
+    if 1 of player's tool is {slot.specialitems::2}:
+        if slot_is_specialitem_doing(player, 1): 
+            send "&4&l! &cすでにこのアイテムの効果を発動しています。" to player
+        else:
+            remove 1 of {slot.specialitems::2} from player's tool
+            send "&2&l! &a%name of {slot.specialitems::2}%&aを発動しました！" to player
+            sound_do_skill(player)
+            set {mine.players::%player's uuid%::slot_last_used.2} to unix timestamp of now
+    if  of player's tool is {slot.specialitems::3}:
+        if slot_is_specialitem_doing(player, 1): 
+            send "&4&l! &cすでにこのアイテムの効果を発動しています。" to player
+        else:
+            remove 1 of {slot.specialitems::3} from player's tool
+            send "&2&l! &a%name of {slot.specialitems::3}%&aを発動しました！" to player
+            sound_do_skill(player)
+            set {mine.players::%player's uuid%::slot_last_used.3} to unix timestamp of now
+    if 1 of player's tool is {slot.specialitems::4}:
+        if slot_is_specialitem_doing(player, 1): 
+            send "&4&l! &cすでにこのアイテムの効果を発動しています。" to player
+        else:
+            remove 1 of {slot.specialitems::4} from player's tool
+            send "&2&l! &a%name of {slot.specialitems::4}%&aを発動しました！" to player
+            sound_do_skill(player)
+            set {mine.players::%player's uuid%::slot_last_used.4} to unix timestamp of now
 
 function slot_is_specialitem_doing(p: player, id: integer) :: boolean:
     return false if {_id} is not set
