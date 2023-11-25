@@ -1,0 +1,122 @@
+on load:
+    set {mine.rewards::1} to glowing paper named "&bガチャ無料券"
+    set {mine.rewards::2} to glowing paper named "&e20%%確率上昇券"
+    set {mine.rewards::3} to glowing paper named "&e50%%確率上昇券"
+    set {mine.rewards::4} to glowing paper named "&e100%%確率上昇券"
+
+command /rewards:
+    trigger:
+        permission: admin
+        rewards(player)
+
+on npc right click:
+    if npc name is "&e&lレベル報酬 &7[クリック]":
+        player is op
+        rewards(player)
+
+function rewards(p: player):
+    open chest inventory with 6 row named "&e&llevel rewards" to {_p}
+    if {rewards.1::%{_p}%} is not 1:
+        set slot 10 of {_p}'s current inventory to glowing gold block named "&6100level" 
+    else:
+        set slot 10 of {_p}'s current inventory to gold block named "&6クリア済み"
+    if {rewards.2::%{_p}%} is not 1:
+        set slot 11 of {_p}'s current inventory to glowing gold block named "&6200level" 
+    else:
+        set slot 11 of {_p}'s current inventory to gold block named "&6クリア済み"
+    if {rewards.3::%{_p}%} is not 1:
+        set slot 12 of {_p}'s current inventory to glowing gold block named "&6300level"
+    else:
+        set slot 12 of {_p}'s current inventory to gold block named "&6クリア済み"
+    if {rewards.4::%{_p}%} is not 1:
+        set slot 13 of {_p}'s current inventory to glowing gold block named "&6400level"
+    else:
+        set slot 13 of {_p}'s current inventory to gold block named "&6クリア済み"
+    if {rewards.5::%{_p}%} is not 1:
+        set slot 14 of {_p}'s current inventory to glowing gold block named "&6500level"
+    else:
+        set slot 14 of {_p}'s current inventory to gold block named "&6クリア済み"
+    if {rewards.6::%{_p}%} is not 1:
+        set slot 15 of {_p}'s current inventory to glowing gold block named "&6600level"
+    else:
+        set slot 15 of {_p}'s current inventory to gold block named "&6クリア済み"
+    if {rewards.7::%{_p}%} is not 1:
+        set slot 16 of {_p}'s current inventory to glowing gold block named "&6700level"
+    else:
+        set slot 16 of {_p}'s current inventory to gold block named "&6クリア済み"
+    if {rewards.8::%{_p}%} is not 1:
+        set slot 19 of {_p}'s current inventory to glowing gold block named "&6800level"
+    else:
+        set slot 19 of {_p}'s current inventory to gold block named "&6クリア済み"
+    set {rewards.clear::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 44 and 45 and 46 and 47 and 48 and 49 and 50 and 51 and 52 and 53 
+    set slot {rewards.clear::*} of {_p}'s current inventory to lime stained glass pane named " "
+
+command /admin_rewards_reset [<player>]:
+    trigger:
+        set {_m} to 0
+        loop 8 times:
+            add 1 to {_m}
+            set {rewards.%{_m}%::%arg-1%} to 0
+
+on inventory click:
+    if name of player's current inventory is "level rewards":
+        close player's inventory
+        cancel event
+        if event-item is gold block named "&6100level":
+            if {rewards.1::%player%} is not 1:
+                if {mine.level::%player's uuid%} >= 100:
+                    give player {mine.rewards::1} 
+                    set {rewards.1::%player%} to 1
+                else:
+                    send "レベルが足りません"
+        if event-item is gold block named "&6200level":  
+            if {rewards.2::%player%} is not 1:
+                if {mine.level::%player's uuid%} >= 200: 
+                    loop 2 time:
+                        give player {mine.rewards::1}
+                    set {rewards.2::%player%} to 1
+                else:
+                    send "レベルが足りません"
+        if event-item is gold block named "&6300level":   
+            if {rewards.3::%player%} is not 1:
+                if {mine.level::%player's uuid%} >= 300:
+                    give player {mine.rewards::2}
+                    set {rewards.3::%player%} to 1
+        if event-item is gold block named "&6400level":
+            if {rewards.4::%player%} is not 1:
+                if {mine.level::%player's uuid%} >= 400:
+                    loop 2 time:
+                        give player {mine.rewards::2}
+                    set {rewards.4::%player%} to 1
+                else:
+                    send "レベルが足りません"
+        if event-item is gold block named "&6500level":   
+            if {rewards.5::%player%} is not 1:
+                if {mine.level::%player's uuid%} >= 500:
+                    give player {mine.rewards::3}
+                    set {rewards.5::%player%} to 1
+                else:
+                    send "レベルが足りません"
+        if event-item is gold block named "&6600level":   
+            if {rewards.6::%player%} is not 1:
+                if {mine.level::%player's uuid%} >= 600:
+                    loop 2 time:
+                        give player {mine.rewards::3}
+                    set {rewards.6::%player%} to 1
+                else:
+                    send "レベルが足りません"
+        if event-item is gold block named "&6700level":   
+            if {rewards.7::%player%} is not 1:
+                if {mine.level::%player's uuid%} >= 700:
+                    give player {mine.rewards::4}
+                    set {rewards.7::%player%} to 1    
+                else:
+                    send "レベルが足りません"
+        if event-item is gold block named "&6800level": 
+            if {rewards.8::%player%} is not 1:
+                if {mine.level::%player's uuid%} >= 800:
+                    loop 2 time:
+                        give player {mine.rewards::4}  
+                    set {rewards.8::%player%} to 1         
+                else:
+                    send "レベルが足りません"
