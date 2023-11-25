@@ -543,7 +543,7 @@ on right click:
             send "&2&l! &a%name of {slot.specialitems::2}%&aを発動しました！" to player
             sound_do_skill(player)
             set {mine.players::%player's uuid%::slot_last_used.2} to unix timestamp of now
-    if  of player's tool is {slot.specialitems::3}:
+    if 1 of player's tool is {slot.specialitems::3}:
         if slot_is_specialitem_doing(player, 1): 
             send "&4&l! &cすでにこのアイテムの効果を発動しています。" to player
         else:
