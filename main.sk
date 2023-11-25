@@ -14,7 +14,7 @@ Options:
     menu_seller_sell_title: &c&lTheMining &7- &f売店屋 &7- &fアイテム売却
     menu_rewards: &c&lTheMining &7- &e&lレベル報酬 &7[クリック]
     menu_obsidian_crafting: &c&lTheMining &7- &7&l黒曜の加工台
-&7加工台&7[クリック]
+
     slot: true #スロットSkriptと連携するかどうか
 
     #以下値設定
@@ -1232,7 +1232,6 @@ on inventory click:
         set {_cindex} to tag "mine_cindex" of nbt compound of event-item
         if {_index} and {_cindex} is set:
             cancel event
-    if name of 
 
             set {_n} to 0 #以下適合性による論理チェック
             loop {mine.enchant_range} times:
