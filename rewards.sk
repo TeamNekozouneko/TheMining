@@ -6,12 +6,10 @@ on load:
 
 command /rewards:
     trigger:
-        permission: admin
         rewards(player)
 
 on npc right click:
     if npc name is "&e&lレベル報酬 &7[クリック]":
-        player is op
         rewards(player)
 
 function rewards(p: player):
