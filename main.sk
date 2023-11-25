@@ -1625,6 +1625,11 @@ on inventory click:
     if name of player's current inventory is "{@menu_obsidian_crafting}":
         if name of event-item is "&6レシピ本" or "&a":
             cancel event
+        if name of event-item is "&7[&8黒曜石のピッケル&7]":
+            set slot 3 of player's current inventory to air
+            set slot 4 of player's current inventory to air
+            set slot 16 of player's current inventory to air
+            give {mine.items::36} to player
         if name of event-item is "&6レシピ本":
             open chest inventory with 3 row named "&7[&8黒曜石のピッケル&7]&fのレシピ" to player
             set {recipes.obsidian::*} to 0 and 1 and 2 and 6 and 7 and 8 and 9 and 10 and 11 and 15 and 17 and 18 and 19 and 20 and 24 and 25 and 26
