@@ -384,6 +384,7 @@ on inventory click:
                     send "&2&l! &a自動圧縮を有効化しました。" to player
             else: 
                 if player's money >= 100000:
+                    remove 100000 from player's money
                     send "&2&l! &a購入しました！" 
                     set {mine.status.autoore.money::%player%} to true
                     mine_skill_page(player, 1)
@@ -489,12 +490,7 @@ on inventory close:
         if {_i2} is not air:
             give {_i2} to player
     if name of player's current inventory is "{@menu_obsidian_crafting}":
-        set {_u} to slot 3 of player's current inventory
-        set  {_u2} to slot 4 of player's current inventory
-        if {_u} is not air:
-            give {_u} to player
-        if {_u2} is not air:
-            give {_u2} to player
+        set {_r::*} to 3 and 4 and 5 and 12 and 13 and 14 and 21 and 22 and 23
 
 function mine_teleport_lobby(p: player, num: string):
     if {_num} is not set:
