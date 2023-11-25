@@ -1222,7 +1222,7 @@ every 5 tick:
                     if loop-value-3 is (slot 3 of loop-players's current inventory) or (slot 4 of loop-players's current inventory):
                         add 1 to {_n3}
                     if {_n3} is 4:
-                        set slot 16 of loop-players's current inventory to {mine.items::36} 
+                        set slot 16 of loop-players's current inventory to netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
 
         
 on inventory click:
@@ -1289,7 +1289,7 @@ function mine_skill_page(p: player, page: integer):
             else:
                 set slot 53 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
         else:
-            set {mine.status.autoore.money::%{_p}%} to true
+            set {mine.status.autoore.money::%{_p}%} to false
             set slot 53 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&e値段: &6100000円" and "&7[ クリックして購入 ]"
             
 
@@ -1625,7 +1625,7 @@ on inventory click:
     if name of player's current inventory is "{@menu_obsidian_crafting}":
         if name of event-item is "&6レシピ本" or "&a":
             cancel event
-        if name of event-item is "&7[&8黒曜石のピッケル&7]":
+        if name of event-item is "&7[&8黒曜石のピッケル&7] ":
             set slot 3 of player's current inventory to air
             set slot 4 of player's current inventory to air
             cancel event
@@ -1636,6 +1636,10 @@ on inventory click:
             set slot {recipes.obsidian::*} of player's current inventory to black stained glass pane named "&e"
             set slot 3 of player's current inventory to diamond pickaxe named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." 
             set slot 4 of player's current inventory to glowing crying obsidian named "&8黒曜石の塊" with lore "&4重く鋭い..."
-            set slot 16 of player's current inventory to glowing netherite pickaxe named "&7[&8黒曜石のピッケル&7]" with lore "&7黒曜石で作られた頑丈なピッケル"
+            set slot 16 of player's current inventory to glowing netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
     if name of player's current inventory is "&7[&8黒曜石のピッケル&7]&fのレシピ": 
         cancel event
+
+command /test:
+    trigger:    
+        set {mine.status.autoore.money::%player%} to false
