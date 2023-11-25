@@ -388,6 +388,7 @@ on inventory click:
                     remove 100000 from player's money
                     send "&2&l! &a購入しました！" 
                     set {mine.status.autoore.money::%player%} to true
+                    set {mine.status.autoore::%player%} to false
                     mine_skill_page(player, 1)
                 else:
                     send "&4&l! &c所持金が不足しています。"
@@ -938,6 +939,12 @@ on break:
 
 on pickup:
     autoore(player)
+
+command /Debug_skill [<player>]:
+    permission: admin
+    trigger:
+        set {mine.status.autoore.money::%arg-1%} to false
+        set {mine.status.autoore::%arg-1%} to false
 
 function mine_break(p: player, b: block, thread_bypass: boolean = false) :: boolean:
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
