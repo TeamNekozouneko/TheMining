@@ -491,7 +491,9 @@ on inventory close:
             give {_i2} to player
     if name of player's current inventory is "{@menu_obsidian_crafting}":
         set {_r::*} to 3 and 4 and 5 and 12 and 13 and 14 and 21 and 22 and 23
-
+        set {_u::*} to slot {_r::*} of player's current inventory 
+        give {_u::*} to player
+ 
 function mine_teleport_lobby(p: player, num: string):
     if {_num} is not set:
         send "&4&l! &c優先番号を指定してください。" to {_p}
