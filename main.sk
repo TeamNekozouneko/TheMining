@@ -1,6 +1,5 @@
 #必須ライブラリ
 #・nupo_calc_lib.sk
-
 Options:
     oremenu_title: &c&lThe Mining &7- &f鉱石の設定
     oremenu_remove_title: &c&lThe Mining &7- &f鉱石範囲の削除
@@ -13,12 +12,16 @@ Options:
     menu_recipe_content_title: &c&lTheMining &7- &fレシピ
     menu_seller_title: &c&lTheMining &7- &f売店屋
     menu_seller_sell_title: &c&lTheMining &7- &f売店屋 &7- &fアイテム売却
+    menu_rewards: &c&lTheMining &7- &e&lレベル報酬 &7[クリック]
+    menu_obsidian_crafting: &c&lTheMining &7- &7&l黒曜の加工台
 
     slot: true #スロットSkriptと連携するかどうか
 
     #以下値設定
     maboroshi_ingot_drop_p: 1
     maboroshi_ingot_drop_c: 100000
+    obsidian_drop_p: 1
+    obsidian_drop_c: 100000
     #maboroshi_ingot_drop設定ではpが確率分母、cが確率分子を示しています。
     #確率演算については、nupo_calc_lib.skを参照してください。
 
@@ -59,6 +62,10 @@ on load:
     set {mine.items::33} to unbreakable diamond pickaxe of efficiency 14 named "&7[&cアドバンスピッケル&7] &e&lLv.4" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
     set {mine.items::34} to unbreakable diamond pickaxe of efficiency 15 named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
     set {mine.items::35} to glowing stick named "&dポータル設定用棒"
+    set {mine.items::36} to unbreakable netherite pickaxe of efficiency 18 named "&7[&8黒曜石のピッケル&7]" with lore "&7黒曜石で作られた頑丈なピッケル" with enchants flag hidden
+    set {mine.items::37} to glowing crying obsidian named "&8黒曜石の塊" with lore "&4重く鋭い..."
+    
+
 
     clear {mine.require::*}
     set {mine.require::2} to {mine.items::0}
@@ -115,7 +122,7 @@ on load:
     clear {mine.skills::*}
     set {mine.skills::1} to stone named "&a二連採掘" with lore "&7掘った時に50%%の確立で堀った上" and "&7のブロックも破壊されます。"
     set {mine.skills::2} to iron ore named "&a上下採掘" with lore "&7掘った時に堀った上下のブロック" and "&7も破壊されます。"
-
+ 
     clear {mine.skillprice::*}
     set {mine.skillprice::1} to 300
     set {mine.skillprice::2} to 1500
@@ -180,6 +187,10 @@ on load:
     clear {mine.enchant_result::*}
     add {mine.items::23} to {mine.enchant_result::1::*}
     add {mine.items::21} to {mine.enchant_result::2::*}
+
+    clear {mine.crafting::*}
+    add {mine.items::37} to {mine.crafting::*}
+    add {mine.items::34} to {mine.crafting::*}
 
 on join:
     clear metadata value "mine_add_orerange" of player
@@ -361,6 +372,23 @@ on inventory click:
             clear {mine.pselskill::%player's uuid%}
             send "&2&l! &aスキルを選択なしに設定しました。" to player
             mine_skill_page(player, 1)
+        if name of event-item is "&a自動圧縮":
+            if {mine.status.autoore.money::%player%} is true:
+                if {mine.status.autoore::%player%} is true:
+                    set {mine.status.autoore::%player%} to false
+                    mine_skill_page(player, 1)
+                    send "&2&l! &a自動圧縮を無効化しました。" to player
+                else:
+                    set {mine.status.autoore::%player%} to true
+                    mine_skill_page(player, 1)
+                    send "&2&l! &a自動圧縮を有効化しました。" to player
+            else: 
+                if player's money >= 100000:
+                    send "&2&l! &a購入しました！" 
+                    set {mine.status.autoore.money::%player%} to true
+                    mine_skill_page(player, 1)
+                else:
+                    send "&4&l! &c所持金が不足しています。"
         else if {_price} and {_index} is set:
             if {_type} is "booster":
                 if player's money >= {_price}:
@@ -460,6 +488,13 @@ on inventory close:
             give {_i} to player
         if {_i2} is not air:
             give {_i2} to player
+    if name of player's current inventory is "{@menu_obsidian_crafting}":
+        set {_u} to slot 3 of player's current inventory
+        set  {_u2} to slot 4 of player's current inventory
+        if {_u} is not air:
+            give {_u} to player
+        if {_u2} is not air:
+            give {_u2} to player
 
 function mine_teleport_lobby(p: player, num: string):
     if {_num} is not set:
@@ -881,6 +916,10 @@ on break:
     if event-entity is a player:
         if mine_break(player, event-block) is false:
             cancel event
+    autoore(player)
+
+on pickup:
+    autoore(player)
 
 function mine_break(p: player, b: block, thread_bypass: boolean = false) :: boolean:
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
@@ -962,6 +1001,16 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                     add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
                 mine_quest_thread({_p}, "MABOROSHI_DROP", 0)
 
+            if mine_thread_throw_OBSIDIAN("MINE_OBSIDIAN_DROP"):
+                sound_notification({_p})
+                if mine_is_space_inventory({_p}):
+                    send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
+                    give {mine.items::37} to {_p}
+                else:
+                    send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
+                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+                    add {mine.items::37} to {pickup.%{_p}'s uuid%::*}
+                mine_quest_thread({_p}, "MABOROSHI_DROP", 0)
             return true
     else if {_p} is not op:
         return false
@@ -1163,7 +1212,19 @@ every 5 tick:
                         set {_slots::*} to 13 and 14 and 15 and 16 and 17 and 5 and 23
                         loop {_slots::*}:
                             set slot (loop-value-3) of loop-player-1's current inventory to red stained glass pane named "&cエンチャント不可能" with lore "&7この組み合わせは扱えません"
+        if name of loop-player's current inventory is "{@menu_obsidian_crafting}":
+            loop {mine.crafting::*}:
+                if (slot 3 of loop-player's current inventory) or (slot 4 of loop-player's current inventory) is air:
+                    set slot 16 of loop-player's current inventory to air 
+            clear {_3}
+            loop 2 time:
+                loop {mine.crafting::*}:
+                    if loop-value-3 is (slot 3 of loop-players's current inventory) or (slot 4 of loop-players's current inventory):
+                        add 1 to {_n3}
+                    if {_n3} is 4:
+                        set slot 16 of loop-players's current inventory to {mine.items::36} 
 
+        
 on inventory click:
     if name of player's current inventory is "{@menu_enchant_title}":
         cancel event if name of event-item is "&c" or "&c該当のアイテムを入れてください" or "&cエンチャント不可能"
@@ -1186,6 +1247,7 @@ on inventory click:
                     sound_enchanted(player)
                     send "&2&l! &aエンチャントしました！" to player
                     mine_quest_thread(player, "ENCHANT", 0)
+
 
 #以下スキル
 command /skill:
@@ -1220,6 +1282,17 @@ function mine_skill_page(p: player, page: integer):
             else:
                 set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&f現在レベル: &b%{mine.pboost::%{_p}'s uuid%::%loop-index%}%" and "&c最大レベルに達しています。"
             add 2 to {_n}
+        if {mine.status.autoore::%{_p}%} is not set:
+            set {mine.status.autoore.money::%{_p}%} to false
+        if {mine.status.autoore.money::%{_p}%} is true:
+            if {mine.status.autoore::%{_p}%} is true:
+                set slot 53 of {_p}'s current inventory to glowing dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&e選択中"
+            else:
+                set slot 53 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+        else:
+            set {mine.status.autoore.money::%{_p}%} to true
+            set slot 53 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&e値段: &6100000円" and "&7[ クリックして購入 ]"
+            
 
 every second:
     loop all players:
@@ -1427,6 +1500,13 @@ function mine_thread_throw(type: string) :: object:
         return false
     return false
 
+function mine_thread_throw_OBSIDIAN(type: string) :: object:
+    if {_type} is "MINE_OBSIDIAN_DROP":
+        return true if nupo_calc_random({@obsidian_drop_p}, {@obsidian_drop_c})
+        return false
+    return false
+
+
 #以下ポータル処理
 on player move:
     set metadata value "mine_last_location" of player to location of player
@@ -1514,3 +1594,28 @@ on portal:
 #クエスト用
 on chat:
     mine_quest_thread(player, "CHAT", 1)        
+
+on right click on crafting table:
+    cancel event
+    open chest inventory with 3 row named "{@menu_obsidian_crafting}" to player
+    set {table::*} to 0 and 1 and 2 and 6 and 7 and 8 and 9 and 10 and 11 and 15 and 17 and 18 and 19 and 20 and 24 and 25 and 26
+    set slot {table::*} of player's current inventory to black stained glass pane named " "
+
+function autoore(p: player):
+    if {mine.status.autoore::%{_p}%} is true:
+        if {_p} has 64 cobblestone named "&a丸石":
+            remove 64 cobblestone named "&a丸石" from {_p}'s inventory
+            give {_p} {mine.items::5}
+        if {_p} has 64 raw iron named "&a鉄":
+            remove 64 raw ore named "&a鉄" from {_p}'s inventory
+            give {_p} {mine.items::6}
+        if {_p} has 64 diamond named "&aダイヤモンド":
+            remove 64 diamond named "&aダイヤモンド" from {_p}'s inventory
+            give {_p} {mine.items::7}
+        if {_p} has 64 emerald named "&a&lエメラルド":
+            remove 64 emerald named "&a&lエメラルド" from {_p}'s inventory
+            give {_p} {mine.items::9}
+        if {_p} has 64 obsidian named "&7&l黒曜石":
+            remove 64 obsidian named "&7&l黒曜石" from {_p}'s inventory
+            give {_p} {mine.items::8}
+        
