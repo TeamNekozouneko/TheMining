@@ -1240,6 +1240,8 @@ every 5 tick:
                         add 1 to {_n3}
                     if {_n3} is 4:
                         set slot 16 of loop-players's current inventory to netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
+                    else:
+                        set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
 
         
 on inventory click:
@@ -1656,7 +1658,3 @@ on inventory click:
             set slot 16 of player's current inventory to glowing netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
     if name of player's current inventory is "&7[&8黒曜石のピッケル&7]&fのレシピ": 
         cancel event
-
-command /test:
-    trigger:    
-        set {mine.status.autoore.money::%player%} to false
