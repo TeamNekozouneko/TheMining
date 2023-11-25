@@ -1642,7 +1642,7 @@ function autoore(p: player):
             give {_p} {mine.items::17}
 on inventory click:
     if name of player's current inventory is "{@menu_obsidian_crafting}":
-        if name of event-item is "&6レシピ本" or "&a":
+        if name of event-item is "&6レシピ本" or "&a" or "&cこの構成では利用できません":
             cancel event
         if name of event-item is "&7[&8黒曜石のピッケル&7] ":
             set slot 3 of player's current inventory to air
