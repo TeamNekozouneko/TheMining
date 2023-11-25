@@ -566,3 +566,4 @@ function slot_is_specialitem_doing(p: player, id: integer) :: boolean:
     if (unix timestamp of now)-{mine.players::%{_p}'s uuid%::slot_last_used.1} < 60*60*1:
         return true
     return false
+    
