@@ -14,7 +14,7 @@ Options:
     menu_seller_sell_title: &c&lTheMining &7- &f売店屋 &7- &fアイテム売却
     menu_rewards: &c&lTheMining &7- &e&lレベル報酬 &7[クリック]
     menu_obsidian_crafting: &c&lTheMining &7- &7&l黒曜の加工台
-
+&7加工台&7[クリック]
     slot: true #スロットSkriptと連携するかどうか
 
     #以下値設定
@@ -1232,6 +1232,7 @@ on inventory click:
         set {_cindex} to tag "mine_cindex" of nbt compound of event-item
         if {_index} and {_cindex} is set:
             cancel event
+    if name of 
 
             set {_n} to 0 #以下適合性による論理チェック
             loop {mine.enchant_range} times:
@@ -1599,7 +1600,8 @@ on right click on crafting table:
     cancel event
     open chest inventory with 3 row named "{@menu_obsidian_crafting}" to player
     set {table::*} to 0 and 1 and 2 and 6 and 7 and 8 and 9 and 10 and 11 and 15 and 17 and 18 and 19 and 20 and 24 and 25 and 26
-    set slot {table::*} of player's current inventory to black stained glass pane named " "
+    set slot {table::*} of player's current inventory to black stained glass pane named "&a"
+    set slot 0 of player's current inventory to glowing book named "レシピ"
 
 function autoore(p: player):
     if {mine.status.autoore::%{_p}%} is true:
@@ -1618,4 +1620,11 @@ function autoore(p: player):
         if {_p} has 64 obsidian named "&7&l黒曜石":
             remove 64 obsidian named "&7&l黒曜石" from {_p}'s inventory
             give {_p} {mine.items::8}
+        if {_p} has 64 coal named "&a石炭":
+            remove 64 coal named "&a石炭" from {_p}'s inventory
+            give {_p} {mine.items::17}
         
+on inventory click:
+    if name of player's current inventory is "{@menu_obsidian_crafting}":
+        if name of event-item is "レシピ" or "&a":
+            cancel event
