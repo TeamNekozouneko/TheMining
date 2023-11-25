@@ -176,6 +176,7 @@ on load:
     set {mine.seller.sellprice::7} to 2*64
     set {mine.seller.sellprice::9} to 5*64
     set {mine.seller.sellprice::8} to 8*64
+    set {mine.seller.sellprice::37} to 5000
 
     clear {mine.enchant::*}
     set {mine.enchant_range} to 2
