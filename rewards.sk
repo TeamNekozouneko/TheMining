@@ -50,6 +50,7 @@ function rewards(p: player):
     set slot {rewards.clear::*} of {_p}'s current inventory to lime stained glass pane named " "
 
 command /admin_rewards_reset [<player>]:
+    permission: admin
     trigger:
         set {_m} to 0
         loop 8 times:
@@ -57,7 +58,7 @@ command /admin_rewards_reset [<player>]:
             set {rewards.%{_m}%::%arg-1%} to 0
 
 on inventory click:
-    if name of player's current inventory is "level rewards":
+    if name of player's current inventory is "&e&llevel rewards":
         close player's inventory
         cancel event
         if event-item is gold block named "&6100level":
@@ -65,56 +66,71 @@ on inventory click:
                 if {mine.level::%player's uuid%} >= 100:
                     give player {mine.rewards::1} 
                     set {rewards.1::%player%} to 1
+                    sound_success(player)
                 else:
                     send "レベルが足りません"
+                    sound_error(player)
         if event-item is gold block named "&6200level":  
             if {rewards.2::%player%} is not 1:
                 if {mine.level::%player's uuid%} >= 200: 
                     loop 2 time:
                         give player {mine.rewards::1}
                     set {rewards.2::%player%} to 1
+                    sound_success(player)
                 else:
                     send "レベルが足りません"
+                    sound_error(player)
         if event-item is gold block named "&6300level":   
             if {rewards.3::%player%} is not 1:
                 if {mine.level::%player's uuid%} >= 300:
                     give player {mine.rewards::2}
                     set {rewards.3::%player%} to 1
+                    sound_success(player)
         if event-item is gold block named "&6400level":
             if {rewards.4::%player%} is not 1:
                 if {mine.level::%player's uuid%} >= 400:
                     loop 2 time:
                         give player {mine.rewards::2}
                     set {rewards.4::%player%} to 1
+                    sound_success(player)
                 else:
                     send "レベルが足りません"
+                    sound_error(player)
         if event-item is gold block named "&6500level":   
             if {rewards.5::%player%} is not 1:
                 if {mine.level::%player's uuid%} >= 500:
                     give player {mine.rewards::3}
                     set {rewards.5::%player%} to 1
+                    sound_success(player)
                 else:
                     send "レベルが足りません"
+                    sound_error(player)
         if event-item is gold block named "&6600level":   
             if {rewards.6::%player%} is not 1:
                 if {mine.level::%player's uuid%} >= 600:
                     loop 2 time:
                         give player {mine.rewards::3}
                     set {rewards.6::%player%} to 1
+                    sound_success(player)
                 else:
                     send "レベルが足りません"
+                    sound_error(player)
         if event-item is gold block named "&6700level":   
             if {rewards.7::%player%} is not 1:
                 if {mine.level::%player's uuid%} >= 700:
                     give player {mine.rewards::4}
                     set {rewards.7::%player%} to 1    
+                    sound_success(player)
                 else:
                     send "レベルが足りません"
+                    sound_error(player)
         if event-item is gold block named "&6800level": 
             if {rewards.8::%player%} is not 1:
                 if {mine.level::%player's uuid%} >= 800:
                     loop 2 time:
                         give player {mine.rewards::4}  
-                    set {rewards.8::%player%} to 1         
+                    set {rewards.8::%player%} to 1    
+                    sound_success(player)     
                 else:
                     send "レベルが足りません"
+                    sound_error(player)
