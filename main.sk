@@ -220,6 +220,9 @@ on load:
 
 on join:
     clear metadata value "mine_add_orerange" of player
+    set {mine.status.autoore.money::%players's uuid%} to {mine.status.autoore.money::%players%}
+    set {mine.status.autoore::%players's uuid%} to {mine.status.autoore::%player%}
+
 
 command /admin_inv [<player>]:
     permission: admin
@@ -1399,8 +1402,10 @@ function mine_skill_page(p: player, page: integer):
 command Debug_skill2:
     permission: admin
     trigger:
-        clear {mine.status.autoore.money::%player%}
-
+        loop all players:
+            set {mine.status.autoore.money::%loop-players's uuid%} to {mine.status.autoore.money::%loop-players%}
+            set {mine.status.autoore::%loop-players's uuid%} to {mine.status.autoore::%loop-players%}
+            broadcast "%{mine.status.autoore.money::%loop-players's uuid%}%"
 every second:
     loop all players:
         mine_boost_thread_wait(loop-player, 3)
