@@ -1395,7 +1395,7 @@ function mine_skill_page(p: player, page: integer):
                 set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&c最大レベルに達しています"       
             add 2 to {_n}
             
-command Debug_skill_2:
+command Debug_skill2:
     permission: admin
     trigger:
         set {mine.myboostp::%player's uuid%::1} to 0
