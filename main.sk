@@ -1398,10 +1398,12 @@ function mine_skill_page(p: player, page: integer):
 command Debug_skill2:
     permission: admin
     trigger:
-        set {mine.myboostp::%player's uuid%::1} to 0
-        set {mine.myboostp::%player's uuid%::2} to 0
-
-
+        send {mine.myboostp::%player's uuid%::1} 
+        send {mine.myboostp::%player's uuid%::2} 
+        send {mine.myboostprice::1} 
+        send {mine.myboostprice::2}
+        send {mine.myboostmax::1}
+        send {mine.myboostmax::2}
 
 every second:
     loop all players:
