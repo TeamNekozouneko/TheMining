@@ -220,7 +220,7 @@ on load:
 
 on join:
     clear metadata value "mine_add_orerange" of player
-    set {mine.status.autoore.money::%players's uuid%} to {mine.status.autoore.money::%players%}
+    set {mine.status.autoore.money::%play's uuiders's uuid%} to {mine.status.autoore.money::%play's uuiders%}
     set {mine.status.autoore::%players's uuid%} to {mine.status.autoore::%player%}
 
 
@@ -405,21 +405,21 @@ on inventory click:
             send "&2&l! &aスキルを選択なしに設定しました。" to player
             mine_skill_page(player, 1)
         if name of event-item is "&a自動圧縮":
-            if {mine.status.autoore.money::%player%} is true:
-                if {mine.status.autoore::%player%} is true:
-                    set {mine.status.autoore::%player%} to false
+            if {mine.status.autoore.money::%player's uuid%} is true:
+                if {mine.status.autoore::%player%'s uuid'} is true:
+                    set {mine.status.autoore::%player%'s uuid'} to false
                     mine_skill_page(player, 1)
                     send "&2&l! &a自動圧縮を無効化しました。" to player
                 else:
-                    set {mine.status.autoore::%player%} to true
+                    set {mine.status.autoore::%player%'s uuid'} to true
                     mine_skill_page(player, 1)
                     send "&2&l! &a自動圧縮を有効化しました。" to player
             else: 
                 if player's money >= 100000:
                     remove 100000 from player's money
                     send "&2&l! &a購入しました！" 
-                    set {mine.status.autoore.money::%player%} to true
-                    set {mine.status.autoore::%player%} to false
+                    set {mine.status.autoore.money::%player's uuid%} to true
+                    set {mine.status.autoore::%player's uuid%} to false
                     mine_skill_page(player, 1)
                 else:
                     send "&4&l! &c所持金が不足しています。"
@@ -898,8 +898,8 @@ function mine_variables_check(p: player):
             set {mine.myboostp::%{_p}'s uuid%::2} to 0 
     if {mine.setting.shift::%{_p}'s uuid%} is not set:
         set {mine.setting.shift::%{_p}'s uuid%} to "true"
-    if {mine.status.autoore::%{_p}%} is not set:
-        set {mine.status.autoore.money::%{_p}%} to false
+    if {mine.status.autoore::%{_p}'s uuid%} is not set:
+        set {mine.status.autoore.money::%{_p}'s uuid%} to false
 function mine_reset_player(p: player):
     clear {mine.level::%{_p}'s uuid%}
     clear {mine.exp::%{_p}'s uuid%}
@@ -1006,7 +1006,7 @@ on pickup:
 command /Debug_skill [<player>]:
     permission: admin
     trigger:
-        set {mine.status.autoore.money::%arg-1%} to false
+        set {mine.status.autoore.money::%arg-'s uuid1%} to false
         set {mine.status.autoore::%arg-1%} to false
 
 function mine_break(p: player, b: block, thread_bypass: boolean = false) :: boolean:
@@ -1382,13 +1382,13 @@ function mine_skill_page(p: player, page: integer):
             else:
                 set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&f現在レベル: &b%{mine.pboost::%{_p}'s uuid%::%loop-index%}%" and "&c最大レベルに達しています。"
             add 2 to {_n}
-        if {mine.status.autoore.money::%{_p}%} is true:
-            if {mine.status.autoore::%{_p}%} is true:
+        if {mine.status.autoore.money::%{_p}'s uuid%} is true:
+            if {mine.status.autoore::%{_p}%'s uuid} is true:
                 set slot 51 of {_p}'s current inventory to glowing dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&e選択中"
             else:
                 set slot 51 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
         else:
-            set {mine.status.autoore.money::%{_p}%} to false
+            set {mine.status.autoore.money::%{_p}'s uuid%} to false
             set slot 51 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&e値段: &6100000円" and "&7[ クリックして購入 ]"
         set {_n} to 47
         loop {mine.myboost::*}:
@@ -1403,7 +1403,7 @@ command Debug_skill2:
     permission: admin
     trigger:
         loop all players:
-            set {mine.status.autoore.money::%loop-players's uuid%} to {mine.status.autoore.money::%loop-players%}
+            set {mine.status.autoore.money::%loop-players's uuid%} to {mine.status.autoore.money::%loop's uuid-players%}
             set {mine.status.autoore::%loop-players's uuid%} to {mine.status.autoore::%loop-players%}
 
 every second:
@@ -1784,7 +1784,7 @@ on right click on crafting table:
     set slot 0 of player's current inventory to glowing book named "&6レシピ本"
 
 function autoore(p: player):
-    if {mine.status.autoore::%{_p}%} is true:
+    if {mine.status.autoore::%{_p}'s uuid%} is true:
         if {_p} has 64 cobblestone named "&a丸石":
             remove 64 cobblestone named "&a丸石" from {_p}'s inventory
             give {_p} {mine.items::5}
