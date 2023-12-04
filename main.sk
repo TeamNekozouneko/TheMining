@@ -1390,7 +1390,7 @@ function mine_skill_page(p: player, page: integer):
         loop {mine.myboost::*}:
             set {_price} to {mine.myboostprice::%loop-index%}
             if {mine.myboostp::%{_p}'s uuid%::%loop-index%} < {mine.myboostmax::%loop-index%}:
-                set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&f現在レベル: &b%{mine.myboostp::%{_p}'s uuid%::%loop-index%}%" and "&e値段: &6%{_price::%loop-index%}%" and "&7[ クリックして購入 ]" with nbt compound from "{mine_price:%{_price}%, mine_index:%loop-index%, type:""myskill""}"
+                set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&f現在レベル: &b%{mine.myboostp::%{_p}'s uuid%::%loop-index%}%" and "&e値段: &6%{_price}%" and "&7[ クリックして購入 ]" with nbt compound from "{mine_price:%{_price}%, mine_index:%loop-index%, type:""myskill""}"
             else:
                 set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&c最大レベルに達しています"       
             add 2 to {_n}
