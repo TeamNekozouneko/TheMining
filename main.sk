@@ -1480,6 +1480,7 @@ function mine_skill_thread_wait(p: player, index: integer, v: object):
             mine_all_x({_p}, "south", 2, 2, -1, -1, {_v})
             mine_all_x({_p}, "north", 1, -1, -2, 2, {_v})
 
+#範囲採掘するときはこちらを利用ください byにぎり
 function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: integer, v: block):
     if {mine.status.hougaku::%{_p}%} is {_h}:
         set {_loc} to location of {_v}
