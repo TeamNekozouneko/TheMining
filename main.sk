@@ -1735,7 +1735,7 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
 on portal:
     cancel event
     set {_pblock} to block 0.5 north player if block 0.5 north player is nether portal block
-    set {_pblock} to block 0.5 south player if block 0.5 sound player is nether portal block
+    set {_pblock} to block 0.5 south player if block 0.5 south player is nether portal block
     set {_pblock} to block 0.5 west player if block 0.5 west player is nether portal block
     set {_pblock} to block 0.5 east player if block 0.5 east player is nether portal block
     {_pblock} is set
