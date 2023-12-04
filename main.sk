@@ -193,7 +193,7 @@ on load:
     set {mine.seller.sellprice::7} to 2*64
     set {mine.seller.sellprice::9} to 5*64
     set {mine.seller.sellprice::8} to 8*64
-    set {mine.seller.sellprice::37} to 5000
+    set {mine.seller.sellprice::37} to 500
 
     clear {mine.enchant::*}
     set {mine.enchant_range} to 2
@@ -1405,7 +1405,7 @@ command Debug_skill2:
         loop all players:
             set {mine.status.autoore.money::%loop-players's uuid%} to {mine.status.autoore.money::%loop-players%}
             set {mine.status.autoore::%loop-players's uuid%} to {mine.status.autoore::%loop-players%}
-            broadcast "%{mine.status.autoore.money::%loop-players's uuid%}%"
+
 every second:
     loop all players:
         mine_boost_thread_wait(loop-player, 3)
@@ -1734,8 +1734,8 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
 
 on portal:
     cancel event
-    set {_pblock} to block 0.5 south player if block 0.5 south player is nether portal block
-    set {_pblock} to block 0.5 south player if block 0.5 south player is nether portal block
+    set {_pblock} to block 0.5 north player if block 0.5 north player is nether portal block
+    set {_pblock} to block 0.5 south player if block 0.5 sound player is nether portal block
     set {_pblock} to block 0.5 west player if block 0.5 west player is nether portal block
     set {_pblock} to block 0.5 east player if block 0.5 east player is nether portal block
     {_pblock} is set
