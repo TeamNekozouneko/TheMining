@@ -889,9 +889,10 @@ function mine_variables_check(p: player):
     loop {mine.boost::*}:
         if {mine.pboost::%{_p}'s uuid%::%loop-index%} is not set:
             set {mine.pboost::%{_p}'s uuid%::%loop-index%} to 0
-    loop {mine.myboost::*}:
-        if {mine.myboostp::%{_p}'s uuid%::%loop-index%} is not set:
-            set {mine.myboostp::%{_p}'s uuid%::%loop-index%} to 0
+        if {mine.myboostp::%{_p}'s uuid%::1} is not set:
+            set {mine.myboostp::%{_p}'s uuid%::1} to 0 
+        if {mine.myboostp::%{_p}'s uuid%::2} is not set:
+            set {mine.myboostp::%{_p}'s uuid%::2} to 0 
     if {mine.setting.shift::%{_p}'s uuid%} is not set:
         set {mine.setting.shift::%{_p}'s uuid%} to "true"
     if {mine.status.autoore::%{_p}%} is not set:
