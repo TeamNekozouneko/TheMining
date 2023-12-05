@@ -1942,7 +1942,7 @@ on first join:
         send "&b初見さんの%player%さんが入ってきたよ！あいさつしてみよう！" to loop-players
         send component {_t} to loop-players
     set {mine.pickaxe.time::%player%} to 0
-    set {mine.hojo.%loop-player's uuid%} to true
+    set {mine.hojo.%player's uuid%} to true
     
 command /Debug_test [<player>]:
     permission: admin
