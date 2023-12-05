@@ -129,8 +129,8 @@ on load:
     set {mine.skillprice::1} to 300
     set {mine.skillprice::2} to 1500
     set {mine.skillprice::3} to 8000  #2×2
-    set {mine.skillprice::4} to 100000 #3×3
-    set {mine.skillprice::5} to 300000 #4×4
+    set {mine.skillprice::4} to 30000 #3×3
+    set {mine.skillprice::5} to 150000 #4×4
 
     clear {mine.boost::*}
     set {mine.boost::1} to experience bottle named "&eEXPブースト" with lore "&7購入するごとに掘った時" and "&7の獲得XPが1%%上昇します。"
@@ -1394,7 +1394,8 @@ function mine_skill_page(p: player, page: integer):
             else:
                 set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&c最大レベルに達しています"       
             add 2 to {_n}
-            
+
+
 every second:
     loop all players:
         mine_boost_thread_wait(loop-player, 3)
