@@ -898,8 +898,10 @@ function mine_variables_check(p: player):
             set {mine.myboostp::%{_p}'s uuid%::2} to 0 
     if {mine.setting.shift::%{_p}'s uuid%} is not set:
         set {mine.setting.shift::%{_p}'s uuid%} to "true"
-    if {mine.status.autoore::%{_p}'s uuid%} is not set:
+    if {mine.status.autoore.money::%{_p}'s uuid%} is not set:
         set {mine.status.autoore.money::%{_p}'s uuid%} to false
+    if {mine.status.autoore.money::%{_p}%} is true:
+        set {mine.status.autoore.money::%{_p}'s uuid%} to true
 function mine_reset_player(p: player):
     clear {mine.level::%{_p}'s uuid%}
     clear {mine.exp::%{_p}'s uuid%}
@@ -1903,9 +1905,3 @@ function maboroshi_gatya(p: player):
     wait 1 second
     add {mine.maboroshi.money::%{_p}'s uuid%} to {_p}'s money
 
-#一時的なコメント
-
-command /testaa:
-    permission: admin
-    trigger:    
-        send "%{mine.status.autoore.money::%player's uuid%}%"
