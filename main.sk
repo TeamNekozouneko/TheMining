@@ -1905,3 +1905,6 @@ function maboroshi_gatya(p: player):
     wait 1 second
     add {mine.maboroshi.money::%{_p}'s uuid%} to {_p}'s money
 
+command /test:
+    trigger:    
+        send " "
