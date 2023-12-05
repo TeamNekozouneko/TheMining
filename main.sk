@@ -1948,7 +1948,8 @@ command /Debug_test [<player>]:
     trigger:    
         send "%{mine.hojo.%arg-1's uuid%}%"
 
-command /ichijiteki:
+command /temp:
+    permission: admin
     trigger:
         loop all players:
             set {mine.hojo.%loop-players's uuid%} to false
@@ -1997,4 +1998,4 @@ on first join:
             set {join.message::*} to false
             clear {join.message::*}
 
-#git更新ようコメント
+
