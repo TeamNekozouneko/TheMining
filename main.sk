@@ -65,6 +65,7 @@ on load:
     set {mine.items::35} to glowing stick named "&dポータル設定用棒"
     set {mine.items::36} to unbreakable netherite pickaxe of efficiency 18 named "&7[&8黒曜石のピッケル&7]" with lore "&7黒曜石で作られた頑丈なピッケル" with enchants flag hidden
     set {mine.items::37} to glowing crying obsidian named "&8黒曜石の塊" with lore "&4重く鋭い..."
+    set {mine.items::38} to unbreakable diamond pickaxe of efficiency 10 named "&7[&a初心者ピッケル&7]" with lore "&b30分間のみ利用可能です"
 
     clear {mine.require::*}
     set {mine.require::2} to {mine.items::0}
@@ -112,11 +113,19 @@ on load:
     add {mine.ores::obsidian} to {mine.orewhite::2::*}
     add {mine.ores::emerald_ore} to {mine.orewhite::3::*}
     add {mine.ores::obsidian} to {mine.orewhite::3::*}
-    add {mine.ores::obsidian} to {mine.orewhite::12::*}
-    add {mine.ores::obsidian} to {mine.orewhite::13::*}
-    add {mine.ores::obsidian} to {mine.orewhite::14::*}
-    add {mine.ores::obsidian} to {mine.orewhite::15::*}
-    add {mine.ores::obsidian} to {mine.orewhite::16::*}
+    add {mine.ores::obsidian} to {mine.orewhite::30::*}
+    add {mine.ores::obsidian} to {mine.orewhite::31::*}
+    add {mine.ores::obsidian} to {mine.orewhite::32::*}
+    add {mine.ores::obsidian} to {mine.orewhite::33::*}
+    add {mine.ores::obsidian} to {mine.orewhite::34::*}
+
+    add 0.1 to {mine.price::stone}
+    add 0.3 to {mine.price::coal_ore}
+    add 0.3 to {mine.price::iron_ore}
+    add 0.8 to {mine.price::emerald_ore}
+    add 0.8 to {mine.price::diamond_ore}
+    add 1 to {mine.price::obsidian}
+
 
     clear {mine.skills::*}
     set {mine.skills::1} to stone named "&a二連採掘" with lore "&7掘った時に50%%の確立で堀った上" and "&7のブロックも破壊されます。"
@@ -351,7 +360,6 @@ on inventory click:
                             give {mine.items::%{_index}%} to player
                             send "&2&l! &a購入しました。" to player
                             sound_success(player)
-                            mine_quest_thread(player, "BUY", {_index})
                         else:
                             sound_error(player)
                             if item amount of {mine.require::%{_index}%} is 1:
@@ -421,6 +429,7 @@ on inventory click:
                     set {mine.status.autoore.money::%player's uuid%} to true
                     set {mine.status.autoore::%player's uuid%} to false
                     mine_skill_page(player, 1)
+                    mine_quest_thread(player, "BUYSKILL", 0)
                 else:
                     send "&4&l! &c所持金が不足しています。"
         else if {_price} and {_index} is set:
@@ -431,6 +440,7 @@ on inventory click:
                     send "&2&l! &a購入しました！" to player
                     mine_skill_page(player, 1)
                     sound_success(player)
+                    mine_quest_thread(player, "BUYSKILL", 0)
                 else:
                     send "&4&l! &c所持金が不足しています。" to player
                     sound_error(player)
@@ -445,6 +455,7 @@ on inventory click:
                         send "&2&l! &a購入しました！" to player
                         mine_skill_page(player, 1)
                         sound_success(player)
+                        mine_quest_thread(player, "BUYSKILL", 0)
                     else:
                         send "&4&l! &c所持金が不足しています。" to player
                         sound_error(player)
@@ -454,6 +465,7 @@ on inventory click:
                     send "&2&l! &a購入しました！" to player
                     add 1 to {mine.myboostp::%player's uuid%::%{_index}%}
                     mine_skill_page(player, 1)
+                    mine_quest_thread(player, "BUYSKILL", 0)
                 else:
                     send "&4&l! &c所持金が不足しています。" to player
                     mine_skill_page(player, 1)
@@ -863,9 +875,8 @@ every 1 second:
     loop all players:
         mine_scoreboardUpdate(loop-player)
 
-
-
 on first join:
+    wait 10 tick
     teleport player to location of {mine.generic::lobbyloc::1}
     send title "&m     &f&l ようこそ" with subtitle "&bᴡᴇʟᴄᴏᴍᴇ ᴛᴏ &c&lThe Mining" to player
     loop 5 times:
@@ -875,12 +886,12 @@ on first join:
     send "&fこのサーバーでは、採掘がメインの要素となっています！" to player
     send "&f鉱石の採掘を重ね、ピッケルの強化や取引をお楽しみいただけます。" to player
     send "&r" to player
-    send "&f手元には「%name of {mine.items::0}%&f」があります。" to player
+    send "&f手元には「%name of {mine.items::38}%&f」と「%name of {mine.items::0}%&f」があります。" to player
     send "&fまずは目の前の鉱石をがむしゃらに掘り始めてみましょう！" to player
     loop 2 times:
         send "&r" to player
     play sound "entity.player.levelup" to player
-    give {mine.items::0} to player
+    
 
 function mine_variables_check(p: player):
     if {mine.level::%{_p}'s uuid%} is not set:
@@ -1052,9 +1063,10 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
             give {mine.ores::%{_name}%} to {_p}
             add 1 to {mine.mnum::%{_p}'s uuid%}
             
-            #v0.2アプデのシステム改造により廃止
-            #set {_money} to {mine.price::%{_name}%}
-            #add {_money} to {_p}'s money
+            #初見さんキャンペーン対応のために復活
+            if {mine.hojo.%{_p}'s uuid%} is true:
+                set {_money} to {mine.price::%{_name}%}
+                add {_money} to {_p}'s money
 
             loop {mine.seller.sellprice::*}:
                 if 1 of {mine.items::%loop-index%} is 1 of {mine.ores::%{_name}%}:
@@ -1075,6 +1087,8 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 mine_skill_thread_wait({_p}, 3, {_b})
                 mine_skill_thread_wait({_p}, 4, {_b})
                 mine_skill_thread_wait({_p}, 5, {_b})
+                if {mine.hojo.%{_p}'s uuid%} is true:
+                    mine_skill_hojo({_p}, {_b})
             mine_quest_thread({_p}, "BREAK", 1)
 
             if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
@@ -1100,6 +1114,12 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
             return true
     else if {_p} is not op:
         return false
+
+function mine_skill_hojo(p: player, v: block):
+    mine_all_z({_p}, "west", 1, 1, -1, -1, {_v})
+    mine_all_z({_p}, "east", -1, 1, 1, -1, {_v})
+    mine_all_x({_p}, "south", 1, 1, -1, -1, {_v})
+    mine_all_x({_p}, "north", 1, 1, -1, -1, {_v})
 
 #以下ショップ
 on npc right click:
@@ -1498,20 +1518,20 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
                 set loop-block to air
 
 #プレイヤーの向いている方角の取得
-on any move:
-    if player's yaw is between 45 and 134:
-        clear {mine.status.hougaku::%player%}
-        set {mine.status.hougaku::%player%} to "west"
-    if player's yaw is between 135 and 224:
-        clear {mine.status.hougaku::%player%}
-        set {mine.status.hougaku::%player%} to "north"
-    if player's yaw is between 225 and 314:
-        clear {mine.status.hougaku::%player%}
-        set {mine.status.hougaku::%player%} to "east"
-    if player's yaw is not between 45 and 314:
-        clear {mine.status.hougaku::%player%::*}
-        set {mine.status.hougaku::%player%} to "south"
-                
+every 10 tick:
+    loop all players:
+        if loop-player's yaw is between 45 and 134:
+            clear {mine.status.hougaku::%loop-player%}
+            set {mine.status.hougaku::%loop-player%} to "west"
+        if loop-player's yaw is between 135 and 224:
+            clear {mine.status.hougaku::%loop-player%}
+            set {mine.status.hougaku::%loop-player%} to "north"
+        if loop-player's yaw is between 225 and 314:
+            clear {mine.status.hougaku::%loop-player%}
+            set {mine.status.hougaku::%loop-player%} to "east"
+        if loop-player's yaw is not between 45 and 314:
+            clear {mine.status.hougaku::%loop-player%::*}
+            set {mine.status.hougaku::%loop-player%} to "south"
 
 #以下特殊アイテム
 
@@ -1715,7 +1735,7 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
     #以下条件設定
     return true if {_n} is 1
     if {_n} is 2:
-        if {mine.level::%{_p}'s uuid%} >= 200:
+        if {mine.level::%{_p}'s uuid%} >= 30:
             if {mine.players::%{_p}'s uuid%::recipes::*} contains 21:
                 return true
         return false
@@ -1762,9 +1782,13 @@ on portal:
             send action bar "&aテレポートしました！" to player
             teleport player to location of {mine.generic::lobbyloc::%{_connection}%}
             sound_portal_success(player)
-#クエスト用
+
 on chat:
-    mine_quest_thread(player, "CHAT", 1)        
+    mine_quest_thread(player, "CHAT", 1) 
+    if {_r} is set:
+        set {_message} to message
+        if {_message} is "初見さんこんにちは":
+            mine_quest_thread(player, "JOIN", 0)          
 
 on right click on crafting table:
     cancel event
@@ -1860,6 +1884,8 @@ function mine_open_maboroshi(p: player):
     set slot 26 of {_p}'s current inventory to redstone torch named "&c注意:" with lore "&c単体での取引のみです。"
 
 on inventory click:
+    if name of event-item is "&7[&a初心者ピッケル&7]":
+        cancel event
     if name of player's current inventory is "{@menu_maboroshi}":
         if name of event-item is " " or "&aおじいさんはこのアイテムを求めていないようだ" or "&c注意:":
             cancel event
@@ -1906,8 +1932,58 @@ function maboroshi_gatya(p: player):
     wait 1 second
     add {mine.maboroshi.money::%{_p}'s uuid%} to {_p}'s money
 
-command /test:
-    trigger:    
-        send " "
-        send "    "
-        send " ;; ;;"
+on first join:
+    give {mine.items::0} to player
+    give {mine.items::38} to player
+    set {_t} to text component from "&e&n[あいさつをする]"
+    set hover event of {_t} to a new hover event showing "チャットに初見さんへのあいさつを送信します"
+    set click event of {_t} to a new click event to run command "/joinmsg"
+    loop all players:
+        send "&b初見さんの%player%さんが入ってきたよ！あいさつしてみよう！" to loop-players
+        send component {_t} to loop-players
+    set {mine.pickaxe.time::%player%} to 0
+    
+every 1 minute:
+    loop all players:
+        add 1 to {mine.pickaxe.time::%loop-player%}
+        if {mine.hojo.%loop-player's uuid%} is not set:
+            set {mine.hojo.%loop-player's uuid%} to true
+        if {mine.pickaxe.time::%loop-player%} > 30:
+            if loop-player has {mine.items::38}: 
+                remove 1 of {mine.items::38} from loop-player's inventory
+                send "&b初心者ピッケルが無くなってしまった!" to loop-player
+                send "&b鉱石をNPCに売ることでお金がもらえます!" to loop-player
+                send "&bお金を使いアップグレードNPCでアップグレードできるので" to loop-player
+                send "&bつるはしをどんどんアップグレードしていこう!" to loop-player
+                clear {mine.pickaxe.time::%loop-player%}
+                set {mine.hojo.%loop-player's uuid%} to false
+            else:
+                clear {mine.pickaxe.time::%loop-player%}
+
+command /joinmsg:
+    trigger:
+        if {join.message::*} is true:
+            set {_l} to random integer between 1 and 4
+            set {_r} to round({_l})
+            if {_r} is 1:
+                broadcast "<%player%> 初見さんどもー" 
+            if {_r} is 2:
+                broadcast "<%player%> 初見さんこんにちはー"
+            if {_r} is 3:
+                broadcast "<%player%> 初見さんいらっしゃい～"
+            if {_r} is 4:
+                broadcast "<%player%> 初見さんよろしく～"
+            mine_quest_thread(player, "JOIN", 0)
+        else:
+            send "&b初見さんがいるときのみ利用可能です"
+            
+on first join:
+    set {_r} to true
+    set {join.message::*} to true
+    loop 120 time:
+        add -1 to {_r} 
+        wait 1 second
+        if {_r} is 0:
+            set {join.message::*} to false
+            clear {join.message::*}
+
