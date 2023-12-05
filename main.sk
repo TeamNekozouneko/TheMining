@@ -407,11 +407,11 @@ on inventory click:
         if name of event-item is "&a自動圧縮":
             if {mine.status.autoore.money::%player's uuid%} is true:
                 if {mine.status.autoore::%player's uuid%} is true:
-                    set {mine.status.autoore::%player%'s uuid%} to false
+                    set {mine.status.autoore::%player's uuid%} to false
                     mine_skill_page(player, 1)
                     send "&2&l! &a自動圧縮を無効化しました。" to player
                 else:
-                    set {mine.status.autoore::%player%'s uuid%} to true
+                    set {mine.status.autoore::%player's uuid%} to true
                     mine_skill_page(player, 1)
                     send "&2&l! &a自動圧縮を有効化しました。" to player
             else: 
@@ -1902,4 +1902,5 @@ function maboroshi_gatya(p: player):
     set slot 31 of {_p}'s current inventory to yellow shulker box named "&6&lおじいさんからのプレゼント!" with lore "&e%{mine.maboroshi.money::%{_p}'s uuid%}%円"
     wait 1 second
     add {mine.maboroshi.money::%{_p}'s uuid%} to {_p}'s money
-    play sound "entity.{_p}.levelup" with volume 0.5 to {_p}
+
+#一時的なコメント
