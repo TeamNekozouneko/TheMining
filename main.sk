@@ -1943,11 +1943,6 @@ on first join:
         send component {_t} to loop-players
     set {mine.pickaxe.time::%player%} to 0
     set {mine.hojo.%player's uuid%} to true
-    
-command /Debug_test [<player>]:
-    permission: admin
-    trigger:    
-        send "%{mine.hojo.%arg-1's uuid%}%"
 
 command /temp:
     permission: admin
