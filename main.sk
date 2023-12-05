@@ -553,24 +553,24 @@ on inventory close:
         give {_i8} to player
         give {_i9} to player
     if name of player's current inventory is "{@menu_maboroshi}":
-        set {_temp::*} to 10 and 11 and 12 and 13 and 14 and 15 and 16
-        set {_l2::*} to slot {_temp::*} of player's current inventory
-        give {_l2::*} to player
-        #もしもの時用
-        #set {_i1} to slot 10 of player's current inventory
-        #set {_i2} to slot 11 of player's current inventory
-        #set {_i3} to slot 12 of player's current inventory
-        #set {_i4} to slot 13 of player's current inventory
-        #set {_i5} to slot 14 of player's current inventory
-        #set {_i6} to slot 15 of player's current inventory
-        #set {_i7} to slot 16 of player's current inventory
-        #give {_i1} to player
-        #give {_i2} to player
-        #give {_i3} to player
-        #give {_i4} to player
-        #give {_i5} to player
-        #give {_i6} to player
-        #give {_i7} to player
+        #skriptのバージョン古いのが原因？
+        #set {_temp::*} to 10 and 11 and 12 and 13 and 14 and 15 and 16
+        #set {_l2::*} to slot {_temp::*} of player's current inventory
+        #give {_l2::*} to player
+        set {_i1} to slot 10 of player's current inventory
+        set {_i2} to slot 11 of player's current inventory
+        set {_i3} to slot 12 of player's current inventory
+        set {_i4} to slot 13 of player's current inventory
+        set {_i5} to slot 14 of player's current inventory
+        set {_i6} to slot 15 of player's current inventory
+        set {_i7} to slot 16 of player's current inventory
+        give {_i1} to player
+        give {_i2} to player
+        give {_i3} to player
+        give {_i4} to player
+        give {_i5} to player
+        give {_i6} to player
+        give {_i7} to player
 function mine_teleport_lobby(p: player, num: string):
     if {_num} is not set:
         send "&4&l! &c優先番号を指定してください。" to {_p}
