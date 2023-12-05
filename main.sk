@@ -1992,4 +1992,4 @@ on first join:
             set {join.message::*} to false
             clear {join.message::*}
 
-
+#github更新用tempコメント
