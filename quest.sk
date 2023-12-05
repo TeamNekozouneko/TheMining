@@ -11,6 +11,12 @@ on load:
     set {mine.quests::6} to "鉱石または石を100000回採掘する"
     set {mine.quests::7} to "3回他の人と話す"
     set {mine.quests::8} to "ガチャを10回まわす"
+    set {mine.quests::9} to "鉱石または石を300000回採掘する"
+    set {mine.quests::10} to "初見さんに「初見さんこんにちは」と言う"
+    set {mine.quests::11} to "合計でスキル1個購入する"
+    set {mine.quests::12} to "合計でスキル2個購入する"
+    set {mine.quests::13} to "合計でスキル3個購入する"
+    set {mine.quests::14} to "合計でスキル4個購入する" 
 
     clear {mine.quest_max::*}
     set {mine.quest_max::1} to 20000
@@ -21,6 +27,12 @@ on load:
     set {mine.quest_max::6} to 100000
     set {mine.quest_max::7} to 3
     set {mine.quest_max::8} to 10
+    set {mine.quest_max::9} to 300000
+    set {mine.quest_max::10} to 1
+    set {mine.quest_max::11} to 1
+    set {mine.quest_max::12} to 2
+    set {mine.quest_max::13} to 3
+    set {mine.quest_max::14} to 4
 
     clear {mine.quest_reward::*}
     add "money_5000" to {mine.quest_reward::1::*}
@@ -32,10 +44,19 @@ on load:
     add "money_10000" to {mine.quest_reward::4::*}
     add "exp_3000" to {mine.quest_reward::4::*}
     add "money_3000" to {mine.quest_reward::5::*}
-    add "money_10000" to {mine.quest_reward::6::*}
     add "exp_5000" to {mine.quest_reward::6::*}
+    add "money_10000" to {mine.quest_reward::6::*}
     add "exp_500" to {mine.quest_reward::7::*}
     add "exp_1000" to {mine.quest_reward::8::*}
+    add "exp_8000" to {mine.quest_reward::9::*}
+    add "money_30000" to {mine.quest_reward::9::*}
+    add "money_800" to {mine.quest_reward::10::*}
+    add "money_1000" to {mine.quest_reward::11::*}
+    add "money_2000" to {mine.quest_reward::12::*}
+    add "money_3000" to {mine.quest_reward::13::*}
+    add "money_4000" to {mine.quest_reward::14::*}
+
+
 on npc right click:
     #player is op
     if npc name is "&aクエストマスター &7[クリック]":
@@ -63,7 +84,7 @@ function mine_open_quest(p: player):
     mine_open_quest_refancy({_p})
 
 function mine_open_quest_refancy(p: player):
-    set {_b} to 10
+    set {_b} to 0
     set {_n} to {_b}
     loop {mine.quests::*}: #クエスト表示
         continue if mine_quest_conditions({_p}, loop-index parsed as integer) = false #クエスト対象のフィルタリング
@@ -117,7 +138,7 @@ function mine_open_quest_refancy(p: player):
             add 1 to {_n}
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
-    return true if {_i} = 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9
+    return true if {_i} = 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 or 10 or 11 or 12 or 13 or 14
     return false
 
 function mine_quest_thread(p: player, type: string, v: object):
@@ -126,6 +147,8 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A1", {_v})
         #10万採掘
         mine_quest_thread({_p}, "A6", {_v})
+        #30万採掘
+        mine_quest_thread({_p}, "A9", {_v})
     else if {_type} = "BUY":
         mine_quest_thread({_p}, "A2", {_v}) if {_v} is 0 or 2 or 3 or 12 or 13 or 14 or 15 or 16 or 21 or 31 or 32 or 33 or 34
     else if {_type} = "ENCHANT":
@@ -136,6 +159,13 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A7", {_v})
     else if {_type} = "GATYA":
         mine_quest_thread({_p}, "A8", {_v})
+    else if {_type} = "JOIN":
+        mine_quest_thread({_p}, "A10", {_v})
+    else if {_type} = "BUYSKILL":
+        mine_quest_thread({_p}, "A11", {_v})
+        mine_quest_thread({_p}, "A12", {_v})
+        mine_quest_thread({_p}, "A13", {_v})
+        mine_quest_thread({_p}, "A14", {_v})
     else if {_type} = "A1":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 1:
             add {_v} to {mine.player_quest_data::%{_p}'s uuid%::1}
@@ -157,6 +187,25 @@ function mine_quest_thread(p: player, type: string, v: object):
     else if {_type} = "A8":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 8:
             add 1 to {mine.player_quest_data::%{_p}'s uuid%::8}
+    else if {_type} = "A9":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 9:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::9}
+    else if {_type} = "A10":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 10:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::10}
+    else if {_type} = "A11":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 11:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::11}
+    else if {_type} = "A12":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 12:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::12}
+    else if {_type} = "A13":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 13:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::13}
+    else if {_type} = "A14":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 14:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::14}
+
 every second:    
     loop all players:
         if name of loop-player's current inventory is "{@mine_quest_title}":
