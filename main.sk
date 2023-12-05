@@ -1997,3 +1997,4 @@ on first join:
             set {join.message::*} to false
             clear {join.message::*}
 
+#git更新ようコメント
