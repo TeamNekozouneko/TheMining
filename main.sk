@@ -1942,6 +1942,7 @@ on first join:
         send "&b初見さんの%player%さんが入ってきたよ！あいさつしてみよう！" to loop-players
         send component {_t} to loop-players
     set {mine.pickaxe.time::%player%} to 0
+    set {mine.hojo.%loop-player's uuid%} to true
     
 command /Debug_test [<player>]:
     permission: admin
@@ -1957,8 +1958,6 @@ command /temp:
 every 1 minute:
     loop all players:
         add 1 to {mine.pickaxe.time::%loop-player%}
-        if {mine.hojo.%loop-player's uuid%} is not set:
-            set {mine.hojo.%loop-player's uuid%} to true
         if {mine.pickaxe.time::%loop-player%} > 30:
             if loop-player has {mine.items::38}: 
                 remove 1 of {mine.items::38} from loop-player's inventory
