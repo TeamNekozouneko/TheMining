@@ -1948,7 +1948,10 @@ command /Debug_test [<player>]:
     trigger:    
         send "%{mine.hojo.%arg-1's uuid%}%"
 
-
+command /ichijiteki:
+    trigger:
+        loop all players:
+            set {mine.hojo.%loop-players's uuid%} to false
 
 every 1 minute:
     loop all players:
