@@ -888,6 +888,7 @@ on first join:
     send "&r" to player
     send "&f手元には「%name of {mine.items::38}%&f」と「%name of {mine.items::0}%&f」があります。" to player
     send "&fまずは目の前の鉱石をがむしゃらに掘り始めてみましょう！" to player
+    send "&6&l現在初心者さん応援キャンペーン中で30分間範囲採掘・採掘ごとにお金がもらえます。"
     loop 2 times:
         send "&r" to player
     play sound "entity.player.levelup" to player
@@ -1900,6 +1901,15 @@ on inventory click:
         if name of event-item is "&6&lおじいさんからのプレゼント!":
             cancel event
             close player's inventory 
+    if name of player's current inventory is "&c&lmineメニュー":
+        if name of event-item is "&aアップグレード":
+            mine_open_upgrade(player, 1, 1)
+        if name of event-item is "&cレベル報酬":
+            rewards(player)
+        if name of event-item is "&aスキル":
+            mine_skill_page(player, 1)
+        if name of event-item is "&aクエストマスター":
+            mine_open_quest(player)
 
 function maboroshi_gatya(p: player):
     open chest inventory with 6 row named "&c報酬ガチャ" to {_p}     
@@ -1980,7 +1990,7 @@ command /joinmsg:
                 broadcast "<%player%> 初見さんよろしく～"
             mine_quest_thread(player, "JOIN", 0)
         else:
-            send "&b初見さんがいるときのみ利用可能です"
+            send "&b初見さんログインした1分間利用可能です"
             
 on first join:
     set {join.message::*} to true
@@ -2002,17 +2012,4 @@ command /s:
         set slot 13 of player's current inventory to book named "&aクエストマスター"
         set {s.menu::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 44 and 45 and 46 and 47 and 48 and 49 and 50 and 51 and 52 and 53 
         set slot {s.menu::*} of player's current inventory to red stained glass pane named " " 
-
-on inventory click:
-    player is op
-    if name of player's current inventory is "&c&lmineメニュー":
-        if name of event-item is "&aアップグレード":
-            mine_open_upgrade(player, 1, 1)
-        if name of event-item is "&cレベル報酬":
-            rewards(player)
-        if name of event-item is "&aスキル":
-            mine_skill_page(player, 1)
-        if name of event-item is "&aクエストマスター":
-            mine_open_quest(player)
-
 
