@@ -1785,10 +1785,14 @@ on portal:
 
 on chat:
     mine_quest_thread(player, "CHAT", 1) 
-    if {_r} is set:
-        set {_message} to message
-        if {_message} is "初見さんこんにちは":
+    if {join.syoken} is set:
+        set {message} to message
+        if {message} is "初見さんこんにちは":
             mine_quest_thread(player, "JOIN", 0)          
+
+command /adada:
+    trigger:
+        broadcast "%{message}%"
 
 on right click on crafting table:
     cancel event
@@ -1836,7 +1840,7 @@ on inventory click:
     if name of player's current inventory is "&7[&8黒曜石のピッケル&7]&fのレシピ": 
         cancel event
 
-every 30 minutes:
+every 30 minute:
     set {_int} to 15
     set {_ver} to the online player number
     set {_l} to {_int}*{_ver}
@@ -1983,13 +1987,13 @@ command /joinmsg:
             send "&b初見さんがいるときのみ利用可能です"
             
 on first join:
-    set {_r} to true
+    set {join.syoken} to true
     set {join.message::*} to true
     loop 120 time:
-        add -1 to {_r} 
+        add -1 to {join.syoken} 
         wait 1 second
-        if {_r} is 0:
+        if {join.syoken} is 0:
+            clear {join.syoken}
             set {join.message::*} to false
             clear {join.message::*}
 
-#github更新用tempコメント
