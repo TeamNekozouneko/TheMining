@@ -1981,13 +1981,13 @@ command /joinmsg:
             set {_l} to random integer between 1 and 4
             set {_r} to round({_l})
             if {_r} is 1:
-                broadcast "<%player%> 初見さんどもー" 
+                broadcast "%player%&a: &f初見さんどもー" 
             if {_r} is 2:
-                broadcast "<%player%> 初見さんこんにちはー"
+                broadcast "%player%&a: &f初見さんこんにちはー"
             if {_r} is 3:
-                broadcast "<%player%> 初見さんいらっしゃい～"
+                broadcast "%player%&a: &f初見さんいらっしゃい～"
             if {_r} is 4:
-                broadcast "<%player%> 初見さんよろしく～"
+                broadcast "%player%&a: &f初見さんよろしく～"
             mine_quest_thread(player, "JOIN", 0)
         else:
             send "&b初見さんログインした1分間利用可能です"
