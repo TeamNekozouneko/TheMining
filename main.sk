@@ -1785,14 +1785,10 @@ on portal:
 
 on chat:
     mine_quest_thread(player, "CHAT", 1) 
-    if {join.syoken} is set:
+    if {join.message::*} is true:
         set {message} to message
         if {message} is "初見さんこんにちは":
-            mine_quest_thread(player, "JOIN", 0)          
-
-command /adada:
-    trigger:
-        broadcast "%{message}%"
+            mine_quest_thread(player, "JOIN", 0)   
 
 on right click on crafting table:
     cancel event
@@ -1987,13 +1983,36 @@ command /joinmsg:
             send "&b初見さんがいるときのみ利用可能です"
             
 on first join:
-    set {join.syoken} to true
     set {join.message::*} to true
-    loop 120 time:
+    set {join.syoken} to 60
+    loop 60 time:
         add -1 to {join.syoken} 
         wait 1 second
-        if {join.syoken} is 0:
-            clear {join.syoken}
+        if {join.syoken} <= 0:
             set {join.message::*} to false
             clear {join.message::*}
+            clear {join.syoken} 
+
+command /s:
+    trigger:
+        open chest inventory with 6 row named "&c&lmineメニュー" to player
+        set slot 10 of player's current inventory to diamond pickaxe named "&aアップグレード"
+        set slot 11 of player's current inventory to gold block named "&cレベル報酬"
+        set slot 12 of player's current inventory to heart of the sea named "&aスキル"
+        set slot 13 of player's current inventory to book named "&aクエストマスター"
+        set {s.menu::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 44 and 45 and 46 and 47 and 48 and 49 and 50 and 51 and 52 and 53 
+        set slot {s.menu::*} of player's current inventory to red stained glass pane named " " 
+
+on inventory click:
+    player is op
+    if name of player's current inventory is "&c&lmineメニュー":
+        if name of event-item is "&aアップグレード":
+            mine_open_upgrade(player, 1, 1)
+        if name of event-item is "&cレベル報酬":
+            rewards(player)
+        if name of event-item is "&aスキル":
+            mine_skill_page(player, 1)
+        if name of event-item is "&aクエストマスター":
+            mine_open_quest(player)
+
 
