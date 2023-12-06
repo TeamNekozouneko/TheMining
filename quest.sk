@@ -12,7 +12,7 @@ on load:
     set {mine.quests::7} to "3回他の人と話す"
     set {mine.quests::8} to "ガチャを10回まわす"
     set {mine.quests::9} to "鉱石または石を300000回採掘する"
-    set {mine.quests::10} to "初見さんに「初見さんこんにちは」と言う"
+    set {mine.quests::10} to "初見さんに「初見さんこんにちは」と言う（一分以内）"
     set {mine.quests::11} to "合計でスキル1個購入する"
     set {mine.quests::12} to "合計でスキル2個購入する"
     set {mine.quests::13} to "合計でスキル3個購入する"
