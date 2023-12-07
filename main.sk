@@ -320,7 +320,7 @@ command /spawn [<text>]:
             sound_portal_failed(player)
 
 on tab complete of "/spawn":
-    set tab completions for position 1 to "help", "1", "2" and "3"
+    set tab completions for position 1 to "help", "1", "2", "3", "4"
 
 on inventory click:
     if name of player's current inventory is "{@oremenu_title}":
@@ -1742,7 +1742,8 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
         return false
     else if {_n} is 3:
         return true
-    return false
+    else if {_n} is 4:
+        return true
 
 on portal:
     cancel event
