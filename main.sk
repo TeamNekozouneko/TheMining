@@ -1743,7 +1743,7 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
     else if {_n} is 3:
         return true
     else if {_n} is 4:
-        return true
+        return false
 
 on portal:
     cancel event
