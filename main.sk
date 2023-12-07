@@ -65,7 +65,7 @@ on load:
     set {mine.items::35} to glowing stick named "&dポータル設定用棒"
     set {mine.items::36} to unbreakable netherite pickaxe of efficiency 18 named "&7[&8黒曜石のピッケル&7]" with lore "&7黒曜石で作られた頑丈なピッケル" with enchants flag hidden
     set {mine.items::37} to glowing crying obsidian named "&8黒曜石の塊" with lore "&4重く鋭い..."
-    set {mine.items::38} to unbreakable diamond pickaxe of efficiency 10 named "&7[&a初心者ピッケル&7]" with lore "&b30分間のみ利用可能です"
+    set {mine.items::38} to unbreakable diamond pickaxe of efficiency 3 named "&7[&a初心者ピッケル&7]" with lore "&b30分間のみ利用可能です"
 
     clear {mine.require::*}
     set {mine.require::2} to {mine.items::0}
@@ -1953,6 +1953,15 @@ on first join:
         send component {_t} to loop-players
     set {mine.pickaxe.time::%player%} to 0
     set {mine.hojo.%player's uuid%} to true
+    set {join.message::*} to true
+    set {join.syoken} to 60
+    loop 60 time:
+        add -1 to {join.syoken} 
+        wait 1 second
+        if {join.syoken} <= 0:
+            set {join.message::*} to false
+            clear {join.message::*}
+            clear {join.syoken} 
 
 command /temp:
     permission: admin
@@ -1974,6 +1983,7 @@ every 1 minute:
                 set {mine.hojo.%loop-player's uuid%} to false
             else:
                 clear {mine.pickaxe.time::%loop-player%}
+    
 
 command /joinmsg:
     trigger:
@@ -1990,19 +2000,8 @@ command /joinmsg:
                 broadcast "%player%&a: &f初見さんよろしく～"
             mine_quest_thread(player, "JOIN", 0)
         else:
-            send "&b初見さんログインした1分間利用可能です"
+            send "&b初見さんがログインした1分間利用可能です"
             
-on first join:
-    set {join.message::*} to true
-    set {join.syoken} to 60
-    loop 60 time:
-        add -1 to {join.syoken} 
-        wait 1 second
-        if {join.syoken} <= 0:
-            set {join.message::*} to false
-            clear {join.message::*}
-            clear {join.syoken} 
-
 command /s:
     trigger:
         open chest inventory with 6 row named "&c&lmineメニュー" to player
@@ -2012,4 +2011,25 @@ command /s:
         set slot 13 of player's current inventory to book named "&aクエストマスター"
         set {s.menu::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 44 and 45 and 46 and 47 and 48 and 49 and 50 and 51 and 52 and 53 
         set slot {s.menu::*} of player's current inventory to red stained glass pane named " " 
+every 1 minute:
+    set {day.date} to now formatted as "dd"
+    if {day.date} is not {day.date.p}:
+        set {day.date.p} to {day.date}
+        clear {mine.reset.day::*}
+        loop all players:
+            send "&eログインボーナスで200円を受け取りました。" to loop-player
+            add 200 to loop-player's money
+            set {mine.reset.day::%loop-player%} to loop-player
+    if {day.date.p} is not set:
+        set {day.date.p} to {day.date}
 
+on join:
+    if {mine.reset.day::%player%} is not set:
+        add 200 to player's money
+        send "&eログインボーナスで200円を受け取りました。"
+        set {mine.reset.day::%player%} to player
+
+command /Debug_day_date:
+    permission: admin
+    trigger:    
+        send {day.date.p} 
