@@ -15,7 +15,6 @@ Options:
     menu_rewards: &c&lTheMining &7- &e&lレベル報酬 &7[クリック]
     menu_obsidian_crafting: &c&lTheMining &7- &7&l黒曜の加工台
     menu_maboroshi: &c&lTheMining &7- &d&l幻のおじいさん
-
     slot: true #スロットSkriptと連携するかどうか
 
     #以下値設定
@@ -113,11 +112,18 @@ on load:
     add {mine.ores::obsidian} to {mine.orewhite::2::*}
     add {mine.ores::emerald_ore} to {mine.orewhite::3::*}
     add {mine.ores::obsidian} to {mine.orewhite::3::*}
+    add {mine.ores::obsidian} to {mine.orewhite::3::*}
     add {mine.ores::obsidian} to {mine.orewhite::30::*}
     add {mine.ores::obsidian} to {mine.orewhite::31::*}
     add {mine.ores::obsidian} to {mine.orewhite::32::*}
     add {mine.ores::obsidian} to {mine.orewhite::33::*}
     add {mine.ores::obsidian} to {mine.orewhite::34::*}
+    add {mine.ores::obsidian} to {mine.orewhite::11::*}
+    add {mine.ores::obsidian} to {mine.orewhite::12::*}
+    add {mine.ores::obsidian} to {mine.orewhite::13::*}
+    add {mine.ores::obsidian} to {mine.orewhite::14::*}
+    add {mine.ores::obsidian} to {mine.orewhite::15::*}
+    add {mine.ores::obsidian} to {mine.orewhite::16::*}
 
     add 0.1 to {mine.price::stone}
     add 0.3 to {mine.price::coal_ore}
@@ -320,7 +326,7 @@ command /spawn [<text>]:
             sound_portal_failed(player)
 
 on tab complete of "/spawn":
-    set tab completions for position 1 to "help", "1", "2", "3", "4"
+    set tab completions for position 1 to "help", "1", "2", "3" and "4"
 
 on inventory click:
     if name of player's current inventory is "{@oremenu_title}":
@@ -914,6 +920,8 @@ function mine_variables_check(p: player):
         set {mine.status.autoore.money::%{_p}'s uuid%} to false
     if {mine.status.autoore.money::%{_p}%} is true:
         set {mine.status.autoore.money::%{_p}'s uuid%} to true
+    if {mine.login.time::%{_p}%} is not set:
+        set {mine.login.time::%{_p}%} to 0
 function mine_reset_player(p: player):
     clear {mine.level::%{_p}'s uuid%}
     clear {mine.exp::%{_p}'s uuid%}
@@ -1734,16 +1742,22 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
     return false if {_n} is not set
     return false if {mine.generic::lobbyloc::%{_n}%} is not set
     #以下条件設定
-    return true if {_n} is 1
+    if {_n} is 1:
+        return true 
     if {_n} is 2:
         if {mine.level::%{_p}'s uuid%} >= 30:
             if {mine.players::%{_p}'s uuid%::recipes::*} contains 21:
+                mine_quest_thread({_p}, "MAP2", 0)
                 return true
         return false
     else if {_n} is 3:
         return true
     else if {_n} is 4:
         return true
+
+on npc right click:
+    if npc name is "&a第四マップへ":
+        mine_quest_thread(player, "MAP4", 0)
 
 on portal:
     cancel event
@@ -1956,6 +1970,7 @@ on first join:
     set {mine.hojo.%player's uuid%} to true
     set {join.message::*} to true
     set {join.syoken} to 60
+    clear {join.spam::*}
     loop 60 time:
         add -1 to {join.syoken} 
         wait 1 second
@@ -1984,22 +1999,33 @@ every 1 minute:
                 set {mine.hojo.%loop-player's uuid%} to false
             else:
                 clear {mine.pickaxe.time::%loop-player%}
-    
+every 1 minute:
+    loop all players:
+        add 1 to {mine.login.time::%loop-player%}
+        if {mine.login.time::%loop-player%} > 59:
+            mine_quest_thread(loop-player, "TIME", 0)
+            set {mine.login.time::%loop-player%} to 0
 
 command /joinmsg:
     trigger:
+        if {join.spam::%player%} is not set:
+            set {join.spam::%player%} to true
         if {join.message::*} is true:
-            set {_l} to random integer between 1 and 4
-            set {_r} to round({_l})
-            if {_r} is 1:
-                broadcast "%player%&a: &f初見さんどもー" 
-            if {_r} is 2:
-                broadcast "%player%&a: &f初見さんこんにちはー"
-            if {_r} is 3:
-                broadcast "%player%&a: &f初見さんいらっしゃい～"
-            if {_r} is 4:
-                broadcast "%player%&a: &f初見さんよろしく～"
-            mine_quest_thread(player, "JOIN", 0)
+            if {join.spam::%player%} is true:
+                set {_l} to random integer between 1 and 4
+                set {_r} to round({_l})
+                if {_r} is 1:
+                    broadcast "%player%&a: &f初見さんどもー" 
+                if {_r} is 2:
+                    broadcast "%player%&a: &f初見さんこんにちはー"
+                if {_r} is 3:
+                    broadcast "%player%&a: &f初見さんいらっしゃい～"
+                if {_r} is 4:
+                    broadcast "%player%&a: &f初見さんよろしく～"
+                mine_quest_thread(player, "JOIN", 0)
+                set {join.spam::%player%} to false
+            else:
+                send "aaa"
         else:
             send "&b初見さんがログインした1分間利用可能です"
             
@@ -2035,4 +2061,3 @@ command /Debug_day_date:
     trigger:    
         send {day.date.p} 
 
-#temp
