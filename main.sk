@@ -1743,7 +1743,6 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
     else if {_n} is 3:
         return true
     else if {_n} is 4:
-        {_p} is op
         return true
 
 on portal:
@@ -2035,3 +2034,5 @@ command /Debug_day_date:
     permission: admin
     trigger:    
         send {day.date.p} 
+
+#temp
