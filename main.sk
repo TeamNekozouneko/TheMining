@@ -2034,15 +2034,3 @@ command /Debug_day_date:
     permission: admin
     trigger:    
         send {day.date.p} 
-
-command /nbt:
-    permission: admin
-    trigger:
-        set {nbt} to tag "mine_portal_connection_id" of nbt compound of target block
-        send {nbt}
-        nbt_test(player, {nbt})
-function nbt_test(p: player, n: integer):
-    if {_n} is set:
-        send "ok" to {_p}
-    else:
-        send "no" to {_p}
