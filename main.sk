@@ -1731,7 +1731,7 @@ on right click:
 
 function mine_portal_conditions(p: player, n: integer) :: boolean:
     return false if {_p} is not set
-    return false if {_n} is not set
+    broadcast "%{_n}%...fun"
     return false if {mine.generic::lobbyloc::%{_n}%} is not set
     #以下条件設定
     return true if {_n} is 1
@@ -1745,6 +1745,7 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
     else if {_n} is 4:
         {_p} is op
         return true
+    return true
 
 on portal:
     cancel event
@@ -1754,6 +1755,7 @@ on portal:
     set {_pblock} to block 0.5 east player if block 0.5 east player is nether portal block
     {_pblock} is set
     set {_connection} to tag "mine_portal_connection_id" of nbt compound of {_pblock}
+    set {connection2} to {_connection}
     if {_connection} is not set:
         sound_portal_failed(player)
         send action bar "&4&l! &cこのポータルにはテレポート先が設定されていません。" to player
@@ -1785,7 +1787,11 @@ on portal:
             send action bar "&aテレポートしました！" to player
             teleport player to location of {mine.generic::lobbyloc::%{_connection}%}
             sound_portal_success(player)
-
+    if mine_portal_conditions(player, {connection2}) = true:
+        send "ok"
+    else:
+        send "fuck"
+        send {connection2}
 on chat:
     mine_quest_thread(player, "CHAT", 1) 
     if {join.message::*} is true:
@@ -2035,15 +2041,3 @@ command /Debug_day_date:
     permission: admin
     trigger:    
         send {day.date.p} 
-
-command /nbt:
-    permission: admin
-    trigger:
-        set {nbt} to tag "mine_portal_connection_id" of nbt compound of target block
-        send {nbt}
-        nbt_test(player, {nbt})
-function nbt_test(p: player, n: integer):
-    if {_n} is set:
-        send "ok" to {_p}
-    else:
-        send "no" to {_p}
