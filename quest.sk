@@ -84,7 +84,6 @@ on load:
     add "money_1000" to {mine.quest_reward::23::*}
 
 on npc right click:
-    #player is op
     if npc name is "&aクエストマスター &7[クリック]":
         sound_opened(player)
         mine_open_quest(player)
@@ -304,8 +303,6 @@ every second:
                             set {_tmp::*} to loop-value-3 split at "_"
                             add ({_tmp::2} parsed as number) to loop-player's money if {_tmp::1} is "money"
                             remove ({_tmp::2} parsed as number) from {mine.exp::%loop-player's uuid%} if {_tmp::1} is "exp"
-
-
 
 command /admin_test_debug [<offline player>]:
     permission: admin_test_debug
