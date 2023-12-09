@@ -1915,12 +1915,6 @@ every 1 second:
                     clear {status.data::%loop-player%}
                     send action bar "&aテレポートしました！" to loop-player
 
-every 50 minute:
-    mine_event_allrange()
-    wait 10 minute
-    send "&4&l! &cイベントが終了し鉱石がすべて補填されます。" to all players
-    mine_update_allrange_nm()
-
 every 1 second:
     loop all players:
         loop-player is not sneaking
@@ -2106,3 +2100,10 @@ command /Debug_day_date:
     trigger:    
         send {day.date.p} 
 
+every 50 minute:
+    mine_event_allrange()
+    loop all players:
+        mine_quest_thread(loop-player, "EVENT", 0)
+    wait 10 minute
+    send "&4&l! &cイベントが終了し鉱石がすべて補填されます。" to all players
+    mine_update_allrange_nm()
