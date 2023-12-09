@@ -81,14 +81,8 @@ on load:
     add "money_2000" to {mine.quest_reward::20::*}
     add "money_3000" to {mine.quest_reward::21::*}
     add "money_5000" to {mine.quest_reward::22::*}
-    add "money_3000" to {mine.quest_reward::23::*}
+    add "money_1000" to {mine.quest_reward::23::*}
 
-command /Debug_kinako:
-    trigger:
-        set {mine.player_quest_data::%player's uuid%::9} to 0
-        set {mine.players::%player's uuid%::9} to 0
-
- 
 on npc right click:
     #player is op
     if npc name is "&aクエストマスター &7[クリック]":
