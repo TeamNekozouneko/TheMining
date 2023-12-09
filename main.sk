@@ -1380,6 +1380,9 @@ every 5 tick:
                     else:
                         set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
         if name of loop-player's current inventory is "{@menu_maboroshi}":    
+            loop {mine.maboroshi::*}:
+                if (slot 10 of loop-players's current inventory) and (slot 11 of loop-players's current inventory) and (slot 12 of loop-players's current inventory) and (slot 13 of loop-players's current inventory)  and (slot 14 of loop-players's current inventory) and (slot 15 of loop-players's current inventory)  and (slot 16 of loop-players's current inventory) is air:
+                    set slot 22 of loop-player's current inventory to air 
             clear {_3}
             loop 2 time:
                 loop {mine.maboroshi::*}:
