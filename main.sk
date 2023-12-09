@@ -302,8 +302,11 @@ command /mine [<text>] [<text>] [<integer>]:
                 send "&2&l! &aリセットしました。" to player
         else if arg-1 is "lobby":
             mine_teleport_lobby(player, arg-2)
+        else if arg-1 is "event":
+            mine_event_allrange()
         else:
             mine_show_help(player)
+
 
 command /spawn [<text>]:
     trigger:
@@ -694,6 +697,14 @@ function mine_clear_allrange(p: player):
 function mine_update_allrange(p: player):
     send "&2&l! &aすべての鉱石の範囲を再生成しています。" to {_p}
     mine_update_allrange_nm()
+function mine_event_allrange():
+    send "&2&l! &aイベントを開始します..." to {_p}
+    broadcast "&d----------イベント開始----------" 
+    broadcast "                                 "
+    broadcast "&a10分間石炭や鉄がダイヤやエメラルドになります！"
+    broadcast "                                 "
+    broadcast "&d-------------------------------" 
+    mine_update_random_event_nm()
 
 function mine_update_allrange_nm():
     set {_bf} to 0
@@ -732,7 +743,7 @@ function mine_update_allrange_nm():
                     set loop-block to emerald ore
                 else:
                     set loop-block to stone
-            else:
+            else if {mine.oretype::%loop-value-1%} is 4:
                 if {_num} is between 1 and 3:
                     set loop-block to diamond ore
                 else if {_num} is between 4 and 10:
@@ -752,6 +763,34 @@ function mine_update_allrange_nm():
             if {_bf} >= 300:
                 set {_bf} to 0
                 wait a tick
+
+function mine_update_random_event_nm():
+    loop {mine.orerange_list::*}:
+        loop all blocks within {mine.orerange::%loop-value%::1} and {mine.orerange::%loop-value%::2}:
+            clear {_n}
+            loop all players in radius 2 of loop-block:
+                add 1 to {_n}
+            {_n} is not set
+            set {_blocks::*} to air and stone and coal ore and iron ore and diamond ore and emerald ore and obsidian
+            {_blocks::*} contains loop-block
+            set {_num} to random integer between 1 and 100
+
+            if {mine.oretype::%loop-value-1%} is 4:
+                if {_num} is between 1 and 20:
+                    set loop-block to diamond ore
+                else if {_num} is between 21 and 30:
+                    set loop-block to emerald ore
+                else if {_num} is between 26 and 30:
+                    set loop-block to obsidian
+                else:
+                    set loop-block to stone
+            else:
+                if {_num} is between 1 and 20:
+                    set loop-block to diamond ore
+                else if {_num} is between 21 and 30:
+                    set loop-block to emerald ore
+                else:
+                    set loop-block to stone
 
 function mine_reset_allrange_nm():
     set {_bf} to 0
@@ -1856,7 +1895,7 @@ every 30 minute:
     set {_int} to 15
     set {_ver} to the online player number
     set {_l} to {_int}*{_ver}
-    broadcast "&e&l定期報酬:&e%{_l}%円"
+    broadcast "&e&l定期報酬:&e%{_int}%×%{_ver}%=%{_l}%円"
     loop all players:
         add {_l} to the loop-players's account
 
@@ -1875,6 +1914,12 @@ every 1 second:
                     play sound "entity.player.levelup" with volume 1 to loop-player
                     clear {status.data::%loop-player%}
                     send action bar "&aテレポートしました！" to loop-player
+
+every 50 minute:
+    mine_event_allrange()
+    wait 10 minute
+    send "&4&l! &cイベントが終了し鉱石がすべて補填されます。" to all players
+    mine_update_allrange_nm()
 
 every 1 second:
     loop all players:
@@ -2025,7 +2070,7 @@ command /joinmsg:
                 mine_quest_thread(player, "JOIN", 0)
                 set {join.spam::%player%} to false
             else:
-                send "aaa"
+                send "&c連続で使用できません"
         else:
             send "&b初見さんがログインした1分間利用可能です"
             
