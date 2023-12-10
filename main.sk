@@ -704,6 +704,7 @@ function mine_event_allrange():
     broadcast "&a10分間石炭や鉄がダイヤやエメラルドになります！"
     broadcast "                                 "
     broadcast "&d-------------------------------" 
+    wait 10 second
     mine_update_random_event_nm()
 
 function mine_update_allrange_nm():
@@ -765,6 +766,7 @@ function mine_update_allrange_nm():
                 wait a tick
 
 function mine_update_random_event_nm():
+    set {_bf} to 0
     loop {mine.orerange_list::*}:
         loop all blocks within {mine.orerange::%loop-value%::1} and {mine.orerange::%loop-value%::2}:
             clear {_n}
@@ -791,6 +793,10 @@ function mine_update_random_event_nm():
                     set loop-block to emerald ore
                 else:
                     set loop-block to stone
+            add 1 to {_bf}
+            if {_bf} >= 300:
+                set {_bf} to 0
+                wait a tick
 
 function mine_reset_allrange_nm():
     set {_bf} to 0
@@ -2107,10 +2113,10 @@ command /Debug_day_date:
     trigger:    
         send {day.date.p} 
 
-#every 50 minute:
-#    mine_event_allrange()
-#    loop all players:
-#        mine_quest_thread(loop-player, "EVENT", 0)
-#    wait 10 minute
-#    send "&4&l! &cイベントが終了し鉱石がすべて補填されます。" to all players
-#    mine_update_allrange_nm()
+every 50 minute:
+    mine_event_allrange()
+    loop all players:
+        mine_quest_thread(loop-player, "EVENT", 0)
+    wait 10 minute
+    send "&4&l! &cイベントが終了し鉱石がすべて補填されます。" to all players
+    mine_update_allrange_nm()
