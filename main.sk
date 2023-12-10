@@ -864,6 +864,7 @@ on hunger meter change:
     cancel event
 
 on right click on oak sign:
+    player is not op
     cancel event
 
 command /pickaxe:
