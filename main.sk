@@ -2115,7 +2115,7 @@ every 50 minute:
     send "&4&l! &cイベントが終了し鉱石がすべて補填されます。" to all players
     mine_update_allrange_nm()
 
-command /admin_money [<player>] [<text>]:
+command /admin_money [<player>] [<number>]:
     permission: admin
     trigger:
         remove arg-2 from arg-1's money
