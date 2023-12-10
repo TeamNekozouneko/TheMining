@@ -1908,7 +1908,7 @@ every 30 minute:
     set {_int} to 15
     set {_ver} to the online player number
     set {_l} to {_int}*{_ver}
-    broadcast "&e&l定期報酬:&e%{_int}%×%{_ver}%=%{_l}%円"
+    broadcast "&e&l【定期報酬】 人数:%{_int}%×%{_ver}%=%{_l}%円出ました！ 参加人数が多いともっと報酬をもらえます！"
     loop all players:
         add {_l} to the loop-players's account
 
