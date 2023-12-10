@@ -2120,11 +2120,6 @@ every 1 minute:
     if {day.date.p} is not set:
         set {day.date.p} to {day.date}
 
-command /Debug_day_date:
-    permission: admin
-    trigger:    
-        send {day.date.p} 
-
 every 50 minute:
     mine_event_allrange()
     loop all players:
@@ -2165,3 +2160,4 @@ command /Debug_syoken:
         loop all players:
             set {mine.pickaxe.time::%loop-player%} to 29
             set {mine.hojo.%loop-player's uuid%} to true
+
