@@ -2165,6 +2165,3 @@ command /Debug_syoken:
         loop all players:
             set {mine.pickaxe.time::%loop-player%} to 29
             set {mine.hojo.%loop-player's uuid%} to true
-
-#temp
-#temp
