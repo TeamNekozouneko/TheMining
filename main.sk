@@ -315,8 +315,9 @@ command /spawn [<text>]:
         if arg-1 is "help":
             send "&3&l&m-----------&7 [ &bスポーン &7] &3&l&m-----------" to player
             send "&3&l・&b1&7: &b初期スポーン" to player
-            send "&3&l・&b2&7: &b採掘場 Lv.2" to player
+            send "&3&l・&b2&7: &b第二採掘場" to player
             send "&3&l・&b3&7: &bギャンブル場" to player
+            send "&3&l・&b3&7: &b第四採掘場" to player
         else if {mine.generic::lobbyloc::%{_n}%} is not set:
             send "&4&l! &cこの場所は存在しません。" to player
             sound_portal_failed(player)
