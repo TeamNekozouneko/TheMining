@@ -863,6 +863,9 @@ on place:
 on hunger meter change:
     cancel event
 
+on right click on oak sign:
+    cancel event
+
 command /pickaxe:
     trigger:
         if (unix timestamp of now)-{mine.players::%player's uuid%::lastgetpickaxe} < 86400:
