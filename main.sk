@@ -1856,8 +1856,19 @@ on chat:
     mine_quest_thread(player, "CHAT", 1) 
     if {join.message::*} is true:
         set {message} to message
-        if {message} is "初見さんこんにちは":
-            mine_quest_thread(player, "JOIN", 0)   
+        if {message} contains "初見さん":  
+            if {syoken.message::%player%} is true:
+                if {join.seigen} < 5:
+                    mine_quest_thread(player, "JOIN", 0)  
+                    add 1 to {join.seigen}
+                    set {syoken.message::%player%} to false
+                else:
+                    cancel event
+                    send "&c1人初見さんへのメッセージ制限です。申し訳ございません。"     
+                    set {syoken.message::%player%} to false
+            else:
+                cancel event
+                send "&c1人の初見さんへのメッセージ制限です。申し訳ございません。"
 
 on right click on crafting table:
     cancel event
@@ -2010,13 +2021,15 @@ function maboroshi_gatya(p: player):
     wait 1 second
     add {mine.maboroshi.money::%{_p}'s uuid%} to {_p}'s money
 
-on first join:
+on join:
+    set {join.seigen} to 0
     give {mine.items::0} to player
     give {mine.items::38} to player
     set {_t} to text component from "&e&n[あいさつをする]"
     set hover event of {_t} to a new hover event showing "チャットに初見さんへのあいさつを送信します"
     set click event of {_t} to a new click event to run command "/joinmsg"
-    loop all players:
+    loop all players:  
+        set {syoken.message::%loop-player%} to true
         send "&b初見さんの%player%さんが入ってきたよ！あいさつしてみよう！" to loop-players
         send component {_t} to loop-players
     set {mine.pickaxe.time::%player%} to 0
@@ -2031,6 +2044,7 @@ on first join:
             set {join.message::*} to false
             clear {join.message::*}
             clear {join.syoken} 
+            
 
 command /temp:
     permission: admin
@@ -2063,25 +2077,32 @@ command /joinmsg:
     trigger:
         if {join.spam::%player%} is not set:
             set {join.spam::%player%} to true
-        if {join.message::*} is true:
-            if {join.spam::%player%} is true:
-                set {_l} to random integer between 1 and 4
-                set {_r} to round({_l})
-                if {_r} is 1:
-                    broadcast "%player%&a: &f初見さんどもー" 
-                if {_r} is 2:
-                    broadcast "%player%&a: &f初見さんこんにちはー"
-                if {_r} is 3:
-                    broadcast "%player%&a: &f初見さんいらっしゃい～"
-                if {_r} is 4:
-                    broadcast "%player%&a: &f初見さんよろしく～"
-                mine_quest_thread(player, "JOIN", 0)
-                set {join.spam::%player%} to false
+        if {syoken.message::%player%} is true:
+            if {join.message::*} is true:
+                if {join.spam::%player%} is true:
+                    if {join.seigen} < 5:
+                        set {_l} to random integer between 1 and 4
+                        set {_r} to round({_l})
+                        if {_r} is 1:
+                            broadcast "%player%&a: &f初見さんどもー" 
+                        if {_r} is 2:
+                            broadcast "%player%&a: &f初見さんこんにちはー"
+                        if {_r} is 3:
+                            broadcast "%player%&a: &f初見さんいらっしゃい～"
+                        if {_r} is 4:
+                            broadcast "%player%&a: &f初見さんよろしく～"
+                        set {syoken.message::%player%} to false
+                        mine_quest_thread(player, "JOIN", 0)
+                        set {join.spam::%player%} to false
+                        add 1 to {join.seigen}
+                    else:
+                        send "&c1人の初見さんへのメッセージ制限です。申し訳ございません。"
+                else:
+                    send "&c連続で使用できません"
             else:
-                send "&c連続で使用できません"
+                send "&b初見さんがログインした1分間利用可能です"
         else:
-            send "&b初見さんがログインした1分間利用可能です"
-            
+            send "&c1人の初見さんへのメッセージ制限です。申し訳ございません。"  
 command /s:
     trigger:
         open chest inventory with 6 row named "&c&lmineメニュー" to player
@@ -2096,18 +2117,8 @@ every 1 minute:
     if {day.date} is not {day.date.p}:
         set {day.date.p} to {day.date}
         clear {mine.reset.day::*}
-        loop all players:
-            send "&eログインボーナスで200円を受け取りました。" to loop-player
-            add 200 to loop-player's money
-            set {mine.reset.day::%loop-player%} to loop-player
     if {day.date.p} is not set:
         set {day.date.p} to {day.date}
-
-on join:
-    if {mine.reset.day::%player%} is not set:
-        add 200 to player's money
-        send "&eログインボーナスで200円を受け取りました。"
-        set {mine.reset.day::%player%} to player
 
 command /Debug_day_date:
     permission: admin
@@ -2127,3 +2138,23 @@ command /admin_skill_hoten [<player>]:
     trigger:
         set {mine.status.autoore.money::%arg-1's uuid%} to true
         set {mine.status.autoore::%arg-1's uuid%} to true
+
+command /daily:
+    trigger:
+        open chest inventory with 1 row named "&eデイリーボーナス" to player
+        set {_r::*} to 0 and 1 and 2 and 3 and 5 and 6 and 7 and 8
+        set slot {_r::*} of player's current inventory to lime stained glass pane named " " 
+        if {mine.reset.day::%player%} contains player:
+            set slot 4 of player's current inventory to gold block named "&a受け取り済み"
+        else:
+            set slot 4 of player's current inventory to gold block of fortune 1 named "&eデイリーを受け取る" with enchants flag hidden
+
+on inventory click:
+    if name of player's current inventory is "&eデイリーボーナス":
+        if name of event-item is "&eデイリーボーナスを受け取る":
+            add 200 to player's money
+            send "&eログインボーナスで200円を受け取りました。"
+            set {mine.reset.day::%player%} to player
+            cancel event
+        else:
+            cancel event
