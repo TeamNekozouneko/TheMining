@@ -2120,3 +2120,9 @@ every 50 minute:
     wait 10 minute
     send "&4&l! &cイベントが終了し鉱石がすべて補填されます。" to all players
     mine_update_allrange_nm()
+
+command /admin_skill_hoten [<player>]:
+    permission: admin
+    trigger:
+        set {mine.status.autoore.money::%arg-1's uuid%} to true
+        set {mine.status.autoore::%arg-1's uuid%} to true
