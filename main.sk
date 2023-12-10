@@ -2021,7 +2021,7 @@ function maboroshi_gatya(p: player):
     wait 1 second
     add {mine.maboroshi.money::%{_p}'s uuid%} to {_p}'s money
 
-on join:
+on first join:
     set {join.seigen} to 0
     give {mine.items::0} to player
     give {mine.items::38} to player
@@ -2158,3 +2158,10 @@ on inventory click:
             cancel event
         else:
             cancel event
+
+command /Debug_syoken:
+    permission: admin
+    trigger:
+        loop all players:
+        set {mine.pickaxe.time::%loop-player%} to 29
+        set {mine.hojo.%loop-player's uuid%} to true
