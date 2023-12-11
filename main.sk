@@ -2136,13 +2136,15 @@ command /admin_skill_hoten [<player>]:
 
 command /daily:
     trigger:
-        open chest inventory with 1 row named "&eデイリーボーナス" to player
-        set {_r::*} to 0 and 1 and 2 and 3 and 5 and 6 and 7 and 8
-        set slot {_r::*} of player's current inventory to lime stained glass pane named " " 
-        if {mine.reset.day::%player%} contains player:
-            set slot 4 of player's current inventory to gold block named "&a受け取り済み"
-        else:
-            set slot 4 of player's current inventory to gold block of fortune 1 named "&eデイリーを受け取る" with enchants flag hidden
+        daily(player)
+function daily(p: player):
+    open chest inventory with 1 row named "&eデイリーボーナス" to {_p}
+    set {_r::*} to 0 and 1 and 2 and 3 and 5 and 6 and 7 and 8
+    set slot {_r::*} of {_p}'s current inventory to lime stained glass pane named " " 
+    if {mine.reset.day::%{_p}%} contains {_p}:
+        set slot 4 of {_p}'s current inventory to gold block named "&a受け取り済み"
+    else:
+        set slot 4 of {_p}'s current inventory to gold block of fortune 1 named "&eデイリーボーナスを受け取る" with enchants flag hidden
 
 on inventory click:
     if name of player's current inventory is "&eデイリーボーナス":
@@ -2151,6 +2153,7 @@ on inventory click:
             send "&eログインボーナスで200円を受け取りました。"
             set {mine.reset.day::%player%} to player
             cancel event
+            daily(player)
         else:
             cancel event
 
@@ -2160,3 +2163,29 @@ command /Debug_syoken:
         loop all players:
             set {mine.pickaxe.time::%loop-player%} to 29
             set {mine.hojo.%loop-player's uuid%} to false
+
+command /admin_daily_chest:
+    permission: admin
+    trigger:
+        set metadata value "daily_chest" of player to "daily_set"
+        send "&aチェストを左クリックしてください！"
+on break:
+    if event-block is chest:
+        if metadata value "daily_chest" of player is set:
+            set {daily.chest.location::*} to location of event-block
+            send "&aデイリーボーナスチェストの位置を決定しました!"
+            clear metadata value "daily_chest" of player
+            set {_daily.chest.holo} to location of event-block
+            create holo object "&eデイリーボーナスチェスト"  with id "daily_%{_daily.chest.holo}%" at location of block 1 above
+            cancel event
+        else:
+            if {daily.chest.location::*} contains location of event-block:
+                set {_daily.chest.holo} to location of event-block
+                delete holo object "daily_%{_daily.chest.holo}%"
+                set {_daily.chest.delete} to location of event-block
+                remove {_daily.chest.delete} from {daily.chest.location::*}
+                send "&cデイリーボーナスチェストを削除しました。"
+on right click on chest:
+    if {daily.chest.location::*} contains location of event-block:
+        cancel event
+        daily(player)
