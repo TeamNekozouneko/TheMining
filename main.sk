@@ -2198,3 +2198,4 @@ command /levels:
         loop {players.level::*}:
             send "&7[&a%{mine.level::%loop-value's uuid%}%&7] &f%loop-value%"
         send "&a合計参加人数 &f%{_ver}%"
+#github更新待ち
