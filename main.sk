@@ -707,6 +707,9 @@ function mine_event_allrange():
     broadcast "&d-------------------------------" 
     wait 10 second
     mine_update_random_event_nm()
+    wait 10 minute
+    send "&4&l! &cイベントが終了し鉱石がすべて補填されます。" to all players
+    mine_update_allrange_nm()
 
 function mine_update_allrange_nm():
     set {_bf} to 0
@@ -788,9 +791,9 @@ function mine_update_random_event_nm():
                 else:
                     set loop-block to stone
             else:
-                if {_num} is between 1 and 20:
+                if {_num} is between 1 and 15:
                     set loop-block to diamond ore
-                else if {_num} is between 21 and 30:
+                else if {_num} is between 16 and 23:
                     set loop-block to emerald ore
                 else:
                     set loop-block to stone
@@ -1034,10 +1037,22 @@ on right click:
     cancel event if event-block is a shulker box
 
 #以下定期システム
-every 15 minute:
-    send "&4&l! &cマップ上の鉱石がすべて補填されます。" to all players
-    mine_update_allrange_nm()
 
+every 15 minute:
+    set {_var} to random number from 1 to 5
+    set {_int} to round({_var}) 
+    if {event.temp} is not true:
+        if {_int} is 1:
+            mine_event_allrange()
+            set {event.temp} to true
+        else:
+            mine_update_allrange_nm()
+            send "&4&l! &cマップ上の鉱石がすべて補填されます。" to all players
+            set {event.temp} to false         
+    else:
+        mine_update_allrange_nm()
+        send "&4&l! &cマップ上の鉱石がすべて補填されます。" to all players
+        set {event.temp} to false
 every 5 minute:
     add "スキルNPCでスキルを購入できます！" to {_notes::*}
     add "スキルNPCから様々なブーストをすることができます！" to {_notes::*}
@@ -2120,14 +2135,6 @@ every 1 minute:
     if {day.date.p} is not set:
         set {day.date.p} to {day.date}
 
-every 50 minute:
-    mine_event_allrange()
-    loop all players:
-        mine_quest_thread(loop-player, "EVENT", 0)
-    wait 10 minute
-    send "&4&l! &cイベントが終了し鉱石がすべて補填されます。" to all players
-    mine_update_allrange_nm()
-
 command /admin_skill_hoten [<player>]:
     permission: admin
     trigger:
@@ -2198,4 +2205,3 @@ command /levels:
         loop {players.level::*}:
             send "&7[&a%{mine.level::%loop-value's uuid%}%&7] &f%loop-value%"
         send "&a合計参加人数 &f%{_ver}%"
-#github更新待ち
