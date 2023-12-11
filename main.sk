@@ -628,7 +628,7 @@ function mine_show_help(p: player):
     send "&4&l・&c/mine lobby <優先番号> &8- &f優先番号に登録された場所へテレポートします。" to {_p}
     send "&4&l・&c/mine resetplayer <プレイヤー> &8- &fプレイヤーのデータを初期化します。" to {_p}
     send "&4&l・&c/mine resetlv <プレイヤー> <指定値> &8- &fプレイヤーのレベルとEXPデータを指定値に設定します。" to {_p}
-
+    send "&4&l・&c/mine event &8- &fイベントを開始します。" to {_p}
 on place:
     if metadata value "mine_add_orerange" of player is 1:
         cancel event
@@ -2173,7 +2173,7 @@ on break:
     if event-block is chest:
         if metadata value "daily_chest" of player is set:
             set {daily.chest.location::*} to location of event-block
-            send "&aデイリーボーナスチェストの位置を決定しました!"
+            send "&aデイリーボーナスチェストの位置を決定しました！"
             clear metadata value "daily_chest" of player
             set {_daily.chest.holo} to location of event-block
             create holo object "&eデイリーボーナスチェスト"  with id "daily_%{_daily.chest.holo}%" at location of block 1 above
@@ -2189,3 +2189,10 @@ on right click on chest:
     if {daily.chest.location::*} contains location of event-block:
         cancel event
         daily(player)
+command /levels:
+    trigger:
+        clear {players.level::*}
+        loop all players:    
+            add loop-player to {players.level::*}
+        loop {players.level::*}:
+            send "&7[&a%{mine.level::%loop-value's uuid%}%&7] &f%loop-value%"
