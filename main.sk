@@ -705,10 +705,9 @@ function mine_event_allrange():
     broadcast "&a10分間石炭や鉄がダイヤやエメラルドになります！"
     broadcast "                                 "
     broadcast "&d-------------------------------" 
-    wait 10 second
-    mine_update_random_event_nm()
+    loop all players:
+        mine_quest_thread(loop-player, "EVENT", 0)  
     wait 10 minute
-    send "&4&l! &cイベントが終了し鉱石がすべて補填されます。" to all players
     mine_update_allrange_nm()
 
 function mine_update_allrange_nm():
@@ -1061,6 +1060,7 @@ every 5 minute:
     add "採掘場で帰れなくなった？/spawnコマンドで一気に帰ろう！" to {_notes::*}
     add "レシピが分からない？レシピの渡来人が教えてくれるんだって！" to {_notes::*}
     add "アイテムが一杯なんだって？売店屋が鉱石を買い取ってくれるよ！" to {_notes::*}
+    add "統合版で他プレイヤーのレベルを見たい？/levelsコマンドで見ることができます！" to {_notes::*}
     set {_note} to random element out of {_notes::*}
     send "&7[ &e定期 &7] &r%{_note}%" to all players
 
@@ -1567,7 +1567,20 @@ function mine_skill_thread_wait(p: player, index: integer, v: object):
             mine_all_x({_p}, "south", 2, 2, -1, -1, {_v})
             mine_all_x({_p}, "north", 1, -1, -2, 2, {_v})
 
-#範囲採掘するときはこちらを利用ください byにぎり
+on break:
+    if {particles.player.set::%player%} is 1:
+        make 3 of lava at location of block
+    If {particles.player.set::%player%} is 2:
+        make 3 of item slime at location of block
+    if {particles.player.set::%player%} is 3:
+        make 1 of note at location of block
+    if {particles.player.set::%player%} is 4:
+        make 3 of falling water at location of block
+    if {particles.player.set::%player%} is 5:
+        make 3 of landing lava at location of block
+    if {particles.player.set::%player%} is 6:
+        make 3 of dripping water at location of block
+
 function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: integer, v: block):
     if {mine.status.hougaku::%{_p}%} is {_h}:
         set {_loc} to location of {_v}
@@ -1577,6 +1590,24 @@ function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: i
         add {_u} to x-coord of {_loc2}
         add {_e} to y-coord of {_loc2}
         loop blocks within {_loc} to {_loc2}:
+            if {particles.player.set::%{_p}%} is 1:
+                if loop-block is not air:
+                    make 3 of lava at location of loop-block
+            If {particles.player.set::%{_p}%} is 2:
+                if loop-block is not air:
+                    make 3 of item slime at location of loop-block
+            if {particles.player.set::%{_p}%} is 3:
+                if loop-block is not air:
+                    make 1 of note at location of loop-block
+            if {particles.player.set::%{_p}%} is 4:
+                if loop-block is not air:
+                    make 3 of falling water at location of loop-block
+            if {particles.player.set::%{_p}%} is 5:
+                if loop-block is not air:
+                    make 3 of landing lava at location of loop-block
+            if {particles.player.set::%{_p}%} is 6:
+                if loop-block is not air:
+                    make 3 of dripping water at location of loop-block
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
@@ -1590,6 +1621,24 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
         add {_u} to z-coord of {_loc2}
         add {_e} to y-coord of {_loc2}
         loop blocks within {_loc} to {_loc2}:
+            if {particles.player.set::%{_p}%} is 1:
+                if loop-block is not air:
+                    make 3 of lava at location of loop-block
+            If {particles.player.set::%{_p}%} is 2:
+                if loop-block is not air:
+                    make 3 of item slime at location of loop-block
+            if {particles.player.set::%{_p}%} is 3:
+                if loop-block is not air:
+                    make 1 of note at location of loop-block
+            if {particles.player.set::%{_p}%} is 4:
+                if loop-block is not air:
+                    make 3 of falling water at location of loop-block
+            if {particles.player.set::%{_p}%} is 5:
+                if loop-block is not air:
+                    make 3 of landing lava at location of loop-block
+            if {particles.player.set::%{_p}%} is 6:
+                if loop-block is not air:
+                    make 3 of dripping water at location of loop-block
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
@@ -1816,12 +1865,14 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
         if {mine.level::%{_p}'s uuid%} >= 30:
             if {mine.players::%{_p}'s uuid%::recipes::*} contains 21:
                 mine_quest_thread({_p}, "MAP2", 0)
+                set {player.loc.spawn::%{_p}%} to 2
                 return true
         return false
     else if {_n} is 3:
         return true
     else if {_n} is 4:
         return true
+        set {player.loc.spawn::%{_p}%} to 4
 
 on npc right click:
     if npc name is "&a第四マップへ":
@@ -2037,6 +2088,7 @@ function maboroshi_gatya(p: player):
     add {mine.maboroshi.money::%{_p}'s uuid%} to {_p}'s money
 
 on first join:
+    set {player.loc.spawn::%player%} to 1
     set {join.seigen} to 0
     give {mine.items::0} to player
     give {mine.items::38} to player
@@ -2087,6 +2139,16 @@ every 1 minute:
         if {mine.login.time::%loop-player%} > 59:
             mine_quest_thread(loop-player, "TIME", 0)
             set {mine.login.time::%loop-player%} to 0
+        if {player.loc.spawn::%loop-player%} is 2:
+            add 1 to {mine.loc2.time::%loop-player's uuid%} 
+            mine_quest_thread(loop-player, "LOC2", 0)
+            if {mine.loc2.time::%loop-player's uuid%} > 59:
+                set {mine.loc2.time::%loop-player's uuid%} to 0
+        if {player.loc.spawn::%loop-player%} is 4:
+            add 1 to {mine.loc4.time::%loop-player's uuid%}
+            mine_quest_thread(loop-player, "LOC4", 0)  
+            if {mine.loc4.time::%loop-player's uuid%} > 59:
+                set {mine.loc4.time::%loop-player's uuid%} to 0
 
 command /joinmsg:
     trigger:
@@ -2161,6 +2223,7 @@ on inventory click:
             set {mine.reset.day::%player%} to player
             cancel event
             daily(player)
+            mine_quest_thread(player, "LOGIN", 0) 
         else:
             cancel event
 
@@ -2205,3 +2268,198 @@ command /levels:
         loop {players.level::*}:
             send "&7[&a%{mine.level::%loop-value's uuid%}%&7] &f%loop-value%"
         send "&a合計参加人数 &f%{_ver}%"
+
+on npc right click:
+    if npc name is "&a第四マップへ":
+        set {player.loc.spawn::%player%} to 4
+    if npc name is "&amap1へ戻る":
+        set {player.loc.spawn::%player%} to 1
+
+on npc right click:
+    if npc name is "&b&lパーティクルshop":
+        particle_menu(player)
+
+command /particles:
+    permission: admin
+    trigger:
+        particle_menu(player)
+on join:
+    if {mine.status.lava::%player's uuid%} is not set:
+        reset_particle(player)
+        set {mine.status.lava.money::%{_p}'s uuid%} to false
+        set {mine.status.slime.money::%{_p}'s uuid%} to false
+        set {mine.status.note.money::%{_p}'s uuid%} to false
+        set {mine.status.blue.money::%{_p}'s uuid%} to false
+        set {mine.status.red.money::%{_p}'s uuid%} to false
+        set {mine.status.water.money::%{_p}'s uuid%} to false
+function reset_particle(p: player):
+    set {mine.status.lava::%{_p}'s uuid%} to false
+    set {mine.status.slime::%{_p}'s uuid%} to false
+    set {mine.status.note::%{_p}'s uuid%} to false
+    set {mine.status.blue::%{_p}'s uuid%} to false
+    set {mine.status.red::%{_p}'s uuid%} to false
+    set {mine.status.water::%{_p}'s uuid%} to false
+
+#skbeeバグでnbtを数字として受け付けないらしい
+function particle_menu(p: player):
+    open chest inventory with 3 row named "&b&lパーティクルshop" to {_p}
+    if {mine.status.lava.money::%{_p}'s uuid%} is true:
+        if {mine.status.lava::%{_p}'s uuid%} is true:
+            set slot 10 of {_p}'s current inventory to glowing lava bucket named "&4マグマパーティクル" with lore "&8&m-------------------------------" and "&e選択中"
+        else:
+            set slot 10 of {_p}'s current inventory to lava bucket named "&4マグマパーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+    else:
+        set slot 10 of {_p}'s current inventory to lava bucket named "&4マグマパーティクル" with lore "&8&m-------------------------------" and "&e値段: &61000円" and "&7[ クリックして購入 ]"
+    if {mine.status.slime.money::%{_p}'s uuid%} is true:
+        if {mine.status.slime::%{_p}'s uuid%} is true:
+            set slot 11 of {_p}'s current inventory to glowing slimeball named "&aスライムパーティクル" with lore "&8&m-------------------------------" and "&e選択中"
+        else:
+            set slot 11 of {_p}'s current inventory to slimeball named "&aスライムパーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+    else:
+        set slot 11 of {_p}'s current inventory to slimeball named "&aスライムパーティクル" with lore "&8&m-------------------------------" and "&e値段: &61000円" and "&7[ クリックして購入 ]"  
+    if {mine.status.note.money::%{_p}'s uuid%} is true:
+        if {mine.status.note::%{_p}'s uuid%} is true:
+            set slot 12 of {_p}'s current inventory to glowing note block named "&6音符パーティクル" with lore "&8&m-------------------------------" and "&e選択中"
+        else:
+            set slot 12 of {_p}'s current inventory to note block named "&6音符パーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+    else:
+        set slot 12 of {_p}'s current inventory to note block named "&6音符パーティクル" with lore "&8&m-------------------------------" and "&e値段: &61000円" and "&7[ クリックして購入 ]"
+    if {mine.status.blue.money::%{_p}'s uuid%} is true:
+        if {mine.status.blue::%{_p}'s uuid%} is true:
+            set slot 13 of {_p}'s current inventory to glowing blue dye named "&9青パーティクル" with lore "&8&m-------------------------------" and "&e選択中"
+        else:
+            set slot 13 of {_p}'s current inventory to blue dye named "&9青パーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+    else:
+        set slot 13 of {_p}'s current inventory to blue dye named "&9青パーティクル" with lore "&8&m-------------------------------" and "&e値段: &61000円" and "&7[ クリックして購入 ]"
+    if {mine.status.red.money::%{_p}'s uuid%} is true:
+        if {mine.status.red::%{_p}'s uuid%} is true:
+            set slot 14 of {_p}'s current inventory to glowing red dye named "&c赤パーティクル" with lore "&8&m-------------------------------" and "&e選択中"
+        else:
+            set slot 14 of {_p}'s current inventory to red dye named "&c赤パーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+    else:
+        set slot 14 of {_p}'s current inventory to red dye named "&c赤パーティクル" with lore "&8&m-------------------------------" and "&e値段: &61000円" and "&7[ クリックして購入 ]"      
+    if {mine.status.water.money::%{_p}'s uuid%} is true:
+        if {mine.status.water::%{_p}'s uuid%} is true:
+            set slot 15 of {_p}'s current inventory to glowing water bucket named "&b水パーティクル" with lore "&8&m-------------------------------" and "&e選択中"
+        else:
+            set slot 15 of {_p}'s current inventory to water bucket named "&b水パーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+    else:
+        set slot 15 of {_p}'s current inventory to water bucket named "&b水パーティクル" with lore "&8&m-------------------------------" and "&e値段: &61000円" and "&7[ クリックして購入 ]"
+
+on inventory click:
+    if name of player's current inventory is "&b&lパーティクルshop":
+        cancel event
+        if name of event-item is "&4マグマパーティクル":
+            if {mine.status.lava.money::%player's uuid%} is true:
+                if {mine.status.lava::%player's uuid%} is true:
+                    set {mine.status.lava::%player's uuid%} to false
+                    particle_menu(player)
+                    send "&2&l! &4マグマパーティクル&aを無効化しました。" to player
+                else:
+                    reset_particle(player)
+                    set {mine.status.lava::%player's uuid%} to true
+                    particle_menu(player)
+                    send "&2&l! &4マグマパーティクル&aを有効化しました。" to player
+                    set {particles.player.set::%player%} to 1
+            else: 
+                if player's money >= 1000:
+                    remove 1000 from player's money
+                    send "&2&l! &a購入しました！" 
+                    set {mine.status.lava.money::%player's uuid%} to true
+                    set {mine.status.lava::%player's uuid%} to false
+                    particle_menu(player)
+        if name of event-item is "&aスライムパーティクル":
+            if {mine.status.slime.money::%player's uuid%} is true:
+                if {mine.status.slime::%player's uuid%} is true:
+                    set {mine.status.slime::%player's uuid%} to false
+                    particle_menu(player)
+                    send "&2&l! &aスライムパーティクル自動圧縮を無効化しました。" to player
+                else:
+                    reset_particle(player)
+                    set {mine.status.slime::%player's uuid%} to true
+                    particle_menu(player)
+                    send "&2&l! &aスライムパーティクルを有効化しました。" to player
+                    set {particles.player.set::%player%} to 2
+            else: 
+                if player's money >= 0000:
+                    remove 1000 from player's money
+                    send "&2&l! &a購入しました！" 
+                    set {mine.status.slime.money::%player's uuid%} to true
+                    set {mine.status.slime::%player's uuid%} to false
+                    particle_menu(player)
+        if name of event-item is "&6音符パーティクル":
+            if {mine.status.note.money::%player's uuid%} is true:
+                if {mine.status.note::%player's uuid%} is true:
+                    set {mine.status.note::%player's uuid%} to false
+                    particle_menu(player)
+                    send "&2&l! &6音符パーティクル&aを無効化しました。" to player
+                else:
+                    reset_particle(player)
+                    set {mine.status.note::%player's uuid%} to true
+                    particle_menu(player)
+                    send "&2&l! &6音符パーティクル&aを有効化しました。" to player
+                    set {particles.player.set::%player%} to 3
+            else: 
+                if player's money >= 1000:
+                    remove 1000 from player's money
+                    send "&2&l! &a購入しました！" 
+                    set {mine.status.note.money::%player's uuid%} to true
+                    set {mine.status.note::%player's uuid%} to false
+                    particle_menu(player)
+        if name of event-item is "&9青パーティクル":
+            if {mine.status.blue.money::%player's uuid%} is true:
+                if {mine.status.blue::%player's uuid%} is true:
+                    set {mine.status.blue::%player's uuid%} to false
+                    particle_menu(player)
+                    send "&2&l! &9青パーティクル&aを無効化しました。" to player
+                else:
+                    reset_particle(player)
+                    set {mine.status.blue::%player's uuid%} to true
+                    particle_menu(player)
+                    send "&2&l! &9青パーティクル&aを有効化しました。" to player
+                    set {particles.player.set::%player%} to 4
+            else: 
+                if player's money >= 1000:
+                    remove 1000 from player's money
+                    send "&2&l! &a購入しました！" 
+                    set {mine.status.blue.money::%player's uuid%} to true
+                    set {mine.status.blue::%player's uuid%} to false
+                    particle_menu(player)
+        if name of event-item is "&c赤パーティクル":
+            if {mine.status.red.money::%player's uuid%} is true:
+                if {mine.status.red::%player's uuid%} is true:
+                    set {mine.status.red::%player's uuid%} to false
+                    particle_menu(player)
+                    send "&2&l! &c赤パーティクル&aを無効化しました。" to player
+                else:
+                    reset_particle(player)
+                    set {mine.status.red::%player's uuid%} to true
+                    particle_menu(player)
+                    send "&2&l! &c赤パーティクル&aを有効化しました。" to player
+                    set {particles.player.set::%player%} to 5
+            else: 
+                if player's money >= 1000:
+                    remove 1000 from player's money
+                    send "&2&l! &a購入しました！" 
+                    set {mine.status.red.money::%player's uuid%} to true
+                    set {mine.status.red::%player's uuid%} to false
+                    particle_menu(player)
+        if name of event-item is "&b水パーティクル":
+            if {mine.status.water.money::%player's uuid%} is true:
+                if {mine.status.water::%player's uuid%} is true:
+                    set {mine.status.water::%player's uuid%} to false
+                    particle_menu(player)
+                    send "&2&l! &b水パーティクル&aを無効化しました。" to player
+                else:
+                    reset_particle(player)
+                    set {mine.status.water::%player's uuid%} to true
+                    particle_menu(player)
+                    send "&2&l! &b水パーティクル&aを有効化しました。" to player
+                    set {particles.player.set::%player%} to 6
+            else: 
+                if player's money >= 1000:
+                    remove 1000 from player's money
+                    send "&2&l! &a購入しました！" 
+                    set {mine.status.water.money::%player's uuid%} to true
+                    set {mine.status.water::%player's uuid%} to false
+                    particle_menu(player)
