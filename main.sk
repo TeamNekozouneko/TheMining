@@ -705,10 +705,9 @@ function mine_event_allrange():
     broadcast "&a10分間石炭や鉄がダイヤやエメラルドになります！"
     broadcast "                                 "
     broadcast "&d-------------------------------" 
+    mine_update_random_event_nm()
     loop all players:
         mine_quest_thread(loop-player, "EVENT", 0)  
-    wait 10 minute
-    mine_update_allrange_nm()
 
 function mine_update_allrange_nm():
     set {_bf} to 0
@@ -1077,13 +1076,44 @@ on load: #鉱石の登録
     set {mine.ores::emerald_ore} to {mine.items::28}
     set {mine.ores::obsidian} to {mine.items::29}
 
+command /admin_break [<text>] [<player>]:   
+    permission: admin
+    trigger:
+        if arg-1 is "add":
+            if {break.list::*} contains arg-2:
+                send "&cすでに登録しています"
+            else:
+                add arg-2 to {break.list::*}
+                send "&a破壊許可リストに%arg-2%を追加しました"
+        if arg-1 is "delete":
+            remove arg-2 from {break.list::*}
+            send "&a破壊許可リストから%arg-2%を削除しました"
+
+on tab complete of "/admin_break":
+    set tab completions for position 1 to "add" and "delete"
+
+command /admin_break_list:
+    trigger:
+        send "&a--------許可リスト---------"
+        loop {break.list::*}:
+            send "&b%loop-value%"
+        send "&a--------------------------"
 on break:
     cancel drops
-    if player is not "runq_JP":
-        if event-block is cyan terracotta:
-            cancel event
+    #if player is not "runq_JP":
+    #    if event-block is cyan terracotta:
+    #        cancel event
+    #    if event-block is light blue terracotta:
+    #        cancel event
     if event-entity is a player:
         if mine_break(player, event-block) is false:
+            cancel event
+    if {break.list::*} contains player:
+        stop
+    else:
+        if event-block is cyan terracotta:
+            cancel event
+        if event-block is light blue terracotta:
             cancel event
     autoore(player)
 
