@@ -25,7 +25,14 @@ on load:
     set {mine.quests::20} to "10時間遊ぶ"
     set {mine.quests::21} to "20時間遊ぶ"
     set {mine.quests::22} to "30時間遊ぶ"
-    set {mine.quests::23} to "ランダムイベントを３回する"
+    set {mine.quests::23} to "ランダムイベントを3回する"
+    set {mine.quests::24} to "初見さんに「初見さんこんにちは」と20回言う" 
+    set {mine.quests::25} to "ログインボーナスを3回受け取る"
+    set {mine.quests::26} to "ログインボーナスを8回受け取る"
+    set {mine.quests::27} to "map2で30分遊ぶ"
+    set {mine.quests::28} to "map2で1時間遊ぶ"
+    set {mine.quests::29} to "map4で30分遊ぶ"
+    set {mine.quests::30} to "map4で1時間遊ぶ"
 
     clear {mine.quest_max::*}
     set {mine.quest_max::1} to 20000
@@ -51,6 +58,13 @@ on load:
     set {mine.quest_max::21} to 20
     set {mine.quest_max::22} to 30
     set {mine.quest_max::23} to 3
+    set {mine.quest_max::24} to 20
+    set {mine.quest_max::25} to 3
+    set {mine.quest_max::26} to 8
+    set {mine.quest_max::27} to 30
+    set {mine.quest_max::28} to 60
+    set {mine.quest_max::29} to 30
+    set {mine.quest_max::30} to 60
 
     clear {mine.quest_reward::*}
     add "money_5000" to {mine.quest_reward::1::*}
@@ -82,6 +96,14 @@ on load:
     add "money_3000" to {mine.quest_reward::21::*}
     add "money_5000" to {mine.quest_reward::22::*}
     add "money_1000" to {mine.quest_reward::23::*}
+    add "money_1500" to {mine.quest_reward::24::*}
+    add "money_1000" to {mine.quest_reward::25::*}
+    add "money_2000" to {mine.quest_reward::26::*}
+    add "money_800" to {mine.quest_reward::27::*}
+    add "money_1000" to {mine.quest_reward::28::*}
+    add "money_800" to {mine.quest_reward::29::*}
+    add "money_1000" to {mine.quest_reward::30::*}
+
 
 on npc right click:
     if npc name is "&aクエストマスター &7[クリック]":
@@ -105,7 +127,7 @@ on inventory click:
             mine_open_quest(player)
 
 function mine_open_quest(p: player):
-    open chest inventory with 3 row named "{@mine_quest_title}" to {_p}
+    open chest inventory with 4 row named "{@mine_quest_title}" to {_p}
     mine_open_quest_refancy({_p})
     set slot 8 of {_p}'s current inventory to book named "aaa" with nbt compound from "{mine_index:10}"
 
@@ -164,7 +186,7 @@ function mine_open_quest_refancy(p: player):
             add 1 to {_n}
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
-    return true if {_i} = 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 or 10 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23
+    return true if {_i} = 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 or 10 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23 or 24 or 25 or 26 or 27 or 28 or 29 or 30
     return false
 
 function mine_quest_thread(p: player, type: string, v: object):
@@ -188,6 +210,7 @@ function mine_quest_thread(p: player, type: string, v: object):
     else if {_type} = "JOIN":
         mine_quest_thread({_p}, "A10", {_v})
         mine_quest_thread({_p}, "A15", {_v})
+        mine_quest_thread({_p}, "A24", {_v})
     else if {_type} = "BUYSKILL":
         mine_quest_thread({_p}, "A11", {_v})
         mine_quest_thread({_p}, "A12", {_v})
@@ -203,6 +226,15 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A20", {_v})
         mine_quest_thread({_p}, "A21", {_v})
         mine_quest_thread({_p}, "A22", {_v})
+    else if {_type} = "LOGIN":
+        mine_quest_thread({_p}, "A25", {_v})
+        mine_quest_thread({_p}, "A26", {_v})
+    else if {_type} = "LOC2":
+        mine_quest_thread({_p}, "A27", {_v})
+        mine_quest_thread({_p}, "A28", {_v})
+    else if {_type} = "LOC4":
+        mine_quest_thread({_p}, "A29", {_v})
+        mine_quest_thread({_p}, "A30", {_v})
     else if {_type} = "EVENT":
         mine_quest_thread({_p}, "A23", {_v})
     else if {_type} = "A1":
@@ -271,6 +303,27 @@ function mine_quest_thread(p: player, type: string, v: object):
     else if {_type} = "A23":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 23:
             add 1 to {mine.player_quest_data::%{_p}'s uuid%::23}
+    else if {_type} = "A24":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 23:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::23}
+    else if {_type} = "A25":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 24:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::24}
+    else if {_type} = "A26":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 25:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::25}
+    else if {_type} = "A27":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 26:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::26}
+    else if {_type} = "A28":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 27:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::27}
+    else if {_type} = "A29":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 29:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::29}
+    else if {_type} = "A30":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 30:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::30}
 
 every second:    
     loop all players:
