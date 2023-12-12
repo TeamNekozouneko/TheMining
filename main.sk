@@ -2310,7 +2310,6 @@ on npc right click:
         particle_menu(player)
 
 command /particles:
-    permission: admin
     trigger:
         particle_menu(player)
 on join:
