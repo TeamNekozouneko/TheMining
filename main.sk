@@ -1108,6 +1108,7 @@ on break:
     if event-entity is a player:
         if mine_break(player, event-block) is false:
             cancel event
+    autoore(player)
     if {break.list::*} contains player:
         stop
     else:
@@ -1115,7 +1116,7 @@ on break:
             cancel event
         if event-block is light blue terracotta:
             cancel event
-    autoore(player)
+    
 
 on pickup:
     autoore(player)
@@ -2384,6 +2385,7 @@ on inventory click:
                     set {mine.status.lava::%player's uuid%} to false
                     particle_menu(player)
                     send "&2&l! &4マグマパーティクル&aを無効化しました。" to player
+                    reset_particle(player)
                 else:
                     reset_particle(player)
                     set {mine.status.lava::%player's uuid%} to true
@@ -2402,7 +2404,8 @@ on inventory click:
                 if {mine.status.slime::%player's uuid%} is true:
                     set {mine.status.slime::%player's uuid%} to false
                     particle_menu(player)
-                    send "&2&l! &aスライムパーティクル自動圧縮を無効化しました。" to player
+                    send "&2&l! &aスライムパーティクルを無効化しました。" to player
+                    reset_particle(player)
                 else:
                     reset_particle(player)
                     set {mine.status.slime::%player's uuid%} to true
@@ -2422,6 +2425,7 @@ on inventory click:
                     set {mine.status.note::%player's uuid%} to false
                     particle_menu(player)
                     send "&2&l! &6音符パーティクル&aを無効化しました。" to player
+                    reset_particle(player)
                 else:
                     reset_particle(player)
                     set {mine.status.note::%player's uuid%} to true
@@ -2441,6 +2445,7 @@ on inventory click:
                     set {mine.status.blue::%player's uuid%} to false
                     particle_menu(player)
                     send "&2&l! &9青パーティクル&aを無効化しました。" to player
+                    reset_particle(player)
                 else:
                     reset_particle(player)
                     set {mine.status.blue::%player's uuid%} to true
@@ -2460,6 +2465,7 @@ on inventory click:
                     set {mine.status.red::%player's uuid%} to false
                     particle_menu(player)
                     send "&2&l! &c赤パーティクル&aを無効化しました。" to player
+                    reset_particle(player)
                 else:
                     reset_particle(player)
                     set {mine.status.red::%player's uuid%} to true
@@ -2479,6 +2485,7 @@ on inventory click:
                     set {mine.status.water::%player's uuid%} to false
                     particle_menu(player)
                     send "&2&l! &b水パーティクル&aを無効化しました。" to player
+                    reset_particle(player)
                 else:
                     reset_particle(player)
                     set {mine.status.water::%player's uuid%} to true
@@ -2492,3 +2499,4 @@ on inventory click:
                     set {mine.status.water.money::%player's uuid%} to true
                     set {mine.status.water::%player's uuid%} to false
                     particle_menu(player)
+
