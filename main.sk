@@ -13,8 +13,9 @@ Options:
     menu_seller_title: &c&lTheMining &7- &f売店屋
     menu_seller_sell_title: &c&lTheMining &7- &f売店屋 &7- &fアイテム売却
     menu_rewards: &c&lTheMining &7- &e&lレベル報酬 &7[クリック]
-    menu_obsidian_crafting: &c&lTheMining &7- &7&l黒曜の加工台
+    menu_obsidian_crafting: &c&lTheMining &7- &7&l加工台
     menu_maboroshi: &c&lTheMining &7- &d&l幻のおじいさん
+    menu_seller_buy_title: &c&lTheMining &7- &7- &f売店屋 &7- &fアイテム購入
     slot: true #スロットSkriptと連携するかどうか
 
     #以下値設定
@@ -22,6 +23,8 @@ Options:
     maboroshi_ingot_drop_c: 100000
     obsidian_drop_p: 1
     obsidian_drop_c: 100000
+    magma_drop_p: 1
+    magma_drop_c: 100000
     #maboroshi_ingot_drop設定ではpが確率分母、cが確率分子を示しています。
     #確率演算については、nupo_calc_lib.skを参照してください。
 
@@ -65,7 +68,21 @@ on load:
     set {mine.items::36} to unbreakable netherite pickaxe of efficiency 18 named "&7[&8黒曜石のピッケル&7]" with lore "&7黒曜石で作られた頑丈なピッケル" with enchants flag hidden
     set {mine.items::37} to glowing crying obsidian named "&8黒曜石の塊" with lore "&4重く鋭い..."
     set {mine.items::38} to unbreakable diamond pickaxe of efficiency 3 named "&7[&a初心者ピッケル&7]" with lore "&b30分間のみ利用可能です"
+    set {mine.items::39} to glowing magma block named "&c&lマグマのかけら" with lore "&c持つだけで危険!"
+    set {mine.items::40} to glowing gold pickaxe of efficiency 17 named "&7[&c&lマグマのピッケル&7]" with lore "&cとてつもない熱を感じる" with enchants flag hidden
+    set {mine.items::41} to magma block named "&cマグマブロック"
+    set {mine.items::42} to glowing magma block named "&c&l圧縮マグマブロック"
 
+    clear {mine.buy.price::*}
+    set {mine.buy.price::1} to 600000
+    set {mine.buy.price::2} to 800000
+    set {mine.buy.price::3} to 1000000
+
+    clear {mine.buy.items::*}
+    set {mine.buy.items::1} to {mine.items::30} with lore "&7ごく稀に鉱石を掘ると発掘できるようだ..." and "&7原材料は未だに不明だそう" and "&8&m-------------------------------" and "&e値段: &6%{mine.buy.price::1}%円"
+    set {mine.buy.items::2} to {mine.items::37} with lore "&4重く鋭い..." and "&8&m-------------------------------" and "&e値段: &6%{mine.buy.price::2}%円"
+    set {mine.buy.items::3} to {mine.items::39} with lore "&c持つだけで危険!" and "&8&m-------------------------------" and "&e値段: &6%{mine.buy.price::3}%円"
+    
     clear {mine.require::*}
     set {mine.require::2} to {mine.items::0}
     set {mine.require::3} to {mine.items::2}
@@ -75,6 +92,7 @@ on load:
     set {mine.require::8} to 64 of {mine.ores::obsidian}
     set {mine.require::9} to 64 of {mine.ores::emerald_ore}
     set {mine.require::17} to 64 of {mine.ores::coal_ore}
+    set {mine.require::42} to 64 of {mine.items::41}
     set {mine.require::12} to {mine.items::3}
     set {mine.require::13} to {mine.items::12}
     set {mine.require::14} to {mine.items::13}
@@ -95,6 +113,7 @@ on load:
     set {mine.upgrade_price::8} to 0
     set {mine.upgrade_price::9} to 0
     set {mine.upgrade_price::17} to 0
+    set {mine.upgrade_price::42} to 0
     set {mine.upgrade_price::12} to 1200
     set {mine.upgrade_price::13} to 1600
     set {mine.upgrade_price::14} to 1800
@@ -107,12 +126,14 @@ on load:
  
     clear {mine.orewhite::*}
     add {mine.ores::emerald_ore} to {mine.orewhite::0::*}
+    add {mine.ores::magma_block} to {mine.orewhite::0::*}
     add {mine.ores::obsidian} to {mine.orewhite::0::*}
     add {mine.ores::emerald_ore} to {mine.orewhite::2::*}
     add {mine.ores::obsidian} to {mine.orewhite::2::*}
+    add {mine.ores::magma_block} to {mine.orewhite::2::*}
     add {mine.ores::emerald_ore} to {mine.orewhite::3::*}
     add {mine.ores::obsidian} to {mine.orewhite::3::*}
-    add {mine.ores::obsidian} to {mine.orewhite::3::*}
+    add {mine.ores::magma_block} to {mine.orewhite::3::*}
     add {mine.ores::obsidian} to {mine.orewhite::30::*}
     add {mine.ores::obsidian} to {mine.orewhite::31::*}
     add {mine.ores::obsidian} to {mine.orewhite::32::*}
@@ -124,6 +145,19 @@ on load:
     add {mine.ores::obsidian} to {mine.orewhite::14::*}
     add {mine.ores::obsidian} to {mine.orewhite::15::*}
     add {mine.ores::obsidian} to {mine.orewhite::16::*}
+    add {mine.ores::obsidian} to {mine.orewhite::38::*}
+    add {mine.ores::magma_block} to {mine.orewhite::30::*}
+    add {mine.ores::magma_block} to {mine.orewhite::31::*}
+    add {mine.ores::magma_block} to {mine.orewhite::32::*}
+    add {mine.ores::magma_block} to {mine.orewhite::33::*}
+    add {mine.ores::magma_block} to {mine.orewhite::34::*}
+    add {mine.ores::magma_block} to {mine.orewhite::13::*}
+    add {mine.ores::magma_block} to {mine.orewhite::14::*}
+    add {mine.ores::magma_block} to {mine.orewhite::15::*}
+    add {mine.ores::magma_block} to {mine.orewhite::16::*}
+    add {mine.ores::magma_block} to {mine.orewhite::36::*}
+    add {mine.ores::magma_block} to {mine.orewhite::40::*}
+
 
     add 0.1 to {mine.price::stone}
     add 0.3 to {mine.price::coal_ore}
@@ -132,6 +166,9 @@ on load:
     add 0.8 to {mine.price::diamond_ore}
     add 1 to {mine.price::obsidian}
 
+    clear {mine.crafting.magma::*}
+    add {mine.items::39} to {mine.crafting.magma::*} 
+    add {mine.items::36} to {mine.crafting.magma::*} 
 
     clear {mine.skills::*}
     set {mine.skills::1} to stone named "&a二連採掘" with lore "&7掘った時に50%%の確立で堀った上" and "&7のブロックも破壊されます。"
@@ -202,13 +239,17 @@ on load:
     set {mine.seller.sellprice::27} to 2
     set {mine.seller.sellprice::28} to 5
     set {mine.seller.sellprice::29} to 8
+    set {mine.seller.sellprice::41} to 10
     set {mine.seller.sellprice::5} to 0.1*64
     set {mine.seller.sellprice::17} to 0.5*64
     set {mine.seller.sellprice::6} to 1*64
     set {mine.seller.sellprice::7} to 2*64
     set {mine.seller.sellprice::9} to 5*64
     set {mine.seller.sellprice::8} to 8*64
-    set {mine.seller.sellprice::37} to 500
+    set {mine.seller.sellprice::42} to 10*64
+    set {mine.seller.sellprice::37} to 10000
+    set {mine.seller.sellprice::30} to 10000
+    set {mine.seller.sellprice::39} to 10000
 
     clear {mine.enchant::*}
     set {mine.enchant_range} to 2
@@ -1075,6 +1116,7 @@ on load: #鉱石の登録
     set {mine.ores::diamond_ore} to {mine.items::27}
     set {mine.ores::emerald_ore} to {mine.items::28}
     set {mine.ores::obsidian} to {mine.items::29}
+    set {mine.ores::magma_block} to {mine.items::41}
 
 command /admin_break [<text>] [<player>]:   
     permission: admin
@@ -1216,6 +1258,15 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                     send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
                     send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
                     add {mine.items::37} to {pickup.%{_p}'s uuid%::*}
+            if mine_thread_throw_MAGMA("MINE_MAGMA_DROP"):
+                sound_notification({_p})
+                if mine_is_space_inventory({_p}):
+                    send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
+                    give {mine.items::37} to {_p}
+                else:
+                    send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
+                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+                    add {mine.items::37} to {pickup.%{_p}'s uuid%::*}
             return true
     else if {_p} is not op:
         return false
@@ -1254,7 +1305,7 @@ function mine_open_upgrade(p: player, tab: integer, page: integer):
         if {_tab} is 1:
             set {_list::*} to 0 and 2 and 3
         else if {_tab} is 2:
-            set {_list::*} to 5 and 17 and 6 and 7 and 9 and 8
+            set {_list::*} to 5 and 17 and 6 and 7 and 9 and 8 and 42
         else if {_tab} is 3:
             set {_list::*} to 12 and 13 and 14 and 15 and 16
         else if {_tab} is 4:
@@ -1424,29 +1475,35 @@ every 5 tick:
                         loop {_slots::*}:
                             set slot (loop-value-3) of loop-player-1's current inventory to red stained glass pane named "&cエンチャント不可能" with lore "&7この組み合わせは扱えません"
         if name of loop-player's current inventory is "{@menu_obsidian_crafting}":
-            loop {mine.crafting::*}:
-                if (slot 3 of loop-player's current inventory) or (slot 4 of loop-player's current inventory) is air:
-                    set slot 16 of loop-player's current inventory to air 
-            clear {_3}
             loop 2 time:
                 loop {mine.crafting::*}:
-                    if loop-value-3 is (slot 3 of loop-players's current inventory) or (slot 4 of loop-players's current inventory):
-                        add 1 to {_n3}
-                    if {_n3} is 4:
-                        set slot 16 of loop-players's current inventory to netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
+                    if loop-value-3 is (slot 3 of loop-player's current inventory) or (slot 4 of loop-player's current inventory):
+                        add 1 to {temp.n3}
+                    if {temp.n3} is 4:
+                        set slot 16 of loop-player's current inventory to netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
                     else:
                         set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
+            clear {temp.n3}
+        if name of loop-player's current inventory is "{@menu_obsidian_crafting}":
+            loop 2 time:
+                loop {mine.crafting.magma::*}:
+                    if loop-value-3 is (slot 3 of loop-player's current inventory) or (slot 4 of loop-player's current inventory):
+                        add 1 to {_n4}
+                    if {_n4} is 4:
+                        set slot 16 of loop-player's current inventory to glowing gold pickaxe named "&7[&c&lマグマのピッケル&7] " with lore "&cとてつもない熱を感じる"
+                    else:
+                        if {temp.n3} is set:
+                            set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
         if name of loop-player's current inventory is "{@menu_maboroshi}":    
             loop {mine.maboroshi::*}:
-                if (slot 10 of loop-players's current inventory) and (slot 11 of loop-players's current inventory) and (slot 12 of loop-players's current inventory) and (slot 13 of loop-players's current inventory)  and (slot 14 of loop-players's current inventory) and (slot 15 of loop-players's current inventory)  and (slot 16 of loop-players's current inventory) is air:
+                if (slot 10 of loop-player's current inventory) and (slot 11 of loop-player's current inventory) and (slot 12 of loop-players's current inventory) and (slot 13 of loop-players's current inventory)  and (slot 14 of loop-players's current inventory) and (slot 15 of loop-players's current inventory)  and (slot 16 of loop-players's current inventory) is air:
                     set slot 22 of loop-player's current inventory to air 
-            clear {_3}
             loop 2 time:
                 loop {mine.maboroshi::*}:
-                    if loop-value-3 is (slot 10 of loop-players's current inventory) and (slot 11 of loop-players's current inventory) and (slot 12 of loop-players's current inventory) and (slot 13 of loop-players's current inventory)  and (slot 14 of loop-players's current inventory) and (slot 15 of loop-players's current inventory)  and (slot 16 of loop-players's current inventory):
+                    if loop-value-3 is (slot 10 of loop-player's current inventory) and (slot 11 of loop-players's current inventory) and (slot 12 of loop-players's current inventory) and (slot 13 of loop-players's current inventory)  and (slot 14 of loop-players's current inventory) and (slot 15 of loop-players's current inventory)  and (slot 16 of loop-players's current inventory):
                         add 1 to {_n3}    
                     if {_n3} is 2:
-                        set slot 22 of loop-players's current inventory to lime concrete named "&aアイテムを渡しますか？" 
+                        set slot 22 of loop-player's current inventory to lime concrete named "&aアイテムを渡しますか？" 
                     else:
                         set slot 22 of loop-player's current inventory to red stained glass pane named "&aおじいさんはこのアイテムを求めていないようだ"
 
@@ -1674,6 +1731,8 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
 
+
+
 #プレイヤーの向いている方角の取得
 every 10 tick:
     loop all players:
@@ -1789,6 +1848,8 @@ on inventory click:
         cancel event
         if name of event-item is "&aアイテムを売る":
             mine_seller_open_sell(player)
+        if name of event-item is "&aアイテムを買う":
+            mine_seller_open_buy(player)
     else if name of player's current inventory is "{@menu_seller_sell_title}":
         event-item is set
         if name of event-item is "&c" or "&a売却するアイテムを入れてください":
@@ -1798,7 +1859,32 @@ on inventory click:
                 add 1 to {_n}
         if {_n} is not set:
             cancel event
-
+    else if name of player's current inventory is "{@menu_seller_buy_title}":
+        cancel event
+        if name of event-item is "&7[ &d&l幻のインゴット &7]":
+            if player's money >= 600000:
+                send "&2&l! &a購入しました！" 
+                remove 600000 from player's money
+                give {mine.items::30} to player
+                mine_quest_thread(player, "SELLERBUY", 0) 
+            else:
+                send "&4&l! &c所持金が不足しています。" to player
+        if name of event-item is "&8黒曜石の塊":
+            if player's money >= 800000:
+                send "&2&l! &a購入しました！" 
+                remove 800000 from player's money
+                give {mine.items::37} to player
+                mine_quest_thread(player, "SELLERBUY", 0) 
+            else:
+                send "&4&l! &c所持金が不足しています。" to player
+        if name of event-item is "&c&lマグマのかけら":
+            if player's money >= 1000000:
+                send "&2&l! &a購入しました！" 
+                remove 1000000 from player's money
+                give {mine.items::39} to player
+                mine_quest_thread(player, "SELLERBUY", 0) 
+            else:
+                send "&4&l! &c所持金が不足しています。" to player
 on inventory close:
     if name of player's current inventory is "{@menu_seller_sell_title}":
         set {_price} to 0
@@ -1831,7 +1917,7 @@ function mine_seller_tell(p: player):
 function mine_seller_open(p: player):
     open chest inventory with 3 row named "{@menu_seller_title}" to {_p}
     set slot 12 of {_p}'s current inventory to gold nugget named "&aアイテムを売る" with lore "&7[ クリックして開く ]"
-    set slot 14 of {_p}'s current inventory to gold block named "&a&mアイテムを買う" with lore "&7まだ実装していません"
+    set slot 14 of {_p}'s current inventory to gold block named "&aアイテムを買う" with lore "&7[ クリックして開く ]"
 
 function mine_seller_open_sell(p: player):
     open chest inventory with 6 row named "{@menu_seller_sell_title}" to {_p}
@@ -1840,6 +1926,14 @@ function mine_seller_open_sell(p: player):
     loop 9 times:
         set slot {_n} of {_p}'s current inventory to gray stained glass pane named "&c"
         add 1 to {_n}
+
+function mine_seller_open_buy(p: player):
+    open chest inventory with 6 row named "{@menu_seller_buy_title}" to {_p}
+    set {mine.buy.open::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 44 and 45 and 46 and 47 and 48 and 49 and 50 and 51 and 52 and 53 
+    set slot {mine.buy.open::*} of {_p}'s current inventory to lime stained glass pane named " "
+    set slot 10 of {_p}'s current inventory to {mine.buy.items::1}
+    set slot 11 of {_p}'s current inventory to {mine.buy.items::2}
+    set slot 12 of {_p}'s current inventory to {mine.buy.items::3}
 
 #スレッド処理
 function mine_thread_throw(type: string) :: object:
@@ -1854,6 +1948,11 @@ function mine_thread_throw_OBSIDIAN(type: string) :: object:
         return false
     return false
 
+function mine_thread_throw_MAGMA(type: string) :: object:
+    if {_type} is "MINE_MAGMA_DROP":
+        return true if nupo_calc_random({@magma_drop_p}, {@magma_drop_c})
+        return false
+    return false
 
 #以下ポータル処理
 on player move:
@@ -1972,7 +2071,7 @@ on right click on crafting table:
     open chest inventory with 3 row named "{@menu_obsidian_crafting}" to player
     set {table::*} to 0 and 1 and 2 and 6 and 7 and 8 and 9 and 10 and 11 and 15 and 17 and 18 and 19 and 20 and 24 and 25 and 26
     set slot {table::*} of player's current inventory to black stained glass pane named "&a"
-    set slot 0 of player's current inventory to glowing book named "&6レシピ本"
+    set slot 0 of player's current inventory to glowing book named "&6&lレシピ本"
 
 function autoore(p: player):
     if {mine.status.autoore::%{_p}'s uuid%} is true:
@@ -1996,22 +2095,50 @@ function autoore(p: player):
             give {_p} {mine.items::17}
 on inventory click:
     if name of player's current inventory is "{@menu_obsidian_crafting}":
-        if name of event-item is "&6レシピ本" or "&a" or "&cこの構成では利用できません":
+        if name of event-item is "&6&lレシピ本" or "&a" or "&cこの構成では利用できません":
             cancel event
         if name of event-item is "&7[&8黒曜石のピッケル&7] ":
             set slot 3 of player's current inventory to air
             set slot 4 of player's current inventory to air
             cancel event
             give {mine.items::36} to player
-        if name of event-item is "&6レシピ本":
-            open chest inventory with 3 row named "&7[&8黒曜石のピッケル&7]&fのレシピ" to player
-            set {recipes.obsidian::*} to 0 and 1 and 2 and 6 and 7 and 8 and 9 and 10 and 11 and 15 and 17 and 18 and 19 and 20 and 24 and 25 and 26
-            set slot {recipes.obsidian::*} of player's current inventory to black stained glass pane named "&e"
-            set slot 3 of player's current inventory to diamond pickaxe named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." 
-            set slot 4 of player's current inventory to glowing crying obsidian named "&8黒曜石の塊" with lore "&4重く鋭い..."
-            set slot 16 of player's current inventory to glowing netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
-    if name of player's current inventory is "&7[&8黒曜石のピッケル&7]&fのレシピ": 
+            play sound "minecraft:block.anvil.use" to player
+        if name of event-item is "&7[&c&lマグマのピッケル&7] ":
+            set slot 3 of player's current inventory to air
+            set slot 4 of player's current inventory to air
+            cancel event
+            give {mine.items::40} to player
+            play sound "minecraft:block.anvil.use" to player
+        if name of event-item is "&6&lレシピ本":
+            open chest inventory with 3 row named "&6&lレシピリスト" to player
+            set slot 0 of player's current inventory to glowing book and quill named "&8黒曜石のピッケル&6&lのレシピ"
+            set slot 1 of player's current inventory to glowing book and quill named "&c&lマグマのピッケル&6&lのレシピ" 
+    if name of player's current inventory is "&8黒曜石のピッケル&6&lのレシピ": 
         cancel event
+    if name of player's current inventory is "&c&lマグマのピッケル&6&lのレシピ": 
+        cancel event
+    if name of player's current inventory is "&6&lレシピリスト":
+        cancel event
+        if name of event-item is "&8黒曜石のピッケル&6&lのレシピ":
+            recipe_obsidian_pickaxe(player)
+        if name of event-item is "&c&lマグマのピッケル&6&lのレシピ": 
+            recipe_magma_pickaxe(player)
+
+function recipe_obsidian_pickaxe(p: player):
+    open chest inventory with 3 row named "&8黒曜石のピッケル&6&lのレシピ" to {_p}
+    set {recipes.obsidian::*} to 0 and 1 and 2 and 6 and 7 and 8 and 9 and 10 and 11 and 15 and 17 and 18 and 19 and 20 and 24 and 25 and 26
+    set slot {recipes.obsidian::*} of {_p}'s current inventory to black stained glass pane named "&e"
+    set slot 3 of {_p}'s current inventory to diamond pickaxe named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." 
+    set slot 4 of {_p}'s current inventory to glowing crying obsidian named "&8黒曜石の塊" with lore "&4重く鋭い..."
+    set slot 16 of {_p}'s current inventory to glowing netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
+
+function recipe_magma_pickaxe(p: player):
+    open chest inventory with 3 row named "&c&lマグマのピッケル&6&lのレシピ" to {_p}
+    set {recipes.obsidian::*} to 0 and 1 and 2 and 6 and 7 and 8 and 9 and 10 and 11 and 15 and 17 and 18 and 19 and 20 and 24 and 25 and 26
+    set slot {recipes.obsidian::*} of {_p}'s current inventory to black stained glass pane named "&e"
+    set slot 3 of {_p}'s current inventory to unbreakable netherite pickaxe of efficiency 18 named "&7[&8黒曜石のピッケル&7]" with lore "&7黒曜石で作られた頑丈なピッケル" with enchants flag hidden
+    set slot 4 of {_p}'s current inventory to glowing magma block named "&c&lマグマのかけら" with lore "&c持つだけで危険!"
+    set slot 16 of {_p}'s current inventory to glowing gold pickaxe named "&7[&c&lマグマのピッケル&7]" with lore "&cとてつもない熱を感じる"
 
 every 30 minute:
     set {_int} to 15
