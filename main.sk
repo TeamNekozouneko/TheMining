@@ -1881,7 +1881,7 @@ on inventory click:
             if player's money >= 1000000:
                 send "&2&l! &a購入しました！" 
                 remove 1000000 from player's money
-                give {mine.items::41} to player
+                give {mine.items::39} to player
                 mine_quest_thread(player, "SELLERBUY", 0) 
             else:
                 send "&4&l! &c所持金が不足しています。" to player
