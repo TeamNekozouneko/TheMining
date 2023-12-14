@@ -2644,4 +2644,3 @@ on npc right click:
     if npc name is "&aマグマピッケル交換用":
         remove 1 of gold pickaxe named "&7[&c&lマグマのピッケル&7]" from player
         give {mine.items::40} to player
-#temp
