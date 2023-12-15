@@ -12,19 +12,12 @@ Options:
     menu_recipe_content_title: &c&lTheMining &7- &fレシピ
     menu_seller_title: &c&lTheMining &7- &f売店屋
     menu_seller_sell_title: &c&lTheMining &7- &f売店屋 &7- &fアイテム売却
-    menu_rewards: &c&lTheMining &7- &e&lレベル報酬 &7[クリック]
-    menu_obsidian_crafting: &c&lTheMining &7- &7&l加工台
-    menu_maboroshi: &c&lTheMining &7- &d&l幻のおじいさん
-    menu_seller_buy_title: &c&lTheMining &7- &7- &f売店屋 &7- &fアイテム購入
+
     slot: true #スロットSkriptと連携するかどうか
 
     #以下値設定
     maboroshi_ingot_drop_p: 1
     maboroshi_ingot_drop_c: 100000
-    obsidian_drop_p: 1
-    obsidian_drop_c: 100000
-    magma_drop_p: 1
-    magma_drop_c: 100000
     #maboroshi_ingot_drop設定ではpが確率分母、cが確率分子を示しています。
     #確率演算については、nupo_calc_lib.skを参照してください。
 
@@ -66,23 +59,10 @@ on load:
     set {mine.items::34} to unbreakable diamond pickaxe of efficiency 15 named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with enchants flag hidden
     set {mine.items::35} to glowing stick named "&dポータル設定用棒"
     set {mine.items::36} to unbreakable netherite pickaxe of efficiency 18 named "&7[&8黒曜石のピッケル&7]" with lore "&7黒曜石で作られた頑丈なピッケル" with enchants flag hidden
-    set {mine.items::37} to glowing crying obsidian named "&8黒曜石の塊" with lore "&4重く鋭い..."
-    set {mine.items::38} to unbreakable diamond pickaxe of efficiency 3 named "&7[&a初心者ピッケル&7]" with lore "&b30分間のみ利用可能です"
-    set {mine.items::39} to glowing magma block named "&c&lマグマのかけら" with lore "&c持つだけで危険!"
-    set {mine.items::40} to unbreakable glowing gold pickaxe of efficiency 17 named "&7[&c&lマグマのピッケル&7]" with lore "&cとてつもない熱を感じる" with enchants flag hidden
-    set {mine.items::41} to magma block named "&cマグマブロック"
-    set {mine.items::42} to glowing magma block named "&c&l圧縮マグマブロック"
+    set {mine.items::37} to glowing crying obsidian named "&8黒曜石の魂" with lore "&4禍々しさを感じる..."
+    set {mine.items::38} to glowing paper named "&bガチャ無料券"
 
-    clear {mine.buy.price::*}
-    set {mine.buy.price::1} to 600000
-    set {mine.buy.price::2} to 800000
-    set {mine.buy.price::3} to 1000000
 
-    clear {mine.buy.items::*}
-    set {mine.buy.items::1} to {mine.items::30} with lore "&7ごく稀に鉱石を掘ると発掘できるようだ..." and "&7原材料は未だに不明だそう" and "&8&m-------------------------------" and "&e値段: &6%{mine.buy.price::1}%円"
-    set {mine.buy.items::2} to {mine.items::37} with lore "&4重く鋭い..." and "&8&m-------------------------------" and "&e値段: &6%{mine.buy.price::2}%円"
-    set {mine.buy.items::3} to {mine.items::39} with lore "&c持つだけで危険!" and "&8&m-------------------------------" and "&e値段: &6%{mine.buy.price::3}%円"
-    
     clear {mine.require::*}
     set {mine.require::2} to {mine.items::0}
     set {mine.require::3} to {mine.items::2}
@@ -92,7 +72,6 @@ on load:
     set {mine.require::8} to 64 of {mine.ores::obsidian}
     set {mine.require::9} to 64 of {mine.ores::emerald_ore}
     set {mine.require::17} to 64 of {mine.ores::coal_ore}
-    set {mine.require::42} to 64 of {mine.items::41}
     set {mine.require::12} to {mine.items::3}
     set {mine.require::13} to {mine.items::12}
     set {mine.require::14} to {mine.items::13}
@@ -113,7 +92,6 @@ on load:
     set {mine.upgrade_price::8} to 0
     set {mine.upgrade_price::9} to 0
     set {mine.upgrade_price::17} to 0
-    set {mine.upgrade_price::42} to 0
     set {mine.upgrade_price::12} to 1200
     set {mine.upgrade_price::13} to 1600
     set {mine.upgrade_price::14} to 1800
@@ -126,80 +104,29 @@ on load:
  
     clear {mine.orewhite::*}
     add {mine.ores::emerald_ore} to {mine.orewhite::0::*}
-    add {mine.ores::magma_block} to {mine.orewhite::0::*}
     add {mine.ores::obsidian} to {mine.orewhite::0::*}
     add {mine.ores::emerald_ore} to {mine.orewhite::2::*}
     add {mine.ores::obsidian} to {mine.orewhite::2::*}
-    add {mine.ores::magma_block} to {mine.orewhite::2::*}
     add {mine.ores::emerald_ore} to {mine.orewhite::3::*}
     add {mine.ores::obsidian} to {mine.orewhite::3::*}
-    add {mine.ores::magma_block} to {mine.orewhite::3::*}
-    add {mine.ores::obsidian} to {mine.orewhite::30::*}
-    add {mine.ores::obsidian} to {mine.orewhite::31::*}
-    add {mine.ores::obsidian} to {mine.orewhite::32::*}
-    add {mine.ores::obsidian} to {mine.orewhite::33::*}
-    add {mine.ores::obsidian} to {mine.orewhite::34::*}
-    add {mine.ores::obsidian} to {mine.orewhite::11::*}
     add {mine.ores::obsidian} to {mine.orewhite::12::*}
     add {mine.ores::obsidian} to {mine.orewhite::13::*}
     add {mine.ores::obsidian} to {mine.orewhite::14::*}
     add {mine.ores::obsidian} to {mine.orewhite::15::*}
     add {mine.ores::obsidian} to {mine.orewhite::16::*}
-    add {mine.ores::obsidian} to {mine.orewhite::38::*}
-    add {mine.ores::magma_block} to {mine.orewhite::30::*}
-    add {mine.ores::magma_block} to {mine.orewhite::31::*}
-    add {mine.ores::magma_block} to {mine.orewhite::32::*}
-    add {mine.ores::magma_block} to {mine.orewhite::33::*}
-    add {mine.ores::magma_block} to {mine.orewhite::34::*}
-    add {mine.ores::magma_block} to {mine.orewhite::13::*}
-    add {mine.ores::magma_block} to {mine.orewhite::14::*}
-    add {mine.ores::magma_block} to {mine.orewhite::15::*}
-    add {mine.ores::magma_block} to {mine.orewhite::16::*}
-    add {mine.ores::magma_block} to {mine.orewhite::36::*}
-    add {mine.ores::magma_block} to {mine.orewhite::40::*}
-
-
-    add 0.1 to {mine.price::stone}
-    add 0.3 to {mine.price::coal_ore}
-    add 0.3 to {mine.price::iron_ore}
-    add 0.8 to {mine.price::emerald_ore}
-    add 0.8 to {mine.price::diamond_ore}
-    add 1 to {mine.price::obsidian}
-
-    clear {mine.crafting.magma::*}
-    add {mine.items::39} to {mine.crafting.magma::*} 
-    add {mine.items::36} to {mine.crafting.magma::*} 
 
     clear {mine.skills::*}
     set {mine.skills::1} to stone named "&a二連採掘" with lore "&7掘った時に50%%の確立で堀った上" and "&7のブロックも破壊されます。"
     set {mine.skills::2} to iron ore named "&a上下採掘" with lore "&7掘った時に堀った上下のブロック" and "&7も破壊されます。"
-    set {mine.skills::3} to coal ore named "&a2×2採掘" with lore "&7掘った時に堀った2×2のブロック" and "&7も破壊されます。"
-    set {mine.skills::4} to redstone ore named "&a3×3採掘" with lore "&7掘った時に堀った3×3のブロック" and "&7も破壊されます。"
-    set {mine.skills::5} to lapis lazuli ore named "&a4×4採掘" with lore "&7掘った時に堀った4×4のブロック" and "&7も破壊されます。"
 
     clear {mine.skillprice::*}
     set {mine.skillprice::1} to 300
     set {mine.skillprice::2} to 1500
-    set {mine.skillprice::3} to 8000  #2×2
-    set {mine.skillprice::4} to 30000 #3×3
-    set {mine.skillprice::5} to 150000 #4×4
 
     clear {mine.boost::*}
     set {mine.boost::1} to experience bottle named "&eEXPブースト" with lore "&7購入するごとに掘った時" and "&7の獲得XPが1%%上昇します。"
     set {mine.boost::2} to gold ingot named "&6マネーブースト" with lore "&7購入するごとに掘った時" and "&7の獲得するお金が1%%上昇します。"
     set {mine.boost::3} to gold pickaxe named "&6速度ブースト" with lore "&7購入するごとに掘る速度が" and "&7レベル1ずつ上昇します。"
-
-    clear {mine.myboost::*}
-    set {mine.myboost::1} to rabbit's foot named "&6ジャンプブースト" with lore "&7購入するごとにジャンプの高さが" and "&70.5ブロックずつ上昇します。"
-    set {mine.myboost::2} to potion of swiftness named "&6速度ブースト" with lore "&7購入するごとに移動速度が" and "&7上昇します。"
-
-    clear {mine.myboostmax::*} 
-    set {mine.myboostmax::1} to 3
-    set {mine.myboostmax::2} to 2
-
-    clear {mine.myboostprice::*}
-    set {mine.myboostprice::1} to 1000
-    set {mine.myboostprice::2} to 1000
 
     clear {mine.boostmax::*}
     set {mine.boostmax::1} to 20
@@ -239,17 +166,12 @@ on load:
     set {mine.seller.sellprice::27} to 2
     set {mine.seller.sellprice::28} to 5
     set {mine.seller.sellprice::29} to 8
-    set {mine.seller.sellprice::41} to 10
     set {mine.seller.sellprice::5} to 0.1*64
     set {mine.seller.sellprice::17} to 0.5*64
     set {mine.seller.sellprice::6} to 1*64
     set {mine.seller.sellprice::7} to 2*64
     set {mine.seller.sellprice::9} to 5*64
     set {mine.seller.sellprice::8} to 8*64
-    set {mine.seller.sellprice::42} to 10*64
-    set {mine.seller.sellprice::37} to 10000
-    set {mine.seller.sellprice::30} to 10000
-    set {mine.seller.sellprice::39} to 10000
 
     clear {mine.enchant::*}
     set {mine.enchant_range} to 2
@@ -262,23 +184,8 @@ on load:
     add {mine.items::23} to {mine.enchant_result::1::*}
     add {mine.items::21} to {mine.enchant_result::2::*}
 
-    clear {mine.crafting::*}
-    add {mine.items::37} to {mine.crafting::*}
-    add {mine.items::34} to {mine.crafting::*}
-
-    clear {mine.maboroshi::*}
-    add {mine.items::30} to {mine.maboroshi::*}
-    add {mine.items::37} to {mine.maboroshi::*}
-
-    clear {mine.tell.maboroshi::*}
-    add "&a採掘をすると出てくるアイテムを7つ無くしてしまったんじゃ" to {mine.tell.maboroshi::*} 
-    add "&a見つけてくれたら報酬をあげるぞ" to {mine.tell.maboroshi::*} 
-
 on join:
     clear metadata value "mine_add_orerange" of player
-    set {mine.status.autoore.money::%player's uuid%} to {mine.status.autoore.money::%player%}
-    set {mine.status.autoore::%players's uuid%} to {mine.status.autoore::%player%}
-
 
 command /admin_inv [<player>]:
     permission: admin
@@ -343,11 +250,8 @@ command /mine [<text>] [<text>] [<integer>]:
                 send "&2&l! &aリセットしました。" to player
         else if arg-1 is "lobby":
             mine_teleport_lobby(player, arg-2)
-        else if arg-1 is "event":
-            mine_event_allrange()
         else:
             mine_show_help(player)
-
 
 command /spawn [<text>]:
     trigger:
@@ -356,9 +260,8 @@ command /spawn [<text>]:
         if arg-1 is "help":
             send "&3&l&m-----------&7 [ &bスポーン &7] &3&l&m-----------" to player
             send "&3&l・&b1&7: &b初期スポーン" to player
-            send "&3&l・&b2&7: &b第二採掘場" to player
+            send "&3&l・&b2&7: &b採掘場 Lv.2" to player
             send "&3&l・&b3&7: &bギャンブル場" to player
-            send "&3&l・&b3&7: &b第四採掘場" to player
         else if {mine.generic::lobbyloc::%{_n}%} is not set:
             send "&4&l! &cこの場所は存在しません。" to player
             sound_portal_failed(player)
@@ -369,9 +272,6 @@ command /spawn [<text>]:
         else:
             send "&4&l! &cこの場所にテレポートする条件を満たしていません。" to player
             sound_portal_failed(player)
-
-on tab complete of "/spawn":
-    set tab completions for position 1 to "help", "1", "2", "3" and "4"
 
 on inventory click:
     if name of player's current inventory is "{@oremenu_title}":
@@ -411,6 +311,7 @@ on inventory click:
                             give {mine.items::%{_index}%} to player
                             send "&2&l! &a購入しました。" to player
                             sound_success(player)
+                            mine_quest_thread(player, "BUY", {_index})
                         else:
                             sound_error(player)
                             if item amount of {mine.require::%{_index}%} is 1:
@@ -463,26 +364,6 @@ on inventory click:
             clear {mine.pselskill::%player's uuid%}
             send "&2&l! &aスキルを選択なしに設定しました。" to player
             mine_skill_page(player, 1)
-        if name of event-item is "&a自動圧縮":
-            if {mine.status.autoore.money::%player's uuid%} is true:
-                if {mine.status.autoore::%player's uuid%} is true:
-                    set {mine.status.autoore::%player's uuid%} to false
-                    mine_skill_page(player, 1)
-                    send "&2&l! &a自動圧縮を無効化しました。" to player
-                else:
-                    set {mine.status.autoore::%player's uuid%} to true
-                    mine_skill_page(player, 1)
-                    send "&2&l! &a自動圧縮を有効化しました。" to player
-            else: 
-                if player's money >= 100000:
-                    remove 100000 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.autoore.money::%player's uuid%} to true
-                    set {mine.status.autoore::%player's uuid%} to false
-                    mine_skill_page(player, 1)
-                    mine_quest_thread(player, "BUYSKILL", 0)
-                else:
-                    send "&4&l! &c所持金が不足しています。"
         else if {_price} and {_index} is set:
             if {_type} is "booster":
                 if player's money >= {_price}:
@@ -491,7 +372,6 @@ on inventory click:
                     send "&2&l! &a購入しました！" to player
                     mine_skill_page(player, 1)
                     sound_success(player)
-                    mine_quest_thread(player, "BUYSKILL", 0)
                 else:
                     send "&4&l! &c所持金が不足しています。" to player
                     sound_error(player)
@@ -506,22 +386,9 @@ on inventory click:
                         send "&2&l! &a購入しました！" to player
                         mine_skill_page(player, 1)
                         sound_success(player)
-                        mine_quest_thread(player, "BUYSKILL", 0)
                     else:
                         send "&4&l! &c所持金が不足しています。" to player
                         sound_error(player)
-            else if {_type} is "myskill":
-                if player's money >= {_price}:
-                    remove {_price} from player's money
-                    send "&2&l! &a購入しました！" to player
-                    add 1 to {mine.myboostp::%player's uuid%::%{_index}%}
-                    mine_skill_page(player, 1)
-                    mine_quest_thread(player, "BUYSKILL", 0)
-                else:
-                    send "&4&l! &c所持金が不足しています。" to player
-                    mine_skill_page(player, 1)
-
-
         else if {_index} and {_type} is set:
             if {_type} is "skill_switch":
                 set {mine.pselskill::%player's uuid%} to "%{_index}%"
@@ -596,44 +463,7 @@ on inventory close:
             give {_i} to player
         if {_i2} is not air:
             give {_i2} to player
-    if name of player's current inventory is "{@menu_obsidian_crafting}":
-        set {_i1} to slot 3 of player's current inventory
-        set {_i2} to slot 4 of player's current inventory
-        set {_i3} to slot 5 of player's current inventory
-        set {_i4} to slot 12 of player's current inventory
-        set {_i5} to slot 13 of player's current inventory
-        set {_i6} to slot 14 of player's current inventory
-        set {_i7} to slot 21 of player's current inventory
-        set {_i8} to slot 22 of player's current inventory
-        set {_i9} to slot 23 of player's current inventory
-        give {_i1} to player
-        give {_i2} to player
-        give {_i3} to player
-        give {_i4} to player
-        give {_i5} to player
-        give {_i6} to player
-        give {_i7} to player
-        give {_i8} to player
-        give {_i9} to player
-    if name of player's current inventory is "{@menu_maboroshi}":
-        #skriptのバージョン古いのが原因？
-        #set {_temp::*} to 10 and 11 and 12 and 13 and 14 and 15 and 16
-        #set {_l2::*} to slot {_temp::*} of player's current inventory
-        #give {_l2::*} to player
-        set {_i1} to slot 10 of player's current inventory
-        set {_i2} to slot 11 of player's current inventory
-        set {_i3} to slot 12 of player's current inventory
-        set {_i4} to slot 13 of player's current inventory
-        set {_i5} to slot 14 of player's current inventory
-        set {_i6} to slot 15 of player's current inventory
-        set {_i7} to slot 16 of player's current inventory
-        give {_i1} to player
-        give {_i2} to player
-        give {_i3} to player
-        give {_i4} to player
-        give {_i5} to player
-        give {_i6} to player
-        give {_i7} to player
+
 function mine_teleport_lobby(p: player, num: string):
     if {_num} is not set:
         send "&4&l! &c優先番号を指定してください。" to {_p}
@@ -669,7 +499,7 @@ function mine_show_help(p: player):
     send "&4&l・&c/mine lobby <優先番号> &8- &f優先番号に登録された場所へテレポートします。" to {_p}
     send "&4&l・&c/mine resetplayer <プレイヤー> &8- &fプレイヤーのデータを初期化します。" to {_p}
     send "&4&l・&c/mine resetlv <プレイヤー> <指定値> &8- &fプレイヤーのレベルとEXPデータを指定値に設定します。" to {_p}
-    send "&4&l・&c/mine event &8- &fイベントを開始します。" to {_p}
+
 on place:
     if metadata value "mine_add_orerange" of player is 1:
         cancel event
@@ -739,16 +569,6 @@ function mine_clear_allrange(p: player):
 function mine_update_allrange(p: player):
     send "&2&l! &aすべての鉱石の範囲を再生成しています。" to {_p}
     mine_update_allrange_nm()
-function mine_event_allrange():
-    send "&2&l! &aイベントを開始します..." to {_p}
-    broadcast "&d----------イベント開始----------" 
-    broadcast "                                 "
-    broadcast "&a10分間石炭や鉄がダイヤやエメラルドになります！"
-    broadcast "                                 "
-    broadcast "&d-------------------------------" 
-    mine_update_random_event_nm()
-    loop all players:
-        mine_quest_thread(loop-player, "EVENT", 0)  
 
 function mine_update_allrange_nm():
     set {_bf} to 0
@@ -787,7 +607,7 @@ function mine_update_allrange_nm():
                     set loop-block to emerald ore
                 else:
                     set loop-block to stone
-            else if {mine.oretype::%loop-value-1%} is 4:
+            else:
                 if {_num} is between 1 and 3:
                     set loop-block to diamond ore
                 else if {_num} is between 4 and 10:
@@ -803,39 +623,6 @@ function mine_update_allrange_nm():
             if {mine.temp::stopupdate} is set:
                 clear {mine.temp::stopupdate}
                 exit
-            add 1 to {_bf}
-            if {_bf} >= 300:
-                set {_bf} to 0
-                wait a tick
-
-function mine_update_random_event_nm():
-    set {_bf} to 0
-    loop {mine.orerange_list::*}:
-        loop all blocks within {mine.orerange::%loop-value%::1} and {mine.orerange::%loop-value%::2}:
-            clear {_n}
-            loop all players in radius 2 of loop-block:
-                add 1 to {_n}
-            {_n} is not set
-            set {_blocks::*} to air and stone and coal ore and iron ore and diamond ore and emerald ore and obsidian
-            {_blocks::*} contains loop-block
-            set {_num} to random integer between 1 and 100
-
-            if {mine.oretype::%loop-value-1%} is 4:
-                if {_num} is between 1 and 20:
-                    set loop-block to diamond ore
-                else if {_num} is between 21 and 30:
-                    set loop-block to emerald ore
-                else if {_num} is between 26 and 30:
-                    set loop-block to obsidian
-                else:
-                    set loop-block to stone
-            else:
-                if {_num} is between 1 and 15:
-                    set loop-block to diamond ore
-                else if {_num} is between 16 and 23:
-                    set loop-block to emerald ore
-                else:
-                    set loop-block to stone
             add 1 to {_bf}
             if {_bf} >= 300:
                 set {_bf} to 0
@@ -912,10 +699,6 @@ on place:
 on hunger meter change:
     cancel event
 
-on right click on oak sign:
-    player is not op
-    cancel event
-
 command /pickaxe:
     trigger:
         if (unix timestamp of now)-{mine.players::%player's uuid%::lastgetpickaxe} < 86400:
@@ -973,8 +756,9 @@ every 1 second:
     loop all players:
         mine_scoreboardUpdate(loop-player)
 
+
+
 on first join:
-    wait 10 tick
     teleport player to location of {mine.generic::lobbyloc::1}
     send title "&m     &f&l ようこそ" with subtitle "&bᴡᴇʟᴄᴏᴍᴇ ᴛᴏ &c&lThe Mining" to player
     loop 5 times:
@@ -984,12 +768,12 @@ on first join:
     send "&fこのサーバーでは、採掘がメインの要素となっています！" to player
     send "&f鉱石の採掘を重ね、ピッケルの強化や取引をお楽しみいただけます。" to player
     send "&r" to player
-    send "&f手元には「%name of {mine.items::38}%&f」と「%name of {mine.items::0}%&f」があります。" to player
+    send "&f手元には「%name of {mine.items::0}%&f」があります。" to player
     send "&fまずは目の前の鉱石をがむしゃらに掘り始めてみましょう！" to player
-    send "&6&l現在初心者さん応援キャンペーン中で30分間範囲採掘・採掘ごとにお金がもらえます!"
     loop 2 times:
         send "&r" to player
     play sound "entity.player.levelup" to player
+    give {mine.items::0} to player
 
 function mine_variables_check(p: player):
     if {mine.level::%{_p}'s uuid%} is not set:
@@ -1001,20 +785,7 @@ function mine_variables_check(p: player):
     loop {mine.boost::*}:
         if {mine.pboost::%{_p}'s uuid%::%loop-index%} is not set:
             set {mine.pboost::%{_p}'s uuid%::%loop-index%} to 0
-        if {mine.myboostp::%{_p}'s uuid%::1} is not set:
-            set {mine.myboostp::%{_p}'s uuid%::1} to 0 
-        if {mine.myboostp::%{_p}'s uuid%::2} is not set:
-            set {mine.myboostp::%{_p}'s uuid%::2} to 0 
-    if {mine.setting.shift::%{_p}'s uuid%} is not set:
-        set {mine.setting.shift::%{_p}'s uuid%} to "true"
-    if {mine.status.autoore.money::%{_p}'s uuid%} is not set:
-        set {mine.status.autoore.money::%{_p}'s uuid%} to false
-    if {mine.status.autoore.money::%{_p}%} is true:
-        set {mine.status.autoore.money::%{_p}'s uuid%} to true
-    if {mine.login.time::%{_p}%} is not set:
-        set {mine.login.time::%{_p}%} to 0
-    if {mine.myboostp::%{_p}'s uuid%::1} is 3:
-        mine_quest_thread({_p}, "JUMP", 0) 
+
 function mine_reset_player(p: player):
     clear {mine.level::%{_p}'s uuid%}
     clear {mine.exp::%{_p}'s uuid%}
@@ -1077,22 +848,10 @@ on right click:
     cancel event if event-block is a shulker box
 
 #以下定期システム
-
 every 15 minute:
-    set {_var} to random number from 1 to 5
-    set {_int} to round({_var}) 
-    if {event.temp} is not true:
-        if {_int} is 1:
-            mine_event_allrange()
-            set {event.temp} to true
-        else:
-            mine_update_allrange_nm()
-            send "&4&l! &cマップ上の鉱石がすべて補填されます。" to all players
-            set {event.temp} to false         
-    else:
-        mine_update_allrange_nm()
-        send "&4&l! &cマップ上の鉱石がすべて補填されます。" to all players
-        set {event.temp} to false
+    send "&4&l! &cマップ上の鉱石がすべて補填されます。" to all players
+    mine_update_allrange_nm()
+
 every 5 minute:
     add "スキルNPCでスキルを購入できます！" to {_notes::*}
     add "スキルNPCから様々なブーストをすることができます！" to {_notes::*}
@@ -1101,7 +860,6 @@ every 5 minute:
     add "採掘場で帰れなくなった？/spawnコマンドで一気に帰ろう！" to {_notes::*}
     add "レシピが分からない？レシピの渡来人が教えてくれるんだって！" to {_notes::*}
     add "アイテムが一杯なんだって？売店屋が鉱石を買い取ってくれるよ！" to {_notes::*}
-    add "統合版で他プレイヤーのレベルを見たい？/levelsコマンドで見ることができます！" to {_notes::*}
     set {_note} to random element out of {_notes::*}
     send "&7[ &e定期 &7] &r%{_note}%" to all players
 
@@ -1117,52 +875,15 @@ on load: #鉱石の登録
     set {mine.ores::diamond_ore} to {mine.items::27}
     set {mine.ores::emerald_ore} to {mine.items::28}
     set {mine.ores::obsidian} to {mine.items::29}
-    set {mine.ores::magma_block} to {mine.items::41}
 
-command /admin_break [<text>] [<player>]:   
-    permission: admin
-    trigger:
-        if arg-1 is "add":
-            if {break.list::*} contains arg-2:
-                send "&cすでに登録しています"
-            else:
-                add arg-2 to {break.list::*}
-                send "&a破壊許可リストに%arg-2%を追加しました"
-        if arg-1 is "delete":
-            remove arg-2 from {break.list::*}
-            send "&a破壊許可リストから%arg-2%を削除しました"
-
-on tab complete of "/admin_break":
-    set tab completions for position 1 to "add" and "delete"
-
-command /admin_break_list:
-    trigger:
-        send "&a--------許可リスト---------"
-        loop {break.list::*}:
-            send "&b%loop-value%"
-        send "&a--------------------------"
 on break:
     cancel drops
-    #if player is not "runq_JP":
-    #    if event-block is cyan terracotta:
-    #        cancel event
-    #    if event-block is light blue terracotta:
-    #        cancel event
+    if player is not "runq_JP":
+        if event-block is cyan terracotta:
+            cancel event
     if event-entity is a player:
         if mine_break(player, event-block) is false:
             cancel event
-    autoore(player)
-    if {break.list::*} contains player:
-        stop
-    else:
-        if event-block is cyan terracotta:
-            cancel event
-        if event-block is light blue terracotta:
-            cancel event
-    
-
-on pickup:
-    autoore(player)
 
 function mine_break(p: player, b: block, thread_bypass: boolean = false) :: boolean:
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
@@ -1211,10 +932,9 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
             give {mine.ores::%{_name}%} to {_p}
             add 1 to {mine.mnum::%{_p}'s uuid%}
             
-            #初見さんキャンペーン対応のために復活
-            if {mine.hojo.%{_p}'s uuid%} is true:
-                set {_money} to {mine.price::%{_name}%}
-                add {_money} to {_p}'s money
+            #v0.2アプデのシステム改造により廃止
+            #set {_money} to {mine.price::%{_name}%}
+            #add {_money} to {_p}'s money
 
             loop {mine.seller.sellprice::*}:
                 if 1 of {mine.items::%loop-index%} is 1 of {mine.ores::%{_name}%}:
@@ -1232,11 +952,6 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 mine_boost_thread_wait({_p}, 2, {_money})
                 mine_skill_thread_wait({_p}, 1, {_b})
                 mine_skill_thread_wait({_p}, 2, {_b})
-                mine_skill_thread_wait({_p}, 3, {_b})
-                mine_skill_thread_wait({_p}, 4, {_b})
-                mine_skill_thread_wait({_p}, 5, {_b})
-                if {mine.hojo.%{_p}'s uuid%} is true:
-                    mine_skill_hojo({_p}, {_b})
             mine_quest_thread({_p}, "BREAK", 1)
 
             if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
@@ -1250,33 +965,11 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                     add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
                 mine_quest_thread({_p}, "MABOROSHI_DROP", 0)
 
-            if mine_thread_throw_OBSIDIAN("MINE_OBSIDIAN_DROP"):
-                sound_notification({_p})
-                if mine_is_space_inventory({_p}):
-                    send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
-                    give {mine.items::37} to {_p}
-                else:
-                    send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
-                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
-                    add {mine.items::37} to {pickup.%{_p}'s uuid%::*}
-            if mine_thread_throw_MAGMA("MINE_MAGMA_DROP"):
-                sound_notification({_p})
-                if mine_is_space_inventory({_p}):
-                    send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
-                    give {mine.items::39} to {_p}
-                else:
-                    send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
-                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
-                    add {mine.items::39} to {pickup.%{_p}'s uuid%::*}
+            
+
             return true
     else if {_p} is not op:
         return false
-
-function mine_skill_hojo(p: player, v: block):
-    mine_all_z({_p}, "west", 1, 1, -1, -1, {_v})
-    mine_all_z({_p}, "east", -1, 1, 1, -1, {_v})
-    mine_all_x({_p}, "south", 1, 1, -1, -1, {_v})
-    mine_all_x({_p}, "north", 1, 1, -1, -1, {_v})
 
 #以下ショップ
 on npc right click:
@@ -1306,7 +999,7 @@ function mine_open_upgrade(p: player, tab: integer, page: integer):
         if {_tab} is 1:
             set {_list::*} to 0 and 2 and 3
         else if {_tab} is 2:
-            set {_list::*} to 5 and 17 and 6 and 7 and 9 and 8 and 42
+            set {_list::*} to 5 and 17 and 6 and 7 and 9 and 8
         else if {_tab} is 3:
             set {_list::*} to 12 and 13 and 14 and 15 and 16
         else if {_tab} is 4:
@@ -1475,38 +1168,6 @@ every 5 tick:
                         set {_slots::*} to 13 and 14 and 15 and 16 and 17 and 5 and 23
                         loop {_slots::*}:
                             set slot (loop-value-3) of loop-player-1's current inventory to red stained glass pane named "&cエンチャント不可能" with lore "&7この組み合わせは扱えません"
-        if name of loop-player's current inventory is "{@menu_obsidian_crafting}":
-            loop 2 time:
-                loop {mine.crafting::*}:
-                    if loop-value-3 is (slot 3 of loop-player's current inventory) or (slot 4 of loop-player's current inventory):
-                        add 1 to {temp.n3}
-                    if {temp.n3} is 4:
-                        set slot 16 of loop-player's current inventory to netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
-                    else:
-                        set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
-            clear {temp.n3}
-        if name of loop-player's current inventory is "{@menu_obsidian_crafting}":
-            loop 2 time:
-                loop {mine.crafting.magma::*}:
-                    if loop-value-3 is (slot 3 of loop-player's current inventory) or (slot 4 of loop-player's current inventory):
-                        add 1 to {_n4}
-                    if {_n4} is 4:
-                        set slot 16 of loop-player's current inventory to glowing gold pickaxe named "&7[&c&lマグマのピッケル&7] " with lore "&cとてつもない熱を感じる"
-                    else:
-                        if {temp.n3} is set:
-                            set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
-        if name of loop-player's current inventory is "{@menu_maboroshi}":    
-            loop {mine.maboroshi::*}:
-                if (slot 10 of loop-player's current inventory) and (slot 11 of loop-player's current inventory) and (slot 12 of loop-players's current inventory) and (slot 13 of loop-players's current inventory)  and (slot 14 of loop-players's current inventory) and (slot 15 of loop-players's current inventory)  and (slot 16 of loop-players's current inventory) is air:
-                    set slot 22 of loop-player's current inventory to air 
-            loop 2 time:
-                loop {mine.maboroshi::*}:
-                    if loop-value-3 is (slot 10 of loop-player's current inventory) and (slot 11 of loop-players's current inventory) and (slot 12 of loop-players's current inventory) and (slot 13 of loop-players's current inventory)  and (slot 14 of loop-players's current inventory) and (slot 15 of loop-players's current inventory)  and (slot 16 of loop-players's current inventory):
-                        add 1 to {_n3}    
-                    if {_n3} is 2:
-                        set slot 22 of loop-player's current inventory to lime concrete named "&aアイテムを渡しますか？" 
-                    else:
-                        set slot 22 of loop-player's current inventory to red stained glass pane named "&aおじいさんはこのアイテムを求めていないようだ"
 
 on inventory click:
     if name of player's current inventory is "{@menu_enchant_title}":
@@ -1557,34 +1218,17 @@ function mine_skill_page(p: player, page: integer):
                 set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&e値段: &6%{_price}%円" and "&7[ クリックして購入 ]" with nbt compound from "{mine_price:%{_price}%, mine_index:%loop-index%, type:""skill""}"
             add 1 to {_n}
         set {_n} to 38
-        loop {mine.boost::*}:  
+        loop {mine.boost::*}:
             if {mine.pboost::%{_p}'s uuid%::%loop-index%} < {mine.boostmax::%loop-index%}:
                 set {_price} to mine_convert_level2price({mine.pboost::%{_p}'s uuid%::%loop-index%}, {mine.boostprice::%loop-index%} )
                 set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&f現在レベル: &b%{mine.pboost::%{_p}'s uuid%::%loop-index%}%" and "&e値段: &6%{_price}%円" and "&7[ クリックして購入 ]" with nbt compound from "{mine_price:%{_price}%, mine_index:%loop-index%, type:""booster""}"
             else:
                 set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&f現在レベル: &b%{mine.pboost::%{_p}'s uuid%::%loop-index%}%" and "&c最大レベルに達しています。"
             add 2 to {_n}
-        if {mine.status.autoore.money::%{_p}'s uuid%} is true:
-            if {mine.status.autoore::%{_p}'s uuid%} is true:
-                set slot 51 of {_p}'s current inventory to glowing dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&e選択中"
-            else:
-                set slot 51 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-        else:
-            set {mine.status.autoore.money::%{_p}'s uuid%} to false
-            set slot 51 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&e値段: &6100000円" and "&7[ クリックして購入 ]"
-        set {_n} to 47
-        loop {mine.myboost::*}:
-            set {_price} to {mine.myboostprice::%loop-index%}
-            if {mine.myboostp::%{_p}'s uuid%::%loop-index%} < {mine.myboostmax::%loop-index%}:
-                set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&f現在レベル: &b%{mine.myboostp::%{_p}'s uuid%::%loop-index%}%" and "&e値段: &6%{_price}%" and "&7[ クリックして購入 ]" with nbt compound from "{mine_price:%{_price}%, mine_index:%loop-index%, type:""myskill""}"
-            else:
-                set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&c最大レベルに達しています"       
-            add 2 to {_n}
 
 every second:
     loop all players:
         mine_boost_thread_wait(loop-player, 3)
-        mine_myboost(loop-player)
 
 function mine_boost_thread_wait(p: player, index: integer, v: number = 0):
     if {_index} is 1:
@@ -1600,14 +1244,6 @@ function mine_boost_thread_wait(p: player, index: integer, v: number = 0):
         set {_l} to {mine.pboost::%{_p}'s uuid%::%{_index}%}
         {_l} > 0
         apply potion of haste of tier {_l} without particles to {_p} for 3 second
-
-function mine_myboost(p: player):
-    set {_l} to {mine.myboostp::%{_p}'s uuid%::1}
-    if {_l} > 0:
-        apply potion of jump of tier {_l} without particles to {_p} for 3 second
-    set {_r} to {mine.myboostp::%{_p}'s uuid%::2}
-    if {_r} > 0:
-        apply potion of speed of tier {_r} without particles to {_p} for 3 second
 
 function mine_skill_thread_wait(p: player, index: integer, v: object):
     if {mine.pselskill::%{_p}'s uuid%} is "%{_index}%":
@@ -1637,123 +1273,6 @@ function mine_skill_thread_wait(p: player, index: integer, v: object):
                 if {mine.ores::%{_name3}%} is set:
                     if mine_break({_p}, block under {_v}, true):
                         set block under {_v} to air
-        else if {_index} is 3:
-            mine_all_z({_p}, "west", 1, 0, 0, -1, {_v})
-            mine_all_z({_p}, "east", -1, 0, 0, -1, {_v})
-            mine_all_x({_p}, "south", 1, 0, 0, -1, {_v})
-            mine_all_x({_p}, "north", -1, -1, 0, 0, {_v})
-
-        else if {_index} is 4:
-            mine_all_z({_p}, "west", 1, 1, -1, -1, {_v})
-            mine_all_z({_p}, "east", -1, 1, 1, -1, {_v})
-            mine_all_x({_p}, "south", 1, 1, -1, -1, {_v})
-            mine_all_x({_p}, "north", 1, 1, -1, -1, {_v})
-
-        else if {_index} is 5:
-            mine_all_z({_p}, "west", 2, 2, -1, -1, {_v})
-            mine_all_z({_p}, "east", -2, 2, 1, -1, {_v})
-            mine_all_x({_p}, "south", 2, 2, -1, -1, {_v})
-            mine_all_x({_p}, "north", 1, -1, -2, 2, {_v})
-
-on break:
-    if {particles.player.set::%player%} is 1:
-        make 3 of lava at location of block
-    If {particles.player.set::%player%} is 2:
-        make 3 of item slime at location of block
-    if {particles.player.set::%player%} is 3:
-        make 1 of note at location of block
-    if {particles.player.set::%player%} is 4:
-        make 3 of falling water at location of block
-    if {particles.player.set::%player%} is 5:
-        make 3 of landing lava at location of block
-    if {particles.player.set::%player%} is 6:
-        make 3 of dripping water at location of block
-
-function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: integer, v: block):
-    if {mine.status.hougaku::%{_p}%} is {_h}:
-        set {_loc} to location of {_v}
-        add {_a} to x-coord of {_loc}
-        add {_i} to y-coord of {_loc}
-        set {_loc2} to location of {_v}
-        add {_u} to x-coord of {_loc2}
-        add {_e} to y-coord of {_loc2}
-        set {_var} to random number from 1 to 3
-        set {_var} to round({_var}) 
-        loop blocks within {_loc} to {_loc2}:
-            if {_var} is 1:
-                if {particles.player.set::%{_p}%} is 1:
-                    if loop-block is not air:
-                        make 3 of lava at location of loop-block
-                If {particles.player.set::%{_p}%} is 2:
-                    if loop-block is not air:
-                        make 3 of item slime at location of loop-block
-                if {particles.player.set::%{_p}%} is 3:
-                    if loop-block is not air:
-                        make 1 of note at location of loop-block
-                if {particles.player.set::%{_p}%} is 4:
-                    if loop-block is not air:
-                        make 3 of falling water at location of loop-block
-                if {particles.player.set::%{_p}%} is 5:
-                    if loop-block is not air:
-                        make 3 of landing lava at location of loop-block
-                if {particles.player.set::%{_p}%} is 6:
-                    if loop-block is not air:
-                        make 3 of dripping water at location of loop-block
-            set {_loop} to loop-block
-            if mine_break({_p}, loop-block, true):
-                set loop-block to air
-
-function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: number, v: block):
-    if {mine.status.hougaku::%{_p}%} is {_h}:
-        set {_loc} to location of {_v}
-        add {_a} to z-coord of {_loc}
-        add {_i} to y-coord of {_loc}
-        set {_loc2} to location of {_v}
-        add {_u} to z-coord of {_loc2}
-        add {_e} to y-coord of {_loc2}
-        set {_var} to random number from 1 to 3
-        set {_var} to round({_var}) 
-        loop blocks within {_loc} to {_loc2}:
-            if {_var} is 1:
-                if {particles.player.set::%{_p}%} is 1:
-                    if loop-block is not air:
-                        make 3 of lava at location of loop-block
-                If {particles.player.set::%{_p}%} is 2:
-                    if loop-block is not air:
-                        make 3 of item slime at location of loop-block
-                if {particles.player.set::%{_p}%} is 3:
-                    if loop-block is not air:
-                        make 1 of note at location of loop-block
-                if {particles.player.set::%{_p}%} is 4:
-                    if loop-block is not air:
-                        make 3 of falling water at location of loop-block
-                if {particles.player.set::%{_p}%} is 5:
-                    if loop-block is not air:
-                        make 3 of landing lava at location of loop-block
-                if {particles.player.set::%{_p}%} is 6:
-                    if loop-block is not air:
-                        make 3 of dripping water at location of loop-block
-            set {_loop} to loop-block
-            if mine_break({_p}, loop-block, true):
-                set loop-block to air
-
-
-
-#プレイヤーの向いている方角の取得
-every 10 tick:
-    loop all players:
-        if loop-player's yaw is between 45 and 134:
-            clear {mine.status.hougaku::%loop-player%}
-            set {mine.status.hougaku::%loop-player%} to "west"
-        if loop-player's yaw is between 135 and 224:
-            clear {mine.status.hougaku::%loop-player%}
-            set {mine.status.hougaku::%loop-player%} to "north"
-        if loop-player's yaw is between 225 and 314:
-            clear {mine.status.hougaku::%loop-player%}
-            set {mine.status.hougaku::%loop-player%} to "east"
-        if loop-player's yaw is not between 45 and 314:
-            clear {mine.status.hougaku::%loop-player%::*}
-            set {mine.status.hougaku::%loop-player%} to "south"
 
 #以下特殊アイテム
 
@@ -1854,8 +1373,6 @@ on inventory click:
         cancel event
         if name of event-item is "&aアイテムを売る":
             mine_seller_open_sell(player)
-        if name of event-item is "&aアイテムを買う":
-            mine_seller_open_buy(player)
     else if name of player's current inventory is "{@menu_seller_sell_title}":
         event-item is set
         if name of event-item is "&c" or "&a売却するアイテムを入れてください":
@@ -1865,32 +1382,7 @@ on inventory click:
                 add 1 to {_n}
         if {_n} is not set:
             cancel event
-    else if name of player's current inventory is "{@menu_seller_buy_title}":
-        cancel event
-        if name of event-item is "&7[ &d&l幻のインゴット &7]":
-            if player's money >= 600000:
-                send "&2&l! &a購入しました！" 
-                remove 600000 from player's money
-                give {mine.items::30} to player
-                mine_quest_thread(player, "SELLERBUY", 0) 
-            else:
-                send "&4&l! &c所持金が不足しています。" to player
-        if name of event-item is "&8黒曜石の塊":
-            if player's money >= 800000:
-                send "&2&l! &a購入しました！" 
-                remove 800000 from player's money
-                give {mine.items::37} to player
-                mine_quest_thread(player, "SELLERBUY", 0) 
-            else:
-                send "&4&l! &c所持金が不足しています。" to player
-        if name of event-item is "&c&lマグマのかけら":
-            if player's money >= 1000000:
-                send "&2&l! &a購入しました！" 
-                remove 1000000 from player's money
-                give {mine.items::39} to player
-                mine_quest_thread(player, "SELLERBUY", 0) 
-            else:
-                send "&4&l! &c所持金が不足しています。" to player
+
 on inventory close:
     if name of player's current inventory is "{@menu_seller_sell_title}":
         set {_price} to 0
@@ -1923,7 +1415,7 @@ function mine_seller_tell(p: player):
 function mine_seller_open(p: player):
     open chest inventory with 3 row named "{@menu_seller_title}" to {_p}
     set slot 12 of {_p}'s current inventory to gold nugget named "&aアイテムを売る" with lore "&7[ クリックして開く ]"
-    set slot 14 of {_p}'s current inventory to gold block named "&aアイテムを買う" with lore "&7[ クリックして開く ]"
+    set slot 14 of {_p}'s current inventory to gold block named "&a&mアイテムを買う" with lore "&7まだ実装していません"
 
 function mine_seller_open_sell(p: player):
     open chest inventory with 6 row named "{@menu_seller_sell_title}" to {_p}
@@ -1933,30 +1425,10 @@ function mine_seller_open_sell(p: player):
         set slot {_n} of {_p}'s current inventory to gray stained glass pane named "&c"
         add 1 to {_n}
 
-function mine_seller_open_buy(p: player):
-    open chest inventory with 6 row named "{@menu_seller_buy_title}" to {_p}
-    set {mine.buy.open::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 44 and 45 and 46 and 47 and 48 and 49 and 50 and 51 and 52 and 53 
-    set slot {mine.buy.open::*} of {_p}'s current inventory to lime stained glass pane named " "
-    set slot 10 of {_p}'s current inventory to {mine.buy.items::1}
-    set slot 11 of {_p}'s current inventory to {mine.buy.items::2}
-    set slot 12 of {_p}'s current inventory to {mine.buy.items::3}
-
 #スレッド処理
 function mine_thread_throw(type: string) :: object:
     if {_type} is "MINE_MABOROSHI_INGOT_DROP":
         return true if nupo_calc_random({@maboroshi_ingot_drop_p}, {@maboroshi_ingot_drop_c})
-        return false
-    return false
-
-function mine_thread_throw_OBSIDIAN(type: string) :: object:
-    if {_type} is "MINE_OBSIDIAN_DROP":
-        return true if nupo_calc_random({@obsidian_drop_p}, {@obsidian_drop_c})
-        return false
-    return false
-
-function mine_thread_throw_MAGMA(type: string) :: object:
-    if {_type} is "MINE_MAGMA_DROP":
-        return true if nupo_calc_random({@magma_drop_p}, {@magma_drop_c})
         return false
     return false
 
@@ -1994,25 +1466,25 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
     return false if {_p} is not set
     return false if {_n} is not set
     return false if {mine.generic::lobbyloc::%{_n}%} is not set
+    broadcast {mine.generic::lobbyloc::%{_n}%}
+    broadcast "%{_p}%" 
     #以下条件設定
     if {_n} is 1:
         return true 
     if {_n} is 2:
-        if {mine.level::%{_p}'s uuid%} >= 30:
+        if {mine.level::%{_p}'s uuid%} >= 200:
             if {mine.players::%{_p}'s uuid%::recipes::*} contains 21:
-                mine_quest_thread({_p}, "MAP2", 0)
-                set {player.loc.spawn::%{_p}%} to 2
                 return true
         return false
     else if {_n} is 3:
         return true
-    else if {_n} is 4:
-        return true
-        set {player.loc.spawn::%{_p}%} to 4
 
-on npc right click:
-    if npc name is "&a第四マップへ":
-        mine_quest_thread(player, "MAP4", 0)
+command /Debug_portal:
+    trigger:
+        if mine_portal_conditions(player, 3) = true:
+            send "ok"
+        else:
+            send "fuck"
 
 on portal:
     cancel event
@@ -2021,14 +1493,17 @@ on portal:
     set {_pblock} to block 0.5 west player if block 0.5 west player is nether portal block
     set {_pblock} to block 0.5 east player if block 0.5 east player is nether portal block
     {_pblock} is set
+    send {_pblock}
     set {_connection} to tag "mine_portal_connection_id" of nbt compound of {_pblock}
     if {_connection} is not set:
         sound_portal_failed(player)
         send action bar "&4&l! &cこのポータルにはテレポート先が設定されていません。" to player
     else if mine_portal_conditions(player, {_connection}) = false:
+        send {_connection}
         sound_portal_failed(player)
         send action bar "&4&l! &cテレポート条件を満たしていません。" to player
     else:
+        send {_connection}
         set {_waitingtime} to 3
         sound_portal_wait(player)
         send action bar "&a動かずにお待ちください.... &a&l%{_waitingtime} %秒" to player
@@ -2053,596 +1528,13 @@ on portal:
             send action bar "&aテレポートしました！" to player
             teleport player to location of {mine.generic::lobbyloc::%{_connection}%}
             sound_portal_success(player)
-
+#クエスト用
 on chat:
-    mine_quest_thread(player, "CHAT", 1) 
-    if {join.message::*} is true:
-        set {message} to message
-        if {message} contains "初見さん":  
-            if {syoken.message::%player%} is true:
-                if {join.seigen} < 5:
-                    mine_quest_thread(player, "JOIN", 0)  
-                    add 1 to {join.seigen}
-                    set {syoken.message::%player%} to false
-                else:
-                    cancel event
-                    send "&c1人初見さんへのメッセージ制限です。申し訳ございません。"     
-                    set {syoken.message::%player%} to false
-            else:
-                cancel event
-                send "&c1人の初見さんへのメッセージ制限です。申し訳ございません。"
+    mine_quest_thread(player, "CHAT", 1)        
 
-on right click on crafting table:
-    cancel event
-    open chest inventory with 3 row named "{@menu_obsidian_crafting}" to player
-    set {table::*} to 0 and 1 and 2 and 6 and 7 and 8 and 9 and 10 and 11 and 15 and 17 and 18 and 19 and 20 and 24 and 25 and 26
-    set slot {table::*} of player's current inventory to black stained glass pane named "&a"
-    set slot 0 of player's current inventory to glowing book named "&6&lレシピ本"
-
-function autoore(p: player):
-    if {mine.status.autoore::%{_p}'s uuid%} is true:
-        if {_p} has 64 cobblestone named "&a丸石":
-            remove 64 cobblestone named "&a丸石" from {_p}'s inventory
-            give {_p} {mine.items::5}
-        if {_p} has 64 raw iron named "&a鉄":
-            remove 64 raw ore named "&a鉄" from {_p}'s inventory
-            give {_p} {mine.items::6}
-        if {_p} has 64 diamond named "&aダイヤモンド":
-            remove 64 diamond named "&aダイヤモンド" from {_p}'s inventory
-            give {_p} {mine.items::7}
-        if {_p} has 64 emerald named "&a&lエメラルド":
-            remove 64 emerald named "&a&lエメラルド" from {_p}'s inventory
-            give {_p} {mine.items::9}
-        if {_p} has 64 obsidian named "&7&l黒曜石":
-            remove 64 obsidian named "&7&l黒曜石" from {_p}'s inventory
-            give {_p} {mine.items::8}
-        if {_p} has 64 coal named "&a石炭":
-            remove 64 coal named "&a石炭" from {_p}'s inventory
-            give {_p} {mine.items::17}
-on inventory click:
-    if name of player's current inventory is "{@menu_obsidian_crafting}":
-        if name of event-item is "&6&lレシピ本" or "&a" or "&cこの構成では利用できません":
-            cancel event
-        if name of event-item is "&7[&8黒曜石のピッケル&7] ":
-            set slot 3 of player's current inventory to air
-            set slot 4 of player's current inventory to air
-            cancel event
-            give {mine.items::36} to player
-            play sound "minecraft:block.anvil.use" to player
-        if name of event-item is "&7[&c&lマグマのピッケル&7] ":
-            set slot 3 of player's current inventory to air
-            set slot 4 of player's current inventory to air
-            cancel event
-            give {mine.items::40} to player
-            play sound "minecraft:block.anvil.use" to player
-        if name of event-item is "&6&lレシピ本":
-            open chest inventory with 3 row named "&6&lレシピリスト" to player
-            set slot 0 of player's current inventory to glowing book and quill named "&8黒曜石のピッケル&6&lのレシピ"
-            set slot 1 of player's current inventory to glowing book and quill named "&c&lマグマのピッケル&6&lのレシピ" 
-    if name of player's current inventory is "&8黒曜石のピッケル&6&lのレシピ": 
-        cancel event
-    if name of player's current inventory is "&c&lマグマのピッケル&6&lのレシピ": 
-        cancel event
-    if name of player's current inventory is "&6&lレシピリスト":
-        cancel event
-        if name of event-item is "&8黒曜石のピッケル&6&lのレシピ":
-            recipe_obsidian_pickaxe(player)
-        if name of event-item is "&c&lマグマのピッケル&6&lのレシピ": 
-            recipe_magma_pickaxe(player)
-
-function recipe_obsidian_pickaxe(p: player):
-    open chest inventory with 3 row named "&8黒曜石のピッケル&6&lのレシピ" to {_p}
-    set {recipes.obsidian::*} to 0 and 1 and 2 and 6 and 7 and 8 and 9 and 10 and 11 and 15 and 17 and 18 and 19 and 20 and 24 and 25 and 26
-    set slot {recipes.obsidian::*} of {_p}'s current inventory to black stained glass pane named "&e"
-    set slot 3 of {_p}'s current inventory to diamond pickaxe named "&7[&cアドバンスピッケル&7] &e&lLv.5" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." 
-    set slot 4 of {_p}'s current inventory to glowing crying obsidian named "&8黒曜石の塊" with lore "&4重く鋭い..."
-    set slot 16 of {_p}'s current inventory to glowing netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
-
-function recipe_magma_pickaxe(p: player):
-    open chest inventory with 3 row named "&c&lマグマのピッケル&6&lのレシピ" to {_p}
-    set {recipes.obsidian::*} to 0 and 1 and 2 and 6 and 7 and 8 and 9 and 10 and 11 and 15 and 17 and 18 and 19 and 20 and 24 and 25 and 26
-    set slot {recipes.obsidian::*} of {_p}'s current inventory to black stained glass pane named "&e"
-    set slot 3 of {_p}'s current inventory to unbreakable netherite pickaxe of efficiency 18 named "&7[&8黒曜石のピッケル&7]" with lore "&7黒曜石で作られた頑丈なピッケル" with enchants flag hidden
-    set slot 4 of {_p}'s current inventory to glowing magma block named "&c&lマグマのかけら" with lore "&c持つだけで危険!"
-    set slot 16 of {_p}'s current inventory to glowing gold pickaxe named "&7[&c&lマグマのピッケル&7]" with lore "&cとてつもない熱を感じる"
-
-every 30 minute:
-    set {_int} to 15
-    set {_ver} to the online player number
-    set {_l} to {_int}*{_ver}
-    broadcast "&e&l【定期報酬】 人数:%{_int}%×%{_ver}%=%{_l}%円出ました！ 参加人数が多いともっと報酬をもらえます！"
-    loop all players:
-        add {_l} to the loop-players's account
-
-every 1 second:
-    loop all players:
-        if gamemode of loop-player is not creative:
-            if gamemode of loop-player is not spectator:
-                loop-player is sneaking
-                if {status.data::%loop-player%} > 5:
-                    set {status.data::%loop-player%} to 5
-                send action bar "&aspawnへのテレポートまで%{status.data::%loop-player%}%" to loop-player
-                add -1 to {status.data::%loop-player%}
-                play sound "entity.experience_orb.pickup" with volume 0.5 to loop-player
-                if {status.data::%loop-player%} is -1:
-                    teleport loop-player to location of {mine.generic::lobbyloc::1}
-                    play sound "entity.player.levelup" with volume 1 to loop-player
-                    clear {status.data::%loop-player%}
-                    send action bar "&aテレポートしました！" to loop-player
-
-every 1 second:
-    loop all players:
-        loop-player is not sneaking
-        clear {status.data::%loop-player%}
-        set {status.data::%loop-player%} to 5
-
-on npc right click:
-    if npc name is "&d&l幻のおじいさん &7[クリック]":
-        if {tell.maboroshi::%player's uuid%} is true:
-            mine_open_maboroshi(player)
-        else:
-            set {tell.maboroshi::%player's uuid%} to true
-            loop {mine.tell.maboroshi::*}:
-                sound_telling(player)
-                send "%loop-value%"
-                wait 3 second
-
-function mine_open_maboroshi(p: player):
-    open chest inventory with 3 row named "{@menu_maboroshi}" to {_p}     
-    set {mine.slot.maboroshi::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 19 and 20 and 21 and 23 and 24 and 25  
-    set slot {mine.slot.maboroshi::*} of {_p}'s current inventory to pink stained glass pane named " "
-    set slot 26 of {_p}'s current inventory to redstone torch named "&c注意:" with lore "&c単体での取引のみです。"
-
-on inventory click:
-    if name of event-item is "&7[&a初心者ピッケル&7]":
-        cancel event
-    if name of player's current inventory is "{@menu_maboroshi}":
-        if name of event-item is " " or "&aおじいさんはこのアイテムを求めていないようだ" or "&c注意:":
-            cancel event
-        if name of event-item is "&aアイテムを渡しますか？":
-            cancel event
-            set {_t::*} to 10 and 11 and 12 and 13 and 14 and 15 and 16
-            set slot {_t::*} of player's current inventory to air
-            maboroshi_gatya(player)
-    if name of player's current inventory is "&c報酬ガチャ":
-        if name of event-item is " ":
-            cancel event
-        if name of event-item is "&6&lおじいさんからのプレゼント!":
-            cancel event
-            close player's inventory 
-    if name of player's current inventory is "&c&lmineメニュー":
-        if name of event-item is "&aアップグレード":
-            mine_open_upgrade(player, 1, 1)
-        if name of event-item is "&cレベル報酬":
-            rewards(player)
-        if name of event-item is "&aスキル":
-            mine_skill_page(player, 1)
-        if name of event-item is "&aクエストマスター":
-            mine_open_quest(player)
-
-function maboroshi_gatya(p: player):
-    open chest inventory with 6 row named "&c報酬ガチャ" to {_p}     
-    set {maboroshi.gatya::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 44 and 45 and 46 and 47 and 48 and 49 and 50 and 51 and 52 and 53 
-    set slot {maboroshi.gatya::*} of {_p}'s current inventory to pink stained glass pane named " "
-    set {maboroshi.slot} to 0
-    loop 8 time:
-        set slot {maboroshi.slot} of {_p}'s current inventory to magenta stained glass pane named " "
-        add 1 to {maboroshi.slot}
-        play sound "entity.experience_orb.pickup" with volume 0.5 to {_p}
-        wait 2 tick
-    loop 5 time:
-        set slot {maboroshi.slot} of {_p}'s current inventory to magenta stained glass pane named " "
-        add 9 to {maboroshi.slot}
-        play sound "entity.experience_orb.pickup" with volume 0.5 to {_p}
-        wait 2 tick
-    loop 8 time:
-        set slot {maboroshi.slot} of {_p}'s current inventory to magenta stained glass pane named " "
-        add -1 to {maboroshi.slot}
-        play sound "entity.experience_orb.pickup" with volume 0.5 to {_p}
-        wait 2 tick
-    loop 5 time:
-        set slot {maboroshi.slot} of {_p}'s current inventory to magenta stained glass pane named " "
-        play sound "entity.experience_orb.pickup" with volume 0.5 to {_p}
-        add -9 to {maboroshi.slot} 
-        wait 2 tick
-    set {_var} to random number from 50000 to 150000 
-    set {mine.maboroshi.money::%{_p}'s uuid%} to round({_var}) 
-    set slot 31 of {_p}'s current inventory to yellow shulker box named "&6&lおじいさんからのプレゼント!" with lore "&e%{mine.maboroshi.money::%{_p}'s uuid%}%円"
-    wait 1 second
-    add {mine.maboroshi.money::%{_p}'s uuid%} to {_p}'s money
-
-on first join:
-    set {player.loc.spawn::%player%} to 1
-    set {join.seigen} to 0
-    give {mine.items::0} to player
-    give {mine.items::38} to player
-    set {_t} to text component from "&e&n[あいさつをする]"
-    set hover event of {_t} to a new hover event showing "チャットに初見さんへのあいさつを送信します"
-    set click event of {_t} to a new click event to run command "/joinmsg"
-    loop all players:  
-        set {syoken.message::%loop-player%} to true
-        send "&b初見さんの%player%さんが入ってきたよ！あいさつしてみよう！" to loop-players
-        send component {_t} to loop-players
-    set {mine.pickaxe.time::%player%} to 0
-    set {mine.hojo.%player's uuid%} to true
-    set {join.message::*} to true
-    set {join.syoken} to 60
-    clear {join.spam::*}
-    loop 60 time:
-        add -1 to {join.syoken} 
-        wait 1 second
-        if {join.syoken} <= 0:
-            set {join.message::*} to false
-            clear {join.message::*}
-            clear {join.syoken} 
-            
-
-command /temp:
-    permission: admin
+command /admin_obsidian_table:
     trigger:
-        loop all players:
-            set {mine.hojo.%loop-players's uuid%} to false
+        send "&a黒曜石つるはしの作業台を置く場所を選択してください"
 
-every 1 minute:
-    loop all players:
-        add 1 to {mine.pickaxe.time::%loop-player%}
-        if {mine.pickaxe.time::%loop-player%} > 30:
-            if loop-player has {mine.items::38}: 
-                remove 1 of {mine.items::38} from loop-player's inventory
-                send "&b初心者ピッケルが無くなってしまった!" to loop-player
-                send "&b鉱石をNPCに売ることでお金がもらえます!" to loop-player
-                send "&bお金を使いアップグレードNPCでアップグレードできるので" to loop-player
-                send "&bつるはしをどんどんアップグレードしていこう!" to loop-player
-                clear {mine.pickaxe.time::%loop-player%}
-                set {mine.hojo.%loop-player's uuid%} to false
-            else:
-                clear {mine.pickaxe.time::%loop-player%}
-every 1 minute:
-    loop all players:
-        add 1 to {mine.login.time::%loop-player%}
-        if {mine.login.time::%loop-player%} > 59:
-            mine_quest_thread(loop-player, "TIME", 0)
-            set {mine.login.time::%loop-player%} to 0
-        if {player.loc.spawn::%loop-player%} is 2:
-            add 1 to {mine.loc2.time::%loop-player's uuid%} 
-            mine_quest_thread(loop-player, "LOC2", 0)
-            if {mine.loc2.time::%loop-player's uuid%} > 59:
-                set {mine.loc2.time::%loop-player's uuid%} to 0
-        if {player.loc.spawn::%loop-player%} is 4:
-            add 1 to {mine.loc4.time::%loop-player's uuid%}
-            mine_quest_thread(loop-player, "LOC4", 0)  
-            if {mine.loc4.time::%loop-player's uuid%} > 59:
-                set {mine.loc4.time::%loop-player's uuid%} to 0
 
-command /joinmsg:
-    trigger:
-        if {join.spam::%player%} is not set:
-            set {join.spam::%player%} to true
-        if {syoken.message::%player%} is true:
-            if {join.message::*} is true:
-                if {join.spam::%player%} is true:
-                    if {join.seigen} < 5:
-                        set {_l} to random integer between 1 and 4
-                        set {_r} to round({_l})
-                        if {_r} is 1:
-                            broadcast "%player%&a: &f初見さんどもー" 
-                        if {_r} is 2:
-                            broadcast "%player%&a: &f初見さんこんにちはー"
-                        if {_r} is 3:
-                            broadcast "%player%&a: &f初見さんいらっしゃい～"
-                        if {_r} is 4:
-                            broadcast "%player%&a: &f初見さんよろしく～"
-                        set {syoken.message::%player%} to false
-                        mine_quest_thread(player, "JOIN", 0)
-                        set {join.spam::%player%} to false
-                        add 1 to {join.seigen}
-                    else:
-                        send "&c1人の初見さんへのメッセージ制限です。申し訳ございません。"
-                else:
-                    send "&c連続で使用できません"
-            else:
-                send "&b初見さんがログインした1分間利用可能です"
-        else:
-            send "&c1人の初見さんへのメッセージ制限です。申し訳ございません。"  
-command /s:
-    trigger:
-        open chest inventory with 6 row named "&c&lmineメニュー" to player
-        set slot 10 of player's current inventory to diamond pickaxe named "&aアップグレード"
-        set slot 11 of player's current inventory to gold block named "&cレベル報酬"
-        set slot 12 of player's current inventory to heart of the sea named "&aスキル"
-        set slot 13 of player's current inventory to book named "&aクエストマスター"
-        set {s.menu::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 44 and 45 and 46 and 47 and 48 and 49 and 50 and 51 and 52 and 53 
-        set slot {s.menu::*} of player's current inventory to red stained glass pane named " " 
-every 1 minute:
-    set {day.date} to now formatted as "dd"
-    if {day.date} is not {day.date.p}:
-        set {day.date.p} to {day.date}
-        clear {mine.reset.day::*}
-    if {day.date.p} is not set:
-        set {day.date.p} to {day.date}
 
-command /admin_skill_hoten [<player>]:
-    permission: admin
-    trigger:
-        set {mine.status.autoore.money::%arg-1's uuid%} to true
-        set {mine.status.autoore::%arg-1's uuid%} to true
-
-command /daily:
-    trigger:
-        daily(player)
-function daily(p: player):
-    open chest inventory with 1 row named "&eデイリーボーナス" to {_p}
-    set {_r::*} to 0 and 1 and 2 and 3 and 5 and 6 and 7 and 8
-    set slot {_r::*} of {_p}'s current inventory to lime stained glass pane named " " 
-    if {mine.reset.day::%{_p}%} contains {_p}:
-        set slot 4 of {_p}'s current inventory to gold block named "&a受け取り済み"
-    else:
-        set slot 4 of {_p}'s current inventory to gold block of fortune 1 named "&eデイリーボーナスを受け取る" with enchants flag hidden
-
-on inventory click:
-    if name of player's current inventory is "&eデイリーボーナス":
-        if name of event-item is "&eデイリーボーナスを受け取る":
-            add 200 to player's money
-            send "&eログインボーナスで200円を受け取りました。"
-            set {mine.reset.day::%player%} to player
-            cancel event
-            daily(player)
-            mine_quest_thread(player, "LOGIN", 0) 
-        else:
-            cancel event
-
-command /Debug_syoken:
-    permission: admin
-    trigger:
-        loop all players:
-            set {mine.pickaxe.time::%loop-player%} to 29
-            set {mine.hojo.%loop-player's uuid%} to false
-
-command /admin_daily_chest:
-    permission: admin
-    trigger:
-        set metadata value "daily_chest" of player to "daily_set"
-        send "&aチェストを左クリックしてください！"
-on break:
-    if event-block is chest:
-        if metadata value "daily_chest" of player is set:
-            set {daily.chest.location::*} to location of event-block
-            send "&aデイリーボーナスチェストの位置を決定しました！"
-            clear metadata value "daily_chest" of player
-            set {_daily.chest.holo} to location of event-block
-            create holo object "&eデイリーボーナスチェスト"  with id "daily_%{_daily.chest.holo}%" at location of block 1 above
-            cancel event
-        else:
-            if {daily.chest.location::*} contains location of event-block:
-                set {_daily.chest.holo} to location of event-block
-                delete holo object "daily_%{_daily.chest.holo}%"
-                set {_daily.chest.delete} to location of event-block
-                remove {_daily.chest.delete} from {daily.chest.location::*}
-                send "&cデイリーボーナスチェストを削除しました。"
-on right click on chest:
-    if {daily.chest.location::*} contains location of event-block:
-        cancel event
-        daily(player)
-command /levels:
-    trigger:
-        clear {players.level::*}
-        set {_ver} to the online player number
-        loop all players:    
-            add loop-player to {players.level::*}
-        loop {players.level::*}:
-            send "&7[&a%{mine.level::%loop-value's uuid%}%&7] &f%loop-value%"
-        send "&a合計参加人数 &f%{_ver}%"
-
-on npc right click:
-    if npc name is "&a第四マップへ":
-        set {player.loc.spawn::%player%} to 4
-    if npc name is "&amap1へ戻る":
-        set {player.loc.spawn::%player%} to 1
-
-on npc right click:
-    if npc name is "&b&lパーティクルshop":
-        particle_menu(player)
-
-command /particles:
-    trigger:
-        particle_menu(player)
-on join:
-    if {mine.status.lava::%player's uuid%} is not set:
-        reset_particle(player)
-        set {mine.status.lava.money::%{_p}'s uuid%} to false
-        set {mine.status.slime.money::%{_p}'s uuid%} to false
-        set {mine.status.note.money::%{_p}'s uuid%} to false
-        set {mine.status.blue.money::%{_p}'s uuid%} to false
-        set {mine.status.red.money::%{_p}'s uuid%} to false
-        set {mine.status.water.money::%{_p}'s uuid%} to false
-
-function reset_particle(p: player):
-    set {mine.status.lava::%{_p}'s uuid%} to false
-    set {mine.status.slime::%{_p}'s uuid%} to false
-    set {mine.status.note::%{_p}'s uuid%} to false
-    set {mine.status.blue::%{_p}'s uuid%} to false
-    set {mine.status.red::%{_p}'s uuid%} to false
-    set {mine.status.water::%{_p}'s uuid%} to false
-
-#skbeeバグでnbtを数字として受け付けないらしい
-function particle_menu(p: player):
-    open chest inventory with 3 row named "&b&lパーティクルshop" to {_p}
-    if {mine.status.lava.money::%{_p}'s uuid%} is true:
-        if {mine.status.lava::%{_p}'s uuid%} is true:
-            set slot 10 of {_p}'s current inventory to glowing lava bucket named "&4マグマパーティクル" with lore "&8&m-------------------------------" and "&e選択中"
-        else:
-            set slot 10 of {_p}'s current inventory to lava bucket named "&4マグマパーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-    else:
-        set slot 10 of {_p}'s current inventory to lava bucket named "&4マグマパーティクル" with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
-    if {mine.status.slime.money::%{_p}'s uuid%} is true:
-        if {mine.status.slime::%{_p}'s uuid%} is true:
-            set slot 11 of {_p}'s current inventory to glowing slimeball named "&aスライムパーティクル" with lore "&8&m-------------------------------" and "&e選択中"
-        else:
-            set slot 11 of {_p}'s current inventory to slimeball named "&aスライムパーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-    else:
-        set slot 11 of {_p}'s current inventory to slimeball named "&aスライムパーティクル" with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"  
-    if {mine.status.note.money::%{_p}'s uuid%} is true:
-        if {mine.status.note::%{_p}'s uuid%} is true:
-            set slot 12 of {_p}'s current inventory to glowing note block named "&6音符パーティクル" with lore "&8&m-------------------------------" and "&e選択中"
-        else:
-            set slot 12 of {_p}'s current inventory to note block named "&6音符パーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-    else:
-        set slot 12 of {_p}'s current inventory to note block named "&6音符パーティクル" with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
-    if {mine.status.blue.money::%{_p}'s uuid%} is true:
-        if {mine.status.blue::%{_p}'s uuid%} is true:
-            set slot 13 of {_p}'s current inventory to glowing blue dye named "&9青パーティクル" with lore "&8&m-------------------------------" and "&e選択中"
-        else:
-            set slot 13 of {_p}'s current inventory to blue dye named "&9青パーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-    else:
-        set slot 13 of {_p}'s current inventory to blue dye named "&9青パーティクル" with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
-    if {mine.status.red.money::%{_p}'s uuid%} is true:
-        if {mine.status.red::%{_p}'s uuid%} is true:
-            set slot 14 of {_p}'s current inventory to glowing red dye named "&c赤パーティクル" with lore "&8&m-------------------------------" and "&e選択中"
-        else:
-            set slot 14 of {_p}'s current inventory to red dye named "&c赤パーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-    else:
-        set slot 14 of {_p}'s current inventory to red dye named "&c赤パーティクル" with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"      
-    if {mine.status.water.money::%{_p}'s uuid%} is true:
-        if {mine.status.water::%{_p}'s uuid%} is true:
-            set slot 15 of {_p}'s current inventory to glowing water bucket named "&b水パーティクル" with lore "&8&m-------------------------------" and "&e選択中"
-        else:
-            set slot 15 of {_p}'s current inventory to water bucket named "&b水パーティクル" with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-    else:
-        set slot 15 of {_p}'s current inventory to water bucket named "&b水パーティクル" with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
-
-on inventory click:
-    if name of player's current inventory is "&b&lパーティクルshop":
-        cancel event
-        if name of event-item is "&4マグマパーティクル":
-            if {mine.status.lava.money::%player's uuid%} is true:
-                if {mine.status.lava::%player's uuid%} is true:
-                    set {mine.status.lava::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! &4マグマパーティクル&aを無効化しました。" to player
-                    reset_particle(player)
-                    clear {particles.player.set::%player%}
-                else:
-                    reset_particle(player)
-                    set {mine.status.lava::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &4マグマパーティクル&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 1
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.lava.money::%player's uuid%} to true
-                    set {mine.status.lava::%player's uuid%} to false
-                    particle_menu(player)
-        if name of event-item is "&aスライムパーティクル":
-            if {mine.status.slime.money::%player's uuid%} is true:
-                if {mine.status.slime::%player's uuid%} is true:
-                    set {mine.status.slime::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! &aスライムパーティクルを無効化しました。" to player
-                    reset_particle(player)
-                    clear {particles.player.set::%player%}
-                else:
-                    reset_particle(player)
-                    set {mine.status.slime::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &aスライムパーティクルを有効化しました。" to player
-                    set {particles.player.set::%player%} to 2
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.slime.money::%player's uuid%} to true
-                    set {mine.status.slime::%player's uuid%} to false
-                    particle_menu(player)
-        if name of event-item is "&6音符パーティクル":
-            if {mine.status.note.money::%player's uuid%} is true:
-                if {mine.status.note::%player's uuid%} is true:
-                    set {mine.status.note::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! &6音符パーティクル&aを無効化しました。" to player
-                    clear {particles.player.set::%player%}
-                    reset_particle(player)
-                else:
-                    reset_particle(player)
-                    set {mine.status.note::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &6音符パーティクル&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 3
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.note.money::%player's uuid%} to true
-                    set {mine.status.note::%player's uuid%} to false
-                    particle_menu(player)
-        if name of event-item is "&9青パーティクル":
-            if {mine.status.blue.money::%player's uuid%} is true:
-                if {mine.status.blue::%player's uuid%} is true:
-                    set {mine.status.blue::%player's uuid%} to false
-                    clear {particles.player.set::%player%}
-                    particle_menu(player)
-                    send "&2&l! &9青パーティクル&aを無効化しました。" to player
-                    reset_particle(player)
-                else:
-                    reset_particle(player)
-                    set {mine.status.blue::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &9青パーティクル&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 4
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.blue.money::%player's uuid%} to true
-                    set {mine.status.blue::%player's uuid%} to false
-                    particle_menu(player)
-        if name of event-item is "&c赤パーティクル":
-            if {mine.status.red.money::%player's uuid%} is true:
-                if {mine.status.red::%player's uuid%} is true:
-                    clear {particles.player.set::%player%}
-                    set {mine.status.red::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! &c赤パーティクル&aを無効化しました。" to player
-                    reset_particle(player)
-                else:
-                    reset_particle(player)
-                    set {mine.status.red::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &c赤パーティクル&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 5
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.red.money::%player's uuid%} to true
-                    set {mine.status.red::%player's uuid%} to false
-                    particle_menu(player)
-        if name of event-item is "&b水パーティクル":
-            if {mine.status.water.money::%player's uuid%} is true:
-                if {mine.status.water::%player's uuid%} is true:
-                    clear {particles.player.set::%player%}
-                    set {mine.status.water::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! &b水パーティクル&aを無効化しました。" to player
-                    reset_particle(player)
-                else:
-                    reset_particle(player)
-                    set {mine.status.water::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &b水パーティクル&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 6
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.water.money::%player's uuid%} to true
-                    set {mine.status.water::%player's uuid%} to false
-                    particle_menu(player)
-
-on npc right click:
-    if npc name is "&aマグマピッケル交換用":
-        if player has gold pickaxe named "&7[&c&lマグマのピッケル&7]":
-            remove 1 of gold pickaxe named "&7[&c&lマグマのピッケル&7]" from player
-            give {mine.items::40} to player
-#temp
