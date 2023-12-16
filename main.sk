@@ -1581,6 +1581,12 @@ function mine_skill_page(p: player, page: integer):
                 set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&c最大レベルに達しています"       
             add 2 to {_n}
 
+command /Debug_autoore:
+    permission: admin
+    trigger:
+        clear {mine.status.autoore.money::%player's uuid%} 
+        clear {mine.status.autoore::%player's uuid%} 
+
 every second:
     loop all players:
         mine_boost_thread_wait(loop-player, 3)
