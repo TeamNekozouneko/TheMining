@@ -1692,11 +1692,11 @@ function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: i
         set {_var} to random number from 1 to 3
         set {_var} to round({_var}) 
         loop blocks within {_loc} to {_loc2}:
-            if {_var} is 1:
+            if {particle.full} is true:
                 if {particles.player.set::%{_p}%} is 1:
                     if loop-block is not air:
                         make 3 of lava at location of loop-block
-                If {particles.player.set::%{_p}%} is 2:
+                if {particles.player.set::%{_p}%} is 2:
                     if loop-block is not air:
                         make 3 of item slime at location of loop-block
                 if {particles.player.set::%{_p}%} is 3:
@@ -1711,6 +1711,26 @@ function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: i
                 if {particles.player.set::%{_p}%} is 6:
                     if loop-block is not air:
                         make 3 of dripping water at location of loop-block
+            else:
+                if {_var} is 1:
+                    if {particles.player.set::%{_p}%} is 1:
+                        if loop-block is not air:
+                            make 3 of lava at location of loop-block
+                    if {particles.player.set::%{_p}%} is 2:
+                        if loop-block is not air:
+                            make 3 of item slime at location of loop-block
+                    if {particles.player.set::%{_p}%} is 3:
+                        if loop-block is not air:
+                            make 1 of note at location of loop-block
+                    if {particles.player.set::%{_p}%} is 4:
+                        if loop-block is not air:
+                            make 3 of falling water at location of loop-block
+                    if {particles.player.set::%{_p}%} is 5:
+                        if loop-block is not air:
+                            make 3 of landing lava at location of loop-block
+                    if {particles.player.set::%{_p}%} is 6:
+                        if loop-block is not air:
+                            make 3 of dripping water at location of loop-block
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
@@ -1726,11 +1746,11 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
         set {_var} to random number from 1 to 3
         set {_var} to round({_var}) 
         loop blocks within {_loc} to {_loc2}:
-            if {_var} is 1:
+            if {particle.full} is true:
                 if {particles.player.set::%{_p}%} is 1:
                     if loop-block is not air:
                         make 3 of lava at location of loop-block
-                If {particles.player.set::%{_p}%} is 2:
+                if {particles.player.set::%{_p}%} is 2:
                     if loop-block is not air:
                         make 3 of item slime at location of loop-block
                 if {particles.player.set::%{_p}%} is 3:
@@ -1745,11 +1765,29 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
                 if {particles.player.set::%{_p}%} is 6:
                     if loop-block is not air:
                         make 3 of dripping water at location of loop-block
+            else:
+                if {_var} is 1:
+                    if {particles.player.set::%{_p}%} is 1:
+                        if loop-block is not air:
+                            make 3 of lava at location of loop-block
+                    if {particles.player.set::%{_p}%} is 2:
+                        if loop-block is not air:
+                            make 3 of item slime at location of loop-block
+                    if {particles.player.set::%{_p}%} is 3:
+                        if loop-block is not air:
+                            make 1 of note at location of loop-block
+                    if {particles.player.set::%{_p}%} is 4:
+                        if loop-block is not air:
+                            make 3 of falling water at location of loop-block
+                    if {particles.player.set::%{_p}%} is 5:
+                        if loop-block is not air:
+                            make 3 of landing lava at location of loop-block
+                    if {particles.player.set::%{_p}%} is 6:
+                        if loop-block is not air:
+                            make 3 of dripping water at location of loop-block
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
-
-
 
 #プレイヤーの向いている方角の取得
 every 10 tick:
@@ -1773,6 +1811,7 @@ function mine_special_item(p: player, i: integer):
     if {_i} is 0:
         send "&2&l! &a破壊の王を発動しました！" to {_p}
         remove 1 of {mine.items::22} from {_p}'s inventory
+        mine_quest_thread({_p}, "HAKAIOU", 0) 
         sound_do_skill({_p})
         loop all blocks in radius 6 around {_p}:
             if mine_break({_p}, loop-block, true):
@@ -2370,8 +2409,20 @@ every 1 minute:
     if {day.date} is not {day.date.p}:
         set {day.date.p} to {day.date}
         clear {mine.reset.day::*}
+        set {mine.particle.date} to true
     if {day.date.p} is not set:
         set {day.date.p} to {day.date}
+    set {hh.date} to now formatted as "hh"
+    if {mine.particle.date} is true:
+        if {hh.date} is "04":
+            set {particle.full} to true
+        if {hh.date} is "08":
+            set {mine.particle.date} to false
+            set {particle.full} to false
+command /date:
+    trigger:
+        set {_e} to now formatted as "hh"
+        send "%{_e}%"
 
 command /admin_skill_hoten [<player>]:
     permission: admin
