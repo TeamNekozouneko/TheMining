@@ -1584,6 +1584,7 @@ function mine_skill_page(p: player, page: integer):
 command /Debug_autoore:
     permission: admin
     trigger:
+        clear {mine.status.autoore.money::%player%}
         clear {mine.status.autoore.money::%player's uuid%} 
         clear {mine.status.autoore::%player's uuid%} 
 
