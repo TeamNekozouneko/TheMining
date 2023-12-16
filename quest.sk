@@ -36,6 +36,14 @@ on load:
     set {mine.quests::31} to "売店でレアアイテムを1個購入する。"
     set {mine.quests::32} to "売店でレアアイテムを2個購入する。"
     set {mine.quests::33} to "売店でレアアイテムを3個購入する。"
+    set {mine.quests::34} to "ジャンプブーストを3レベルに上げる。"
+    set {mine.quests::35} to "破壊の王を1回使用する。"
+    set {mine.quests::36} to "破壊の王を2回使用する。"
+    set {mine.quests::37} to "破壊の王を3回使用する。"
+    set {mine.quests::38} to "ガチャを1回まわす"
+    set {mine.quests::39} to "ガチャを20回まわす"
+    set {mine.quests::40} to "ガチャを30回まわす"
+    set {mine.quests::41} to "50時間遊ぶ"
 
     clear {mine.quest_max::*}
     set {mine.quest_max::1} to 20000
@@ -71,6 +79,14 @@ on load:
     set {mine.quest_max::31} to 1
     set {mine.quest_max::32} to 2
     set {mine.quest_max::33} to 3
+    set {mine.quest_max::34} to 1
+    set {mine.quest_max::35} to 1
+    set {mine.quest_max::36} to 2
+    set {mine.quest_max::37} to 3
+    set {mine.quest_max::38} to 1
+    set {mine.quest_max::39} to 20
+    set {mine.quest_max::40} to 30
+    set {mine.quest_max::41} to 50
 
     clear {mine.quest_reward::*}
     add "money_5000" to {mine.quest_reward::1::*}
@@ -112,6 +128,14 @@ on load:
     add "money_60000" to {mine.quest_reward::31::*}
     add "money_80000" to {mine.quest_reward::32::*}
     add "money_100000" to {mine.quest_reward::33::*}
+    add "money_1000" to {mine.quest_reward::34::*}
+    add "money_1000" to {mine.quest_reward::35::*}
+    add "money_1300" to {mine.quest_reward::36::*}
+    add "money_1500" to {mine.quest_reward::37::*}
+    add "money_100" to {mine.quest_reward::38::*}
+    add "money_500" to {mine.quest_reward::39::*}
+    add "money_800" to {mine.quest_reward::40::*}
+    add "money_8000" to {mine.quest_reward::41::*}
     
 on npc right click:
     if npc name is "&aクエストマスター &7[クリック]":
@@ -135,7 +159,7 @@ on inventory click:
             mine_open_quest(player)
 
 function mine_open_quest(p: player):
-    open chest inventory with 4 row named "{@mine_quest_title}" to {_p}
+    open chest inventory with 5 row named "{@mine_quest_title}" to {_p}
     mine_open_quest_refancy({_p})
     set slot 8 of {_p}'s current inventory to book named "aaa" with nbt compound from "{mine_index:10}"
 
@@ -194,7 +218,7 @@ function mine_open_quest_refancy(p: player):
             add 1 to {_n}
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
-    return true if {_i} = 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 or 10 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23 or 24 or 25 or 26 or 27 or 28 or 29 or 30 or 31 or 32 or 33
+    return true if {_i} = 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 or 10 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23 or 24 or 25 or 26 or 27 or 28 or 29 or 30 or 31 or 32 or 33 or 34 or 35 or 36 or 37 or 38 or 39 or 41 or 42
     return false
 
 function mine_quest_thread(p: player, type: string, v: object):
@@ -215,6 +239,9 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A7", {_v})
     else if {_type} = "GATYA":
         mine_quest_thread({_p}, "A8", {_v})
+        mine_quest_thread({_p}, "A38", {_v})
+        mine_quest_thread({_p}, "A39", {_v})
+        mine_quest_thread({_p}, "A40", {_v})
     else if {_type} = "JOIN":
         mine_quest_thread({_p}, "A10", {_v})
         mine_quest_thread({_p}, "A15", {_v})
@@ -234,6 +261,7 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A20", {_v})
         mine_quest_thread({_p}, "A21", {_v})
         mine_quest_thread({_p}, "A22", {_v})
+        mine_quest_thread({_p}, "A41", {_v})
     else if {_type} = "LOGIN":
         mine_quest_thread({_p}, "A25", {_v})
         mine_quest_thread({_p}, "A26", {_v})
@@ -249,6 +277,12 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A31", {_v})
         mine_quest_thread({_p}, "A32", {_v})
         mine_quest_thread({_p}, "A33", {_v})
+    else if {_type} = "HAKAIOU":
+        mine_quest_thread({_p}, "A35", {_v})
+        mine_quest_thread({_p}, "A36", {_v})
+        mine_quest_thread({_p}, "A37", {_v})
+    else if {_type} = "JUMP":
+        mine_quest_thread({_p}, "A34", {_v})
     else if {_type} = "A1":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 1:
             add {_v} to {mine.player_quest_data::%{_p}'s uuid%::1}
@@ -345,6 +379,9 @@ function mine_quest_thread(p: player, type: string, v: object):
     else if {_type} = "A33":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 33:
             add 1 to {mine.player_quest_data::%{_p}'s uuid%::33}
+    else if {_type} = "A34":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 34:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::34}
 
 every second:    
     loop all players:
