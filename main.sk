@@ -2329,13 +2329,6 @@ on first join:
             clear {join.message::*}
             clear {join.syoken} 
             
-
-command /temp:
-    permission: admin
-    trigger:
-        loop all players:
-            set {mine.hojo.%loop-players's uuid%} to false
-
 every 1 minute:
     loop all players:
         add 1 to {mine.pickaxe.time::%loop-player%}
