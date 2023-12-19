@@ -2058,9 +2058,10 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
     else if {_n} is 3:
         return true
     else if {_n} is 4:
-        return true
         set {player.loc.spawn::%{_p}%} to 4
-        mine_quest_thread({_p}, "MAP4", 0)
+        mine_quest_thread({_p}, "MAP4", 0)    
+        return true
+
 
 on npc right click:
     if npc name is "&a第四マップへ":
