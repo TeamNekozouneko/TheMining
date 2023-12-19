@@ -2060,6 +2060,7 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
     else if {_n} is 4:
         return true
         set {player.loc.spawn::%{_p}%} to 4
+        mine_quest_thread({_p}, "MAP4", 0)
 
 on npc right click:
     if npc name is "&a第四マップへ":
@@ -2708,3 +2709,8 @@ on npc right click:
         if player has gold pickaxe named "&7[&c&lマグマのピッケル&7]":
             remove 1 of gold pickaxe named "&7[&c&lマグマのピッケル&7]" from player
             give {mine.items::40} to player
+
+command /debug_bagu:
+    permission: admin
+    trigger:
+        send "%{player.loc.spawn::%player%}%"
