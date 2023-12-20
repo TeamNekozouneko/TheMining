@@ -160,11 +160,11 @@ on load:
 
 
     add 0.1 to {mine.price::stone}
-    add 0.3 to {mine.price::coal_ore}
-    add 0.3 to {mine.price::iron_ore}
-    add 0.8 to {mine.price::emerald_ore}
-    add 0.8 to {mine.price::diamond_ore}
-    add 1 to {mine.price::obsidian}
+    add 0.1 to {mine.price::coal_ore}
+    add 0.1 to {mine.price::iron_ore}
+    add 0.2 to {mine.price::emerald_ore}
+    add 0.2 to {mine.price::diamond_ore}
+    add 0.4 to {mine.price::obsidian}
 
     clear {mine.crafting.magma::*}
     add {mine.items::39} to {mine.crafting.magma::*} 
@@ -526,6 +526,8 @@ on inventory click:
             if {_type} is "skill_switch":
                 set {mine.pselskill::%player's uuid%} to "%{_index}%"
                 mine_skill_page(player, 1)
+                if {_index} is 5:
+                    send "&a軽量化により利用可能時間が制限されています。時刻についてはwikiをご覧ください。"
     else if name of player's current inventory is "{@menu_blacksmith_title}":
         if name of event-item is "&c必要条件が揃っていないため、操作できません。" or "&c" or "&c操作ができません" or "&c溶解しています...":
             cancel event
@@ -913,6 +915,9 @@ on hunger meter change:
     cancel event
 
 on right click on oak sign:
+    player is not op
+    cancel event
+on right click on grindstone:
     player is not op
     cancel event
 
@@ -1662,10 +1667,11 @@ function mine_skill_thread_wait(p: player, index: integer, v: object):
             mine_all_x({_p}, "north", 1, 1, -1, -1, {_v})
 
         else if {_index} is 5:
-            mine_all_z({_p}, "west", 2, 2, -1, -1, {_v})
-            mine_all_z({_p}, "east", -2, 2, 1, -1, {_v})
-            mine_all_x({_p}, "south", 2, 2, -1, -1, {_v})
-            mine_all_x({_p}, "north", 1, -1, -2, 2, {_v})
+            if {mine.all} is true:
+                mine_all_z({_p}, "west", 2, 2, -1, -1, {_v})
+                mine_all_z({_p}, "east", -2, 2, 1, -1, {_v})
+                mine_all_x({_p}, "south", 2, 2, -1, -1, {_v})
+                mine_all_x({_p}, "north", 1, -1, -2, 2, {_v})
 
 on break:
     if {particles.player.set::%player%} is 1:
@@ -1692,45 +1698,6 @@ function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: i
         set {_var} to random number from 1 to 3
         set {_var} to round({_var}) 
         loop blocks within {_loc} to {_loc2}:
-            if {particle.full} is true:
-                if {particles.player.set::%{_p}%} is 1:
-                    if loop-block is not air:
-                        make 3 of lava at location of loop-block
-                if {particles.player.set::%{_p}%} is 2:
-                    if loop-block is not air:
-                        make 3 of item slime at location of loop-block
-                if {particles.player.set::%{_p}%} is 3:
-                    if loop-block is not air:
-                        make 1 of note at location of loop-block
-                if {particles.player.set::%{_p}%} is 4:
-                    if loop-block is not air:
-                        make 3 of falling water at location of loop-block
-                if {particles.player.set::%{_p}%} is 5:
-                    if loop-block is not air:
-                        make 3 of landing lava at location of loop-block
-                if {particles.player.set::%{_p}%} is 6:
-                    if loop-block is not air:
-                        make 3 of dripping water at location of loop-block
-            else:
-                if {_var} is 1:
-                    if {particles.player.set::%{_p}%} is 1:
-                        if loop-block is not air:
-                            make 3 of lava at location of loop-block
-                    if {particles.player.set::%{_p}%} is 2:
-                        if loop-block is not air:
-                            make 3 of item slime at location of loop-block
-                    if {particles.player.set::%{_p}%} is 3:
-                        if loop-block is not air:
-                            make 1 of note at location of loop-block
-                    if {particles.player.set::%{_p}%} is 4:
-                        if loop-block is not air:
-                            make 3 of falling water at location of loop-block
-                    if {particles.player.set::%{_p}%} is 5:
-                        if loop-block is not air:
-                            make 3 of landing lava at location of loop-block
-                    if {particles.player.set::%{_p}%} is 6:
-                        if loop-block is not air:
-                            make 3 of dripping water at location of loop-block
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
@@ -1746,45 +1713,6 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
         set {_var} to random number from 1 to 3
         set {_var} to round({_var}) 
         loop blocks within {_loc} to {_loc2}:
-            if {particle.full} is true:
-                if {particles.player.set::%{_p}%} is 1:
-                    if loop-block is not air:
-                        make 3 of lava at location of loop-block
-                if {particles.player.set::%{_p}%} is 2:
-                    if loop-block is not air:
-                        make 3 of item slime at location of loop-block
-                if {particles.player.set::%{_p}%} is 3:
-                    if loop-block is not air:
-                        make 1 of note at location of loop-block
-                if {particles.player.set::%{_p}%} is 4:
-                    if loop-block is not air:
-                        make 3 of falling water at location of loop-block
-                if {particles.player.set::%{_p}%} is 5:
-                    if loop-block is not air:
-                        make 3 of landing lava at location of loop-block
-                if {particles.player.set::%{_p}%} is 6:
-                    if loop-block is not air:
-                        make 3 of dripping water at location of loop-block
-            else:
-                if {_var} is 1:
-                    if {particles.player.set::%{_p}%} is 1:
-                        if loop-block is not air:
-                            make 3 of lava at location of loop-block
-                    if {particles.player.set::%{_p}%} is 2:
-                        if loop-block is not air:
-                            make 3 of item slime at location of loop-block
-                    if {particles.player.set::%{_p}%} is 3:
-                        if loop-block is not air:
-                            make 1 of note at location of loop-block
-                    if {particles.player.set::%{_p}%} is 4:
-                        if loop-block is not air:
-                            make 3 of falling water at location of loop-block
-                    if {particles.player.set::%{_p}%} is 5:
-                        if loop-block is not air:
-                            make 3 of landing lava at location of loop-block
-                    if {particles.player.set::%{_p}%} is 6:
-                        if loop-block is not air:
-                            make 3 of dripping water at location of loop-block
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
@@ -2059,13 +1987,9 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
         return true
     else if {_n} is 4:
         set {player.loc.spawn::%{_p}%} to 4
-        mine_quest_thread({_p}, "MAP4", 0)    
+        mine_quest_thread({_p}, "MAP4", 0)
         return true
 
-
-on npc right click:
-    if npc name is "&a第四マップへ":
-        mine_quest_thread(player, "MAP4", 0)
 
 on portal:
     cancel event
@@ -2305,8 +2229,10 @@ function maboroshi_gatya(p: player):
     add {mine.maboroshi.money::%{_p}'s uuid%} to {_p}'s money
 
 on first join:
+    set {mine.code::%player's uuid%} to true
     set {player.loc.spawn::%player%} to 1
     set {join.seigen} to 0
+    set {code.seigen} to true
     give {mine.items::0} to player
     give {mine.items::38} to player
     set {_t} to text component from "&e&n[あいさつをする]"
@@ -2326,9 +2252,17 @@ on first join:
         wait 1 second
         if {join.syoken} <= 0:
             set {join.message::*} to false
+            set {mine.code::%player's uuid%} to false
             clear {join.message::*}
             clear {join.syoken} 
             
+
+command /temp:
+    permission: admin
+    trigger:
+        loop all players:
+            set {mine.hojo.%loop-players's uuid%} to false
+
 every 1 minute:
     loop all players:
         add 1 to {mine.pickaxe.time::%loop-player%}
@@ -2404,20 +2338,91 @@ every 1 minute:
     if {day.date} is not {day.date.p}:
         set {day.date.p} to {day.date}
         clear {mine.reset.day::*}
-        set {mine.particle.date} to true
+        set {mine.new1.date} to true
+        set {mine.new2.date} to true
+        set {mine.new3.date} to true
+        clear {asa1::*}
+        clear {asa2::*}
+        clear {asa3::*}
+        clear {asa4::*}
     if {day.date.p} is not set:
         set {day.date.p} to {day.date}
     set {hh.date} to now formatted as "hh"
-    if {mine.particle.date} is true:
+    #軽量化に伴い削除
+    #if {mine.particle.date} is true:
+    #    if {hh.date} is "04":
+    #        set {particle.full} to true
+    #    if {hh.date} is "08":
+    #        set {mine.particle.date} to false
+    #        set {particle.full} to false
+    #だれでも分かる適当コード
+    if {mine.new1.date} is true:
+        set {am} to true
         if {hh.date} is "04":
-            set {particle.full} to true
-        if {hh.date} is "08":
-            set {mine.particle.date} to false
-            set {particle.full} to false
-command /date:
-    trigger:
-        set {_e} to now formatted as "hh"
-        send "%{_e}%"
+            set {asa1} to true
+            set {mine.all} to true
+        if {hh.date} is "09":
+            set {mine.new1.date} to false
+            set {asa1} to false
+            set {mine.all} to false
+    if {mine.new2.date} is true:
+        if {hh.date} is "05":
+            set {asa2} to true
+        if {hh.date} is "07":
+            set {mine.new2.date} to false
+            set {asa2} to false
+    if {mine.new3.date} is true:
+        if {hh.date} is "06":
+            set {asa3} to true
+        if {hh.date} is "09":
+            set {mine.new3.date} to false
+            set {asa3} to false
+    if {am} is true:
+        if {hh.date} is "01":
+            set {asa4} to true
+            set {mine.all} to true
+        if {hh.date} is "04":
+            set {am} to false
+            set {asa4} to false
+            set {mine.all} to false
+    loop all players:
+        if {asa1} is true:
+            if {asa1::%loop-player%} is not set:
+                asa_login(loop-player, 300, "朝の4~9時の間にログインする")
+                set {asa1::%loop-player%} to 1
+        if {asa2} is true:
+            if {asa2::%loop-player%} is not set:
+                asa_login(loop-player, 777, "朝の5~7時の間にログインする")
+                set {asa2::%loop-player%} to 1
+        if {asa3} is true:
+            if {asa3::%loop-player%} is not set:
+                add 1 to {asa.login.3::%loop-player%} 
+                if {asa.login.3::%loop-player%} > 29:
+                    set {asa3::%loop-player%} to 1
+                    asa_login(loop-player, 1000, "朝の5~7時の間に30分間ログインする")
+        if {asa3} is true:
+            if {asa4::%loop-player%} is not set:
+                add 1 to {asa.login.4::%loop-player%}
+                if {asa.login.4::%loop-player%} > 29: 
+                    set {asa4::%loop-player%} to 1
+                    asa_login(loop-player, 777, "朝の6~9時の間に30分間ログインする")
+
+on join:
+    if {asa1} is true:
+        if {asa1::%player%} is not set:
+            asa_login(player, 300, "朝の4~9時の間にログインする")
+            set {asa1::%player%} to 1
+    if {asa2} is true:
+        if {asa2::%player%} is not set:
+            asa_login(player, 777, "朝の5~7時の間にログインする")
+            set {asa2::%player%} to 1
+function asa_login(p: player, m: number, t: text):
+    send "&d------朝入ろうキャンペーン-------" to {_p}
+    send "                                 " to {_p}
+    send "%{_t}%" to {_p}
+    send "                                 " to {_p}
+    send "&d-------------------------------" to {_p}
+    add {_m} to {_p}'s money
 
 command /admin_skill_hoten [<player>]:
     permission: admin
@@ -2704,7 +2709,44 @@ on npc right click:
             remove 1 of gold pickaxe named "&7[&c&lマグマのピッケル&7]" from player
             give {mine.items::40} to player
 
-command /debug_bagu:
+command /code [<integer>]:
+    trigger:
+        if arg-1 is not set:
+            if {code.player::%player%} is not set:
+                set {_l} to random integer between 10000 and 99999
+                set {_r} to round({_l})
+                set {code.player::%player%} to {_r}
+                add "%player%_%{_r}%" to {code.list::*}
+                add {_r} to {player.code::*}
+                add {_r} to {player.coder::%player%}
+                set {code.list.player::%{_r}%} to player
+                send "&aあなたのコードは%{player.coder::%player%}%です。"
+            else: 
+                send "&aあなたのコードは%{player.coder::%player%}%です。"
+        else:
+            if {mine.code::%player's uuid%} is true:
+                if {code.seigen} is true:
+                    set {_player} to {code.list.player::%arg-1%}
+                    if {player.code::*} contains arg-1:
+                        add 2000 to player's money
+                        command "/money give %{_player}% 1000" 
+                        send "&aコードを入力できました！"
+                        send "&aあなたのコードが入力されました！" to {_player}
+                        set {code.seigen} to false
+                    else:
+                        send "&cこのコードは存在しないようです。"
+                else:
+                    send "&cコードの使用制限です。"
+            else:
+                send "&cコードの入力は参加して1時間のみです。"
+
+command /code_list:
     permission: admin
     trigger:
-        send "%{player.loc.spawn::%player%}%"
+        send {code.list::*}
+
+command /code_debug:
+    permission: admin
+    trigger:
+        set {mine.code::%player's uuid%} to true
+
