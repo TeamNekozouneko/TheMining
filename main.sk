@@ -1201,9 +1201,10 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
     set {_name} to "%blockdata of {_b}%"
     replace all "minecraft:" with "" in {_name}
     if {mine.ores::%{_name}%} is set:
-        loop {mine.items::*} where [input's tool is loop-value]:
-            set {_index} to loop-index
-            exit loop
+        loop {mine.items::*}:
+            if {_p}'s tool is loop-value:
+                set {_index} to loop-index
+                exit loop
         #send {_index} to {_p}
         if {mine.orewhite::%{_index}%::*} contains {mine.ores::%{_name}%}:
             send action bar "&4&l! &cこのピッケルではこの鉱石を壊すことはできません。" to {_p}
