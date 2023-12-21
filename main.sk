@@ -1939,6 +1939,18 @@ function mine_thread_throw_MAGMA(type: string) :: object:
     return false
 
 #以下ポータル処理
+
+#textをintegerに変換
+function edit(t: text) :: integer:
+    if {_t} is "1":
+        return 1
+    if {_t} is "2":
+        return 2
+    if {_t} is "3":
+        return 3
+    if {_t} is "4":
+        return 4
+
 on player move:
     set metadata value "mine_last_location" of player to location of player
 
@@ -1997,7 +2009,8 @@ on portal:
     set {_pblock} to block 0.5 west player if block 0.5 west player is nether portal block
     set {_pblock} to block 0.5 east player if block 0.5 east player is nether portal block
     {_pblock} is set
-    set {_connection} to tag "mine_portal_connection_id" of nbt compound of {_pblock}
+    set {_connections} to tag "mine_portal_connection_id" of nbt compound of {_pblock}
+    set {_connection} to edit("%{_connections}%")
     if {_connection} is not set:
         sound_portal_failed(player)
         send action bar "&4&l! &cこのポータルにはテレポート先が設定されていません。" to player
