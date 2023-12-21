@@ -1171,17 +1171,19 @@ on pickup:
 
 function mine_break(p: player, b: block, thread_bypass: boolean = false) :: boolean:
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
-    if {_thread_bypass} is not true:
-        set {_tb_pos1} to block 1 above {_b} 
-        set {_tb_pos2} to block 3 above {_b} 
-        loop all blocks within {_tb_pos1} and {_tb_pos2}:
-            if loop-block is not air:
-                add 1 to {_tb_b}
-            add 1 to {_tb_d}
-        if {_tb_b} is {_tb_d}:
-            {_p} is not op
-            send action bar "&4&l! &c採掘場では地表からしか採掘できません。" to {_p}
-            return false
+    
+    #軽量化用
+    #if {_thread_bypass} is not true:
+    #    set {_tb_pos1} to block 1 above {_b} 
+    #    set {_tb_pos2} to block 3 above {_b} 
+    #    loop all blocks within {_tb_pos1} and {_tb_pos2}:
+    #        if loop-block is not air:
+    #            add 1 to {_tb_b}
+    #        add 1 to {_tb_d}
+    #    if {_tb_b} is {_tb_d}:
+    #        {_p} is not op
+    #        send action bar "&4&l! &c採掘場では地表からしか採掘できません。" to {_p}
+    #        return false
     if {@slot} is true:
         loop {slot.list::*}:
             if {slot.info::%loop-value%::location::1} is location of {_b}:
