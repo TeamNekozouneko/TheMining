@@ -1,6 +1,6 @@
 #必須ライブラリ
 #・nupo_calc_lib.sk
-replace
+
 Options:
     oremenu_title: &c&lThe Mining &7- &f鉱石の設定
     oremenu_remove_title: &c&lThe Mining &7- &f鉱石範囲の削除
@@ -1015,7 +1015,7 @@ function mine_variables_check(p: player):
         set {mine.status.autoore.money::%{_p}'s uuid%} to true
     if {mine.login.time::%{_p}%} is not set:
         set {mine.login.time::%{_p}%} to 0
-function quest_check(p: player)
+function quest_check(p: player):
     loop all players:
         if {mine.myboostp::%{_p}'s uuid%::1} is 3:
             mine_quest_thread({_p}, "JUMP", 0) 
@@ -1201,8 +1201,8 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 add {mine.ores::%{_name}%} to {pickup.%{_p}'s uuid%::*}
                 send action bar "&4&l! &cインベントリーが満杯のため拾えませんでした。&c&l/pickup&cで後から回収できます。" to {_p}
             else:    
-            give {mine.ores::%{_name}%} to {_p}
-            add 1 to {mine.mnum::%{_p}'s uuid%}
+                give {mine.ores::%{_name}%} to {_p}
+                add 1 to {mine.mnum::%{_p}'s uuid%}
             
             #初見さんキャンペーン対応のために復活
             if {mine.hojo.%{_p}'s uuid%} is true:
