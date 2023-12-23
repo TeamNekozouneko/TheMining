@@ -1,5 +1,6 @@
 #必須ライブラリ
 #・nupo_calc_lib.sk
+replace
 Options:
     oremenu_title: &c&lThe Mining &7- &f鉱石の設定
     oremenu_remove_title: &c&lThe Mining &7- &f鉱石範囲の削除
@@ -930,7 +931,7 @@ command /pickaxe:
             send "&2&l! &a初期ピッケルを入手しました！" to player
             give {mine.items::0} to player
 
-every 2 tick:
+every 1 second:
     loop all players:
         clear {_n}
         loop 50 times:
@@ -949,11 +950,6 @@ every 2 tick:
         if {_n} is set:
             play sound "entity.player.levelup" to loop-player
             send title "&e&lレベルアップ！" with subtitle "&b&l%{mine.level::%loop-player's uuid%}%&3レベルになりました。" to loop-player
-
-#every 2 tick:
-#    loop all players:
-#        mine_variables_check(loop-player)
-#        set loop-player's tab list name to "&7[&a%{mine.level::%loop-player's uuid%}%&7] &f%loop-player%"
 
 on hunger meter change:
     cancel event
@@ -1019,8 +1015,10 @@ function mine_variables_check(p: player):
         set {mine.status.autoore.money::%{_p}'s uuid%} to true
     if {mine.login.time::%{_p}%} is not set:
         set {mine.login.time::%{_p}%} to 0
-    if {mine.myboostp::%{_p}'s uuid%::1} is 3:
-        mine_quest_thread({_p}, "JUMP", 0) 
+function quest_check(p: player)
+    loop all players:
+        if {mine.myboostp::%{_p}'s uuid%::1} is 3:
+            mine_quest_thread({_p}, "JUMP", 0) 
 function mine_reset_player(p: player):
     clear {mine.level::%{_p}'s uuid%}
     clear {mine.exp::%{_p}'s uuid%}
@@ -1169,21 +1167,9 @@ on break:
 
 on pickup:
     autoore(player)
-    
+
 function mine_break(p: player, b: block, thread_bypass: boolean = false) :: boolean:
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
-    
-    #if {_thread_bypass} is not true:
-    #    set {_tb_pos1} to block 1 above {_b} 
-    #    set {_tb_pos2} to block 3 above {_b} 
-    #    loop all blocks within {_tb_pos1} and {_tb_pos2}:
-    #        if loop-block is not air:
-    #            add 1 to {_tb_b}
-    #        add 1 to {_tb_d}
-    #    if {_tb_b} is {_tb_d}:
-    #        {_p} is not op
-    #        send action bar "&4&l! &c採掘場では地表からしか採掘できません。" to {_p}
-    #        return false
     if {@slot} is true:
         loop {slot.list::*}:
             if {slot.info::%loop-value%::location::1} is location of {_b}:
@@ -1197,24 +1183,24 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
     set {_name} to "%blockdata of {_b}%"
     replace all "minecraft:" with "" in {_name}
     if {mine.ores::%{_name}%} is set:
-        loop {mine.items::*} where [{_p}'s tool is input]:
-            set {_index} to loop-index
-            exit loop
+        loop {mine.items::*}:
+            if {_p}'s tool is loop-value:
+                set {_index} to loop-index
         #send {_index} to {_p}
         if {mine.orewhite::%{_index}%::*} contains {mine.ores::%{_name}%}:
             send action bar "&4&l! &cこのピッケルではこの鉱石を壊すことはできません。" to {_p}
             return false
         else:
-            #set {_n} to 0
-            #set {_n2} to 0
-            #loop 36 times:
-            #    if slot {_n} of {_p}'s inventory is air:
-            #        add 1 to {_n2}
-            #    add 1 to {_n}
-            #if {_n2} is 0:
-            #    add {mine.ores::%{_name}%} to {pickup.%{_p}'s uuid%::*}
-            #    send action bar "&4&l! &cインベントリーが満杯のため拾えませんでした。&c&l/pickup&cで後から回収できます。" to {_p}
-            #else:    
+            set {_n} to 0
+            set {_n2} to 0
+            loop 36 times:
+                if slot {_n} of {_p}'s inventory is air:
+                    add 1 to {_n2}
+                add 1 to {_n}
+            if {_n2} is 0:
+                add {mine.ores::%{_name}%} to {pickup.%{_p}'s uuid%::*}
+                send action bar "&4&l! &cインベントリーが満杯のため拾えませんでした。&c&l/pickup&cで後から回収できます。" to {_p}
+            else:    
             give {mine.ores::%{_name}%} to {_p}
             add 1 to {mine.mnum::%{_p}'s uuid%}
             
@@ -1588,18 +1574,6 @@ function mine_skill_page(p: player, page: integer):
                 set slot {_n} of {_p}'s current inventory to loop-value with lore (lore of loop-value) and "&8&m-------------------------------" and "&c最大レベルに達しています"       
             add 2 to {_n}
 
-command /hoten [<player>]:
-    permission: admin
-    trigger:
-        set {mine.status.autoore.money::%arg-1%} to true
-
-command /Debug_autoore:
-    permission: admin
-    trigger:
-        clear {mine.status.autoore.money::%player%}
-        clear {mine.status.autoore.money::%player's uuid%} 
-        clear {mine.status.autoore::%player's uuid%} 
-
 every second:
     loop all players:
         mine_boost_thread_wait(loop-player, 3)
@@ -1689,6 +1663,16 @@ on break:
     if {particles.player.set::%player%} is 6:
         make 3 of dripping water at location of block
 
+on break:
+    if player's yaw is between 45 and 134:
+        set {mine.status.hougaku::%player%} to "west"
+    if player's yaw is between 135 and 224:
+        set {mine.status.hougaku::%player%} to "north"
+    if player's yaw is between 225 and 314:
+        set {mine.status.hougaku::%player%} to "east"
+    if player's yaw is not between 45 and 314:
+        set {mine.status.hougaku::%player%} to "south"
+
 function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: integer, v: block):
     wait 10 tick
     if {mine.status.hougaku::%{_p}%} is {_h}:
@@ -1720,17 +1704,6 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
-
-#プレイヤーの向いている方角の取得
-on break:
-    if player's yaw is between 45 and 134:
-        set {mine.status.hougaku::%player%} to "west"
-    if player's yaw is between 135 and 224:
-        set {mine.status.hougaku::%player%} to "north"
-    if player's yaw is between 225 and 314:
-        set {mine.status.hougaku::%player%} to "east"
-    if player's yaw is not between 45 and 314:
-        set {mine.status.hougaku::%player%} to "south"
 
 #以下特殊アイテム
 
@@ -1939,18 +1912,6 @@ function mine_thread_throw_MAGMA(type: string) :: object:
     return false
 
 #以下ポータル処理
-
-#textをintegerに変換
-function edit(t: text) :: integer:
-    if {_t} is "1":
-        return 1
-    if {_t} is "2":
-        return 2
-    if {_t} is "3":
-        return 3
-    if {_t} is "4":
-        return 4
-
 on player move:
     set metadata value "mine_last_location" of player to location of player
 
@@ -2001,6 +1962,16 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
         mine_quest_thread({_p}, "MAP4", 0)
         return true
 
+#textをintegerに変換
+function edit(t: text) :: integer:
+    if {_t} is "1":
+        return 1
+    if {_t} is "2":
+        return 2
+    if {_t} is "3":
+        return 3
+    if {_t} is "4":
+        return 4
 
 on portal:
     cancel event
@@ -2369,11 +2340,12 @@ every 1 minute:
     #        set {particle.full} to false
     #だれでも分かる適当コード
     if {mine.new1.date} is true:
-        set {am} to true
+        
         if {hh.date} is "04":
             set {asa1} to true
             set {mine.all} to true
         if {hh.date} is "09":
+            set {am} to true
             set {mine.new1.date} to false
             set {asa1} to false
             set {mine.all} to false
@@ -2744,7 +2716,7 @@ command /code [<integer>]:
                         command "/money give %{_player}% 1000" 
                         send "&aコードを入力できました！"
                         send "&aあなたのコードが入力されました！" to {_player}
-                        set {code.seigen} to false
+                        set {mine.code::%player's uuid%} to false
                     else:
                         send "&cこのコードは存在しないようです。"
                 else:
