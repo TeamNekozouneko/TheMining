@@ -2762,3 +2762,6 @@ on join:
     player is not op
     execute console command "/lp user %player% permission set jecon.pay false"
 
+command /temp:
+    trigger:
+        send "skアップロード確認用"
