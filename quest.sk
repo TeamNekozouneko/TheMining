@@ -44,6 +44,11 @@ on load:
     set {mine.quests::39} to "ガチャを20回まわす"
     set {mine.quests::40} to "ガチャを30回まわす"
     set {mine.quests::41} to "50時間遊ぶ"
+    set {mine.quests::42} to "破壊の王を6回使用する。"
+    set {mine.quests::43} to "破壊の王を10回使用する。"
+    set {mine.quests::44} to "ランダムイベントを10回する"
+    set {mine.quests::45} to "lv2MAPに30回行く"
+    set {mine.quests::46} to "第四MAPに30回行く"
 
     clear {mine.quest_max::*}
     set {mine.quest_max::1} to 20000
@@ -87,6 +92,11 @@ on load:
     set {mine.quest_max::39} to 20
     set {mine.quest_max::40} to 30
     set {mine.quest_max::41} to 50
+    set {mine.quest_max::42} to 6
+    set {mine.quest_max::43} to 10
+    set {mine.quest_max::44} to 10
+    set {mine.quest_max::45} to 30
+    set {mine.quest_max::46} to 30
 
     clear {mine.quest_reward::*}
     add "money_5000" to {mine.quest_reward::1::*}
@@ -136,6 +146,11 @@ on load:
     add "money_500" to {mine.quest_reward::39::*}
     add "money_800" to {mine.quest_reward::40::*}
     add "money_8000" to {mine.quest_reward::41::*}
+    add "money_2000" to {mine.quest_reward::42::*}
+    add "money_2500" to {mine.quest_reward::43::*}
+    add "money_1000" to {mine.quest_reward::44::*}
+    add "money_800" to {mine.quest_reward::45::*}
+    add "money_800" to {mine.quest_reward::46::*}
     
 on npc right click:
     if npc name is "&aクエストマスター &7[クリック]":
@@ -218,7 +233,7 @@ function mine_open_quest_refancy(p: player):
             add 1 to {_n}
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
-    return true if {_i} = 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 or 10 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23 or 24 or 25 or 26 or 27 or 28 or 29 or 30 or 31 or 32 or 33 or 34 or 35 or 36 or 37 or 38 or 39 or 41 or 42
+    return true if {_i} = 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 or 10 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23 or 24 or 25 or 26 or 27 or 28 or 29 or 30 or 31 or 32 or 33 or 34 or 35 or 36 or 37 or 38 or 39 or 41 or 42 or 43 or 44 or 45 or 46
     return false
 
 function mine_quest_thread(p: player, type: string, v: object):
@@ -253,8 +268,10 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A14", {_v})
     else if {_type} = "MAP2":
         mine_quest_thread({_p}, "A16", {_v})
+        mine_quest_thread({_p}, "A45", {_v})
     else if {_type} = "MAP4":
         mine_quest_thread({_p}, "A17", {_v})
+        mine_quest_thread({_p}, "A46", {_v})
     else if {_type} = "TIME":
         mine_quest_thread({_p}, "A18", {_v})
         mine_quest_thread({_p}, "A19", {_v})
@@ -273,6 +290,7 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A30", {_v})
     else if {_type} = "EVENT":
         mine_quest_thread({_p}, "A23", {_v})
+        mine_quest_thread({_p}, "A44", {_v})
     else if {_type} = "SELLERBUY":
         mine_quest_thread({_p}, "A31", {_v})
         mine_quest_thread({_p}, "A32", {_v})
@@ -281,6 +299,8 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A35", {_v})
         mine_quest_thread({_p}, "A36", {_v})
         mine_quest_thread({_p}, "A37", {_v})
+        mine_quest_thread({_p}, "A42", {_v})
+        mine_quest_thread({_p}, "A43", {_v})
     else if {_type} = "JUMP":
         mine_quest_thread({_p}, "A34", {_v})
     else if {_type} = "A1":
@@ -403,6 +423,21 @@ function mine_quest_thread(p: player, type: string, v: object):
     else if {_type} = "A41":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 41:
             add 1 to {mine.player_quest_data::%{_p}'s uuid%::41}
+    else if {_type} = "A42":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 42:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::42}
+    else if {_type} = "A43":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 43:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::43}
+    else if {_type} = "A44":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 44:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::44}
+    else if {_type} = "A45":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 45:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::45}
+    else if {_type} = "A46":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 46:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::46}
 
 every second:    
     loop all players:
