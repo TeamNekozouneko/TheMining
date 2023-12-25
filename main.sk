@@ -1168,12 +1168,7 @@ on break:
 on pickup:
     autoore(player)
 
-every second:
-    send "mine_break order: %{order}%" to ops
-    set {order} to 0
-
 function mine_break(p: player, b: block, thread_bypass: boolean = false) :: boolean:
-    add 1 to {order}
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
     if {@slot} is true:
         loop {slot.list::*}:
