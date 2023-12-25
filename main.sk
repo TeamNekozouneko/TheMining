@@ -2734,7 +2734,9 @@ command /code_debug:
     trigger:
         set {mine.code::%player's uuid%} to true
 
-command /pay [<player>] [<integer>]:
+
+
+command /pay [<player>] [<number>]:
     trigger:
         if arg-1 is set:
             if arg-2 is set:
@@ -2742,8 +2744,9 @@ command /pay [<player>] [<integer>]:
                 set {_r} to {_int}/2
                 set {_l} to {_int} + {_r}
                 if player's money >= {_l}:
+                    send "%{_l}% : %player%"
                     remove {_l} from player's money
-                    add {_l} to arg-1's money 
+                    add {_int} to arg-1's money 
                     send "&a送金しました！" to player
                     send "&c送金額%{_int}%円+税金%{_r}%円=あなたの支払い額%{_l}%円" 
                     send "&a%player%さんから%{_int}%円送られました！" to arg-1
@@ -2759,4 +2762,3 @@ on join:
     player is not op
     execute console command "/lp user %player% permission set jecon.pay false"
 
-#temp
