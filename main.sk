@@ -2749,7 +2749,7 @@ command /pay [<player>] [<integer>]:
                     send "&a%player%さんから%{_int}%円送られました！" to arg-1
                 else:
                     send "&cお金が足りません。"
-                    send "&c送る額%{_int}%円+税金%{r}%円=あなたの支払い額%{_l}%円"    
+                    send "&c送る額%{_int}%円+税金%{_r}%円=あなたの支払い額%{_l}%円"    
             else:
                 send "&c送るお金を入力してください。"
         else:
@@ -2759,3 +2759,4 @@ on join:
     player is not op
     execute console command "/lp user %player% permission set jecon.pay false"
 
+#temp
