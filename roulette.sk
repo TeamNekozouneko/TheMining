@@ -593,6 +593,7 @@ command /roulette_idmanage [<text>] [<text>]:
         if arg-1 is not set:
             send "&e/roulette_idmanage list <A,B,C> &fARG-2で指定されたものから始まるIDの数を表示します"
             send "&e/roulette_idmanage showdata <id> &FIDで格納されている情報を取得します"
+            send "&e/roulette_idmanage getrecent &f直近10件のIDを取得します"
         else if arg-1 is "list":
             if arg-2 is not set:
                 send "{@pre} &cA,B,Cを指定してください。"
@@ -619,6 +620,9 @@ command /roulette_idmanage [<text>] [<text>]:
                     set {_betmoney} to {roulettedata.%arg-2%.betmoney::%loop-value%}
                     send "%loop-value%: %{_bet}%, %{_betmoney}%"
                 send "&cEND OF LOG."
+        else if arg-1 is "getrecent":
+            set {_r::*} to recentroulette(10)
+            send "{@pre} &fRecent: &b%{_r::*}%"
 function createdata(id: text, correct: integer, prefix: text, winners: objects) :: text:
     add 1 to {rouletteprefix::%{_prefix}%}
     set {_preid} to "%{_prefix}%%{rouletteprefix::%{_prefix}%}%"
@@ -682,14 +686,19 @@ function correctnum(id: text) :: integer: # ここがいわゆる裏操作的な
     set {_correct} to random element out of {_passed::*}
     return {_correct}
 function recentroulette(datas: integer) :: objects:
-    loop {roulette.ids::*}:
-        add {roulettedata.%loop-value%::unix} to {_unix::*}
-        set {_id::%{roulettedata.%loop-value%::unix}%} to loop-value
-    set {_unix::*} to reversed sorted {_unix::*}
-    set {_n} to 0
-    loop {_unix::*}:
-        add {_id::%loop-value%} to {_return::*}
-        add 1 to {_n}
-        if {_n} is more than or equal to {_datas}:
-            exit loop
+#    loop {roulette.ids::*}:
+#        add {roulettedata.%loop-value%::unix} to {_unix::*}
+#        set {_id::%{roulettedata.%loop-value%::unix}%} to loop-value
+#    set {_unix::*} to reversed sorted {_unix::*}
+#    set {_n} to 0
+#    loop {_unix::*}:
+#        add {_id::%loop-value%} to {_return::*}
+#        add 1 to {_n}
+#        if {_n} is more than or equal to {_datas}:
+#            exit loop
+    set {_s::*} to {roulette.ids::*}
+    loop {_datas} times:
+        set {_last} to last element of {_s::*}
+        remove {_last} from {_s::*}
+        add {_last} to {_return::*}  
     return {_return::*}
