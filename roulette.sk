@@ -682,14 +682,19 @@ function correctnum(id: text) :: integer: # ここがいわゆる裏操作的な
     set {_correct} to random element out of {_passed::*}
     return {_correct}
 function recentroulette(datas: integer) :: objects:
-    loop {roulette.ids::*}:
-        add {roulettedata.%loop-value%::unix} to {_unix::*}
-        set {_id::%{roulettedata.%loop-value%::unix}%} to loop-value
-    set {_unix::*} to reversed sorted {_unix::*}
-    set {_n} to 0
-    loop {_unix::*}:
-        add {_id::%loop-value%} to {_return::*}
-        add 1 to {_n}
-        if {_n} is more than or equal to {_datas}:
-            exit loop
+#    loop {roulette.ids::*}:
+#        add {roulettedata.%loop-value%::unix} to {_unix::*}
+#        set {_id::%{roulettedata.%loop-value%::unix}%} to loop-value
+#    set {_unix::*} to reversed sorted {_unix::*}
+#    set {_n} to 0
+#    loop {_unix::*}:
+#        add {_id::%loop-value%} to {_return::*}
+#        add 1 to {_n}
+#        if {_n} is more than or equal to {_datas}:
+#            exit loop
+    set {_s::*} to {roulette.ids::*}
+    loop {_datas} times:
+        set {_last} to last element of {_s::*}
+        remove {_last} from {_s::*}
+        add {_last} to {_return::*}  
     return {_return::*}
