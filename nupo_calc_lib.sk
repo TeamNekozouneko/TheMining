@@ -1,9 +1,4 @@
-every second:
-    send "約分演算/s : %{order}%" to ops
-    set {order} to 0
-
 function nupo_calc_reduction(a: integer, b: integer) :: objects: #約分演算 (a: 分母, b:分子)
-    add 1 to {order}
     return 0 and 0 if {_a} or {_b} = 0
     set {_v} to {_a} if {_a} < {_b}
     set {_v} to {_b} if {_a} > {_b}
