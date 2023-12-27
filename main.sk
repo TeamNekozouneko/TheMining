@@ -1632,11 +1632,11 @@ function mine_skill_thread_wait(p: player, index: integer, v: object):
             mine_all_x({_p}, "north", 1, 1, -1, -1, {_v})
 
         else if {_index} is 5:
-            #if {mine.all} is true:
-            mine_all_z({_p}, "west", 2, 2, -1, -1, {_v})
-            mine_all_z({_p}, "east", -2, 2, 1, -1, {_v})
-            mine_all_x({_p}, "south", 2, 2, -1, -1, {_v})
-            mine_all_x({_p}, "north", 1, -1, -2, 2, {_v})
+            if {mine.all} is true:
+                mine_all_z({_p}, "west", 2, 2, -1, -1, {_v})
+                mine_all_z({_p}, "east", -2, 2, 1, -1, {_v})
+                mine_all_x({_p}, "south", 2, 2, -1, -1, {_v})
+                mine_all_x({_p}, "north", 1, -1, -2, 2, {_v})
 
 on break:
     if {particles.player.set::%player%} is 1:
