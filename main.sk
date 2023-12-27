@@ -1191,18 +1191,8 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
             send action bar "&4&l! &cこのピッケルではこの鉱石を壊すことはできません。" to {_p}
             return false
         else:
-            set {_n} to 0
-            set {_n2} to 0
-            loop 36 times:
-                if slot {_n} of {_p}'s inventory is air:
-                    add 1 to {_n2}
-                add 1 to {_n}
-            if {_n2} is 0:
-                add {mine.ores::%{_name}%} to {pickup.%{_p}'s uuid%::*}
-                send action bar "&4&l! &cインベントリーが満杯のため拾えませんでした。&c&l/pickup&cで後から回収できます。" to {_p}
-            else:    
-                give {mine.ores::%{_name}%} to {_p}
-                add 1 to {mine.mnum::%{_p}'s uuid%}
+            give {mine.ores::%{_name}%} to {_p}
+            add 1 to {mine.mnum::%{_p}'s uuid%}
             
             #初見さんキャンペーン対応のために復活
             if {mine.hojo.%{_p}'s uuid%} is true:
@@ -1220,17 +1210,17 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 set {_exp} to {_price}
                 remove {_exp} from {mine.exp::%{_p}'s uuid%}
 
-            if {_thread_bypass} is not true:
-                mine_boost_thread_wait({_p}, 1, {_exp})
-                mine_boost_thread_wait({_p}, 2, {_money})
-                mine_skill_thread_wait({_p}, 1, {_b})
-                mine_skill_thread_wait({_p}, 2, {_b})
-                mine_skill_thread_wait({_p}, 3, {_b})
-                mine_skill_thread_wait({_p}, 4, {_b})
-                mine_skill_thread_wait({_p}, 5, {_b})
-                if {mine.hojo.%{_p}'s uuid%} is true:
-                    mine_skill_hojo({_p}, {_b})
-            mine_quest_thread({_p}, "BREAK", 1)
+            #if {_thread_bypass} is not true:
+            #    mine_boost_thread_wait({_p}, 1, {_exp})
+            #    mine_boost_thread_wait({_p}, 2, {_money})
+            #    mine_skill_thread_wait({_p}, 1, {_b})
+            #    mine_skill_thread_wait({_p}, 2, {_b})
+            #    mine_skill_thread_wait({_p}, 3, {_b})
+            #    mine_skill_thread_wait({_p}, 4, {_b})
+            #    mine_skill_thread_wait({_p}, 5, {_b})
+            #    if {mine.hojo.%{_p}'s uuid%} is true:
+            #        mine_skill_hojo({_p}, {_b})
+            #mine_quest_thread({_p}, "BREAK", 1)
 
             if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
                 sound_notification({_p})
