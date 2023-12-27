@@ -1191,7 +1191,18 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
             send action bar "&4&l! &cこのピッケルではこの鉱石を壊すことはできません。" to {_p}
             return false
         else:
-
+            set {_n} to 0
+            set {_n2} to 0
+            loop 36 times:
+                if slot {_n} of {_p}'s inventory is air:
+                    add 1 to {_n2}
+                add 1 to {_n}
+            if {_n2} is 0:
+                add {mine.ores::%{_name}%} to {pickup.%{_p}'s uuid%::*}
+                send action bar "&4&l! &cインベントリーが満杯のため拾えませんでした。&c&l/pickup&cで後から回収できます。" to {_p}
+            else:    
+                give {mine.ores::%{_name}%} to {_p}
+                add 1 to {mine.mnum::%{_p}'s uuid%}
             
             #初見さんキャンペーン対応のために復活
             if {mine.hojo.%{_p}'s uuid%} is true:
