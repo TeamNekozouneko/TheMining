@@ -1210,16 +1210,16 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 set {_exp} to {_price}
                 remove {_exp} from {mine.exp::%{_p}'s uuid%}
 
-            if {_thread_bypass} is not true:
-                mine_boost_thread_wait({_p}, 1, {_exp})
-                mine_boost_thread_wait({_p}, 2, {_money})
-                mine_skill_thread_wait({_p}, 1, {_b})
-                mine_skill_thread_wait({_p}, 2, {_b})
-                mine_skill_thread_wait({_p}, 3, {_b})
-                mine_skill_thread_wait({_p}, 4, {_b})
-                mine_skill_thread_wait({_p}, 5, {_b})
-                if {mine.hojo.%{_p}'s uuid%} is true:
-                    mine_skill_hojo({_p}, {_b})
+            #if {_thread_bypass} is not true:
+            #    mine_boost_thread_wait({_p}, 1, {_exp})
+            #    mine_boost_thread_wait({_p}, 2, {_money})
+            #    mine_skill_thread_wait({_p}, 1, {_b})
+            #    mine_skill_thread_wait({_p}, 2, {_b})
+            #    mine_skill_thread_wait({_p}, 3, {_b})
+            #    mine_skill_thread_wait({_p}, 4, {_b})
+            #    mine_skill_thread_wait({_p}, 5, {_b})
+            #    if {mine.hojo.%{_p}'s uuid%} is true:
+            #        mine_skill_hojo({_p}, {_b})
             #mine_quest_thread({_p}, "BREAK", 1)
 
             if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
