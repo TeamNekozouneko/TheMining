@@ -1222,7 +1222,35 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                     mine_skill_hojo({_p}, {_b})
             #mine_quest_thread({_p}, "BREAK", 1)
 
+            if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
+                sound_notification({_p})
+                if mine_is_space_inventory({_p}):
+                    send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
+                    give {mine.items::30} to {_p}
+                else:
+                    send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
+                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+                    add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
+                mine_quest_thread({_p}, "MABOROSHI_DROP", 0)
 
+            if mine_thread_throw_OBSIDIAN("MINE_OBSIDIAN_DROP"):
+                sound_notification({_p})
+                if mine_is_space_inventory({_p}):
+                    send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
+                    give {mine.items::37} to {_p}
+                else:
+                    send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
+                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+                    add {mine.items::37} to {pickup.%{_p}'s uuid%::*}
+            if mine_thread_throw_MAGMA("MINE_MAGMA_DROP"):
+                sound_notification({_p})
+                if mine_is_space_inventory({_p}):
+                    send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
+                    give {mine.items::39} to {_p}
+                else:
+                    send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
+                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+                    add {mine.items::39} to {pickup.%{_p}'s uuid%::*}
             return true
     else if {_p} is not op:
         return false
