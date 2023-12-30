@@ -371,8 +371,8 @@ command /spawn [<text>]:
             send "&4&l! &cこの場所にテレポートする条件を満たしていません。" to player
             sound_portal_failed(player)
 
-on tab complete of "/spawn":
-    set tab completions for position 1 to "help", "1", "2", "3" and "4"
+#on tab complete of "/spawn":
+#    set tab completions for position 1 to "help", "1", "2", "3" and "4"
 
 on inventory click:
     if name of player's current inventory is "{@oremenu_title}":
@@ -2761,7 +2761,3 @@ command /pay [<player>] [<number>]:
 on join:
     player is not op
     execute console command "/lp user %player% permission set jecon.pay false"
-
-command /temp:
-    trigger:
-        send "skアップロード確認用"
