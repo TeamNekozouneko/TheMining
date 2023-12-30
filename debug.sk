@@ -1,4 +1,5 @@
 on break:
     if name of player is "Hideko_Dev":
-        if player has enough space for items:
+        send "Hello" to event-player
+        if player has enough space:
             send "テストです。" to event-player
