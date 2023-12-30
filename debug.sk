@@ -8,4 +8,9 @@ on break:
                 add 1 to {_n2}
             add 1 to {_n}
         send "%{_n}%   |   %{_n2}%"
-# teeest
+
+
+command /testforyeahn:
+    permission: admin
+    trigger:
+        send "&C THIS IS A PEN."
