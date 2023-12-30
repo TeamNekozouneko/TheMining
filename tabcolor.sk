@@ -1,0 +1,176 @@
+options:
+	pre: <##fb9700>&oP<##fcb01a>&or<##fcc833>&oe<##fde14d>&om<##fcc833>&oi<##fcb01a>&ou<##fb9700>&om
+command /tabcolor:
+	trigger:
+		send "&cこの機能はこのサーバーでは利用できません。"
+		stop
+		tabbar(player)
+function tabbar(p: player):
+	set {_u} to uuid of {_p}
+	if {tabbar.plan::%{_u}%} is not set:
+		open chest with 1 row named "➜ &b&lTAB色選択" to {_p}
+		set slot 6 of {_p}'s current inventory to white dye named "&f白色" with lore "&7Default" and "&d» &f無料" and "&a&l現在選択されています。"
+	else:
+		open chest with 1 row named "➜ &b&lTAB色契約変更" to {_p}
+		set slot 6 of {_p}'s current inventory to white dye named "&f白色" with lore "&7Default" and "&d» &f無料" and "&c&l白色選択で契約破棄が可能です。"
+	set slot 0 of {_p}'s current inventory to shiny beacon named "&a&l自&b&l由&d&l指&e&l定" with lore "{@pre}" and "&d» &f$1万 / 週" with nbt compound from "{price:10000}"
+	set slot 1 of {_p}'s current inventory to red dye named "&c&l赤色" with lore "{@pre}" and "&d» &f$5000 / 週" with nbt compound from "{price:5000,color:""FF5555""}"
+	set slot 2 of {_p}'s current inventory to orange dye named "&6&l金色" with lore "{@pre}" and "&d» &f$2000 / 週" with nbt compound from "{price:2000,color:""FFAA00""}"
+	set slot 3 of {_p}'s current inventory to green dye named "&2&l緑色" with lore "{@pre}" and "&d» &f$1000 / 週" with nbt compound from "{price:1000,color:""00AA00""}"
+	set slot 4 of {_p}'s current inventory to blue dye named "&9&l青色" with lore "{@pre}" and "&d» &f$500 / 週" with nbt compound from "{price:500,color:""5555FF""}"
+	set slot 5 of {_p}'s current inventory to yellow dye named "<##fff200>黄色" with lore "{@pre}" and "&d» &f$300 / 週" with nbt compound from "{price:300,color:""FFF200""}"
+function tabbar_areyouok(p: player, color: text):
+	evaluate "set {_a} to ""<##%{_color}%>"""
+	set metadata value "color" of {_p} to {_a}
+	open chest with 3 rows named "➜ &c&l本当によろしいですか？" to {_p}
+	set slot 0 of {_p}'s current inventory to player head named "&f&lサンプル" with lore "%{_a}%%{_p}%"
+	set slot 11 of {_p}'s current inventory to lime stained hardened clay named "&a&lはい。この内容で問題ありません。" with lore "&f&l注文を確定します。" and "&c注意: 確定後キャンセルは出来ません。" and "&f" and "&6&n即時料金が引き落とされます。"
+	set slot 15 of {_p}'s current inventory to red stained hardened clay named "&c&lいいえ、違います。" with lore "&f&l注文をキャンセルします。"
+function tabbar_areyouok2(p: player, color: text):
+	evaluate "set {_a} to ""<##%{_color}%>"""
+	set metadata value "color" of {_p} to {_a}
+	open chest with 3 rows named "➜ &c&l本当に契約内容の変更をしてよろしいですか？" to {_p}
+	set slot 0 of {_p}'s current inventory to player head named "&f&lサンプル" with lore "%{_a}%%{_p}%"
+	set slot 11 of {_p}'s current inventory to lime stained hardened clay named "&a&lはい。この内容で問題ありません。" with lore "&f&l契約を&2&l即時&f&l変更します" and "&c注意: 確定後キャンセルは出来ません。" and "&f" and "&6&n即時料金が引き落とされます。"
+	set slot 13 of {_p}'s current inventory to yellow stained hardened clay named "&e&lはい。この内容で問題ありません。" with lore "&f&l契約を変更します。" and "&f" and "&6&n現在の契約が更新され次第" and "&6引き落とし・色変更されます。"
+	set slot 15 of {_p}'s current inventory to red stained hardened clay named "&c&lいいえ、違います。" with lore "&f&l注文をキャンセルします。"
+function tabbar_areyouok3(p: player):
+	open chest with 3 rows named "➜ &c&l本当に契約を破棄してよろしいですか？" to {_p}
+	set slot 0 of {_p}'s current inventory to player head named "&f&lサンプル" with lore "&f%{_p}%"
+	set slot 11 of {_p}'s current inventory to lime stained hardened clay named "&a&lはい。この内容で問題ありません。" with lore "&f&l契約は停止となります。" and "&c注意: 確定後キャンセルは出来ません。" and "&f" and "&6&n即時白色に戻ります。"
+	set slot 15 of {_p}'s current inventory to red stained hardened clay named "&c&lいいえ、違います。" with lore "&f&l契約停止をキャンセルします。"
+on inventory click:
+	if name of player's current inventory is "➜ &b&lTAB色選択":
+		cancel event
+		set {_a} to tag "price" of nbt compound of clicked item
+		set {_b} to tag "color" of nbt compound of clicked item
+		set metadata value "price" of player to {_a}
+		if name of clicked item is "&f白色":
+			close player's inventory
+			send "&a現在使用されている色が &f&l白色 &aのため変更の必要はありません。"
+		else if name of clicked item is "&a&l自&b&l由&d&l指&e&l定":
+			close player's inventory
+			command "/jp %player% off"
+			play sound "block.note_block.pling" to player
+			set metadata value "setcolor" of player to true
+			send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■"
+			send ""
+			send "&e 色の指定を行います。"
+			send ""
+			send "&f&nHEXカラー&fでの指定となります。"
+			send "&fアルファベットと数字で構成されている6桁の番号を"
+			send "&fチャットに送信してください。"
+			send "&f(先頭のシャープは不要です)"
+			send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■"
+		else:
+			tabbar_areyouok(player, {_b})
+	else if name of player's current inventory is "➜ &b&lTAB色契約変更":
+		cancel event
+		set {_a} to tag "price" of nbt compound of clicked item
+		set {_b} to tag "color" of nbt compound of clicked item
+		set metadata value "price" of player to {_a}
+		if name of clicked item is "&f白色":
+			tabbar_areyouok3(player)
+		else if name of clicked item is "&a&l自&b&l由&d&l指&e&l定":
+			close player's inventory
+			command "/jp %player% off"
+			play sound "block.note_block.pling" to player
+			set metadata value "setcolor2" of player to true
+			send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■"
+			send ""
+			send "&e 色の指定を行います。"
+			send ""
+			send "&f&nHEXカラー&fでの指定となります。"
+			send "&fアルファベットと数字で構成されている6桁の番号を"
+			send "&fチャットに送信してください。" 
+			send "&f(先頭のシャープは不要です)"
+			send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■"
+		else:
+			tabbar_areyouok2(player, {_b})
+	else if name of player's current inventory is "➜ &c&l本当に契約を破棄してよろしいですか？":
+		cancel event
+		if name of clicked item is "&a&lはい。この内容で問題ありません。":
+			delete {tabbar.plan::%player's uuid%}
+			delete {tabbar.expire::%player's uuid%}
+			delete {tabbar.nowprice::%player's uuid%}
+			delete {tabbar.nextcontract::%player's uuid%}
+			set player's tab list name to "&f%player%"
+			send "&c&l✔ &c契約を破棄しました。"
+			close player's inventory
+		else if name of clicked item is "&c&lいいえ、違います。":
+			send "&a契約破棄をキャンセルしました。"
+			close player's inventory
+	else if name of player's current inventory is "➜ &c&l本当によろしいですか？":
+		cancel event
+		if name of clicked item is "&a&lはい。この内容で問題ありません。":
+			close player's inventory
+			set {_price} to metadata value "price" of player
+			set {_pr} to {_price} - 1
+			if player's balance is more than {_pr}: 
+				remove {_price} from player's balance
+				set {tabbar.plan::%player's uuid%} to metadata value "color" of player
+				set {tabbar.expire::%player's uuid%} to unix timestamp of now
+				set {tabbar.nowprice::%player's uuid%} to {_price}
+				send "&a&l✔ &a契約をいたしました！"
+				send "&7➜ &fTABの色は1分以内に適用されます。しばらくお待ちください。"
+			else:
+				send "&c&l✖ &c契約が出来ませんでした。所持金が不足しているようです。"
+		else if name of clicked item is "&c&lいいえ、違います。":
+			send "&a契約をキャンセルしました。"
+			close player's inventory
+	else if name of player's current inventory is "➜ &c&l本当に契約内容の変更をしてよろしいですか？":
+		cancel event
+		if name of clicked item is "&a&lはい。この内容で問題ありません。":
+			close player's inventory
+			set {_price} to metadata value "price" of player
+			set {_pr} to {_price} - 1
+			if player's balance is more than {_pr}: 
+				remove {_price} from player's balance
+				set {tabbar.plan::%player's uuid%} to metadata value "color" of player
+				set {tabbar.expire::%player's uuid%} to unix timestamp of now
+				set {tabbar.nowprice::%player's uuid%} to {_price}
+				send "&a&l✔ &a契約をいたしました！"
+				send "&7➜ &fTABの色は1分以内に適用されます。しばらくお待ちください。"
+			else:
+				send "&c&l✖ &c契約が出来ませんでした。所持金が不足しているようです。"
+		else if name of clicked item is "&e&lはい。この内容で問題ありません。":
+			close player's inventory
+			set {_price} to metadata value "price" of player
+			set {tabbar.nextcontract::%player's uuid%} to metadata value "color" of player
+			set {tabbar.nowprice::%player's uuid%} to {_price}
+			send "&a&l✔ &a契約を変更いたしました！"
+			send "&7➜ &fTABの色は契約が更新される際に変更されます。&e&l&nそれまでに白色の契約にしたり、他の契約に変更とそちらに上書きされます。ご注意ください。"
+		else if name of clicked item is "&c&lいいえ、違います。":
+			send "&a契約をキャンセルしました。"
+			close player's inventory
+on chat:
+	if metadata value "setcolor" of player is true:
+		cancel event
+		command "/jp %player% on"
+		tabbar_areyouok(player, message)
+	else if metadata value "setcolor2" of player is true:
+		cancel event
+		command "/jp %player% on"
+		tabbar_areyouok2(player, message)
+every 1 minute:
+	loop all players:
+		if {tabbar.plan::%loop-player's uuid%} is set:
+			if difference between {tabbar.expire::%loop-player's uuid%} and unix timestamp of now is more than 604799:
+				if {tabbar.nextcontract::%loop-player's uuid%} is set:
+					set {tabbar.plan::%loop-player's uuid%} to {tabbar.nextcontract::%loop-player's uuid%}
+					delete {tabbar.nextcontract::%loop-player's uuid%}
+				set {_price} to {tabbar.nowprice::%loop-player's uuid%}
+				if loop-player's balance is more than {_price} - 1:
+					remove {_price} from loop-player's balance
+					set {tabbar.expire::%loop-player's uuid%} to unix timestamp of now
+					send "&a&l✔ TAB色契約が自動更新されました。" to loop-player
+				else:
+					delete {tabbar.expire::%loop-player's uuid%}
+					delete {tabbar.plan::%Loop-player's uuid%}
+					send "&c&l✖ &c契約を更新できませんでした。" to loop-player
+					send "&c所持金が足りず、Tab色契約を更新することができませんでした。" to loop-player
+					send "&cTAB色は白色に戻されます。変更の際はもう1度ご契約お願いします。" to loop-player
+			if {tabbar.plan::%loop-player's uuid%} is set:
+				set tab list name of loop-player to "%{tabbar.plan::%loop-player's uuid%}%%loop-player%"
+			else:
+				reset loop-player's tab list name

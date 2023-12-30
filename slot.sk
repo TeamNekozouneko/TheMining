@@ -1,0 +1,569 @@
+options:
+    mine_align: true #採掘システムと連携するかどうか
+
+on join:
+    clear metadata value "slot_create_set_name" of player
+    clear metadata value "slot_set_price" of player
+    clear metadata value "slot_set_award" of player
+    clear metadata value "slot_set_location-name" of player
+    clear metadata value "slot_set_location-num" of player
+    clear metadata value "slot_set_location_button" of player
+
+on load:
+    loop {slot.list::*}:
+        slot_holo_refresh(loop-value)
+
+command /slot:
+    permission: admin
+    permission message: &c権限がありません。
+    trigger:
+        slot_settings(player)
+
+function slot_settings(p: player):
+    sound_question({_p})
+    open chest inventory with 1 rows named "&e【 操作を選択してください。 】&0" to {_p}
+    set slot 1 of {_p}'s current inventory to red terracotta named "&cスロットの&c&l削除"
+    set slot 4 of {_p}'s current inventory to green terracotta named "&aスロットの&a&l新規作成"
+    set slot 7 of {_p}'s current inventory to yellow terracotta named "&eスロットの&e&l編集"
+
+on inventory click:
+    if name of player's inventory is "&e【 操作を選択してください。 】&0":
+        cancel event
+        if name of event-item is "&cスロットの&c&l削除":
+            slot_remove(player)
+        else if name of event-item is "&aスロットの&a&l新規作成":
+            slot_create(player)
+        else if name of event-item is "&eスロットの&e&l編集":
+            slot_edit(player)
+    else if name of player's inventory is "&c【 スロット名を選択してください 】":
+        cancel event
+        if tag "slot_name" of nbt compound of event-item is set:
+            sound_question(player)
+            set {_name} to tag "slot_name" of nbt compound of event-item
+            slot_remove_confirm(player, {_name})
+            clear {_name}
+    else if name of player's inventory is "&c【 本当に削除しますか？ 】&0":
+        cancel event
+        if name of event-item is "&a&lキャンセル&aする":
+            close player's inventory
+            send "&aキャンセルしました。" to player
+            sound_error(player)
+        else if name of event-item is "&c&l削除&cする":
+            close player's inventory
+            set {_name} to tag "slot_name" of nbt compound of event-item
+            send "&aスロット &f%{_name}% &aを削除しました。" to player
+            delete holo object "slot_%{_name}%"
+            sound_success2(player)
+            remove {_name} from {slot.list::*}
+            clear {slot.info::%{_name}%::*}
+            clear {_name}
+    else if name of player's inventory is "&e【 スロット名を選択してください 】":
+        cancel event
+        if tag "slot_name" of nbt compound of event-item is set: 
+            sound_question(player)
+            set {_name} to tag "slot_name" of nbt compound of event-item
+            slot_edit_gui(player, {_name})
+            clear {_name}
+    else if name of player's inventory is "&e【 スロットの編集 】":
+        cancel event
+        if name of event-item is "&b金額":
+            if tag "slot_name" of nbt compound of event-item is set: 
+                set {_name} to tag "slot_name" of nbt compound of event-item
+                slot_set_price(player, {_name})
+                clear {_name}
+        else if name of event-item is "&b賞金":
+            if tag "slot_name" of nbt compound of event-item is set: 
+                set {_name} to tag "slot_name" of nbt compound of event-item
+                slot_set_award(player, {_name})
+                clear {_name}
+        else if name of event-item is "&b内容":
+            if tag "slot_name" of nbt compound of event-item is set: 
+                set {_name} to tag "slot_name" of nbt compound of event-item
+                slot_set_content(player, {_name})
+                clear {_name}
+        else if name of event-item is "&bスロットの場所":
+            if tag "slot_name" of nbt compound of event-item is set: 
+                set {_name} to tag "slot_name" of nbt compound of event-item
+                slot_edit_location_gui(player, {_name})
+                clear {_name}
+        else if name of event-item is "&b回すボタンの場所":
+            if tag "slot_name" of nbt compound of event-item is set: 
+                set {_name} to tag "slot_name" of nbt compound of event-item
+                slot_set_location_button(player, {_name})
+                clear {_name}
+        else if name of event-item is "&bホログラム更新":
+            if tag "slot_name" of nbt compound of event-item is set: 
+                set {_name} to tag "slot_name" of nbt compound of event-item
+                close player's inventory
+                slot_holo_refresh({_name})
+                sound_success2(player)
+                send "&aホログラムを更新しました！" to player
+                clear {_name}
+    else if name of player's inventory is "&e【 スロット内容の編集 】":
+        if name of event-item is "&c" or "&a変更を確定する" or "&cキャンセルする":
+            cancel event
+        else if event-item is not a block:
+            sound_error(player)
+            cancel event
+        if name of event-item is "&a変更を確定する":
+            if tag "slot_name" of nbt compound of event-item is set: 
+                set {_name} to tag "slot_name" of nbt compound of event-item
+                clear {slot.info::%{_name}%::content::*}
+                loop all items in player's current inventory:
+                    if name of loop-item is not "&c" or "&a変更を確定する" or "&cキャンセルする":
+                        add loop-item to {slot.info::%{_name}%::content::*}
+                sound_success2(player)
+                close player's inventory
+                send "&aスロット &f%{_name}% &aの内容を変更しました。" to player
+        else if name of event-item is "&cキャンセルする":
+            close player's inventory
+            sound_error(player)
+            send "&aキャンセルしました。" to player
+    else if name of player's inventory is "&e【 スロットの場所の編集 】":
+        cancel event
+        if tag "slot_name" of nbt compound of event-item is set:
+            if tag "num" of nbt compound of event-item is set:
+                set {_name} to tag "slot_name" of nbt compound of event-item
+                set {_num} to tag "num" of nbt compound of event-item
+                slot_set_location(player, {_name}, {_num})
+
+on chat:
+    if metadata value "slot_create_set_name" of player is set:
+        cancel event
+        clear metadata value "slot_create_set_name" of player
+        execute console command "/jp %player% on"
+        if message is "cancel":
+            sound_error(player)
+            send "&aキャンセルしました。" to player
+        else:
+            set {_n} to 0
+            loop {slot.list::*}:
+                if loop-value is message:
+                    add 1 to {_n}
+            if {_n} is 0:
+                sound_success2(player)
+                send "&a新しいスロットを &f%message% &aという名前で作成しました。" to player
+                add message to {slot.list::*}
+            else:
+                sound_error(player)
+                send "&cすでに同じ名前のガチャがあるため、作成できませんでした。" to player
+    else if metadata value "slot_set_price" of player is set:
+        cancel event
+        execute console command "/jp %player% on"
+        if message is "cancel":
+            clear metadata value "slot_set_price" of player
+            send "&aキャンセルしました。" to player
+            sound_error(player)
+        else:
+            set {_name} to metadata value "slot_set_price" of player
+            set {slot.info::%{_name}%::price} to message parsed as integer
+            send "&aスロット &f%{_name}% &aの金額を &f%message parsed as integer%円 &aに設定しました。" to player
+            slot_holo_refresh({_name})
+            sound_success2(player)
+            clear {_name}
+            clear metadata value "slot_set_price" of player
+    else if metadata value "slot_set_award" of player is set:
+        cancel event
+        execute console command "/jp %player% on"
+        if message is "cancel":
+            clear metadata value "slot_set_award" of player
+            send "&aキャンセルしました。" to player
+            sound_error(player)
+        else:
+            set {_name} to metadata value "slot_set_award" of player
+            set {slot.info::%{_name}%::award} to message parsed as integer
+            send "&aスロット &f%{_name}% &aの賞金を &f%message parsed as integer%円 &aに設定しました。" to player
+            slot_holo_refresh({_name})
+            sound_success2(player)
+            clear {_name}
+            clear metadata value "slot_set_award" of player
+
+on place:
+    if metadata value "slot_set_location-name" of player is set:
+        cancel event
+        set {_name} to metadata value "slot_set_location-name" of player
+        set {_num} to metadata value "slot_set_location-num" of player
+        set {slot.info::%{_name}%::location::%{_num}%} to location of event-block
+        sound_success2(player)
+        send "&aスロット &f%{_name}% &aの &f%{_num}% &a番目ブロックを設定しました。" to player
+        clear metadata value "slot_set_location-name" of player
+        clear metadata value "slot_set_location-num" of player
+
+on left click:
+    if metadata value "slot_set_location-name" of player is set:
+        cancel event
+        sound_error(player)
+        send "&aキャンセルしました。" to player
+        clear metadata value "slot_set_location-name" of player 
+        clear metadata value "slot_set_location-num" of player
+    else if metadata value "slot_set_location_button" of player is set:
+        cancel event
+        sound_error(player)
+        send "&aキャンセルしました。" to player
+        clear metadata value "slot_set_location_button" of player
+
+on right click on button:
+    if event-block is not indirectly redstone powered:
+        if event-block is not mangrove button:
+            if metadata value "slot_set_location_button" of player is set:
+                set {_name} to metadata value "slot_set_location_button" of player
+                send "&aスロット &f%{_name}% &aの回すボタンの位置を設定しました。" to player
+                set {slot.info::%{_name}%::button} to event-block
+                sound_success2(player)
+                slot_holo_refresh({_name})
+                clear metadata value "slot_set_location_button" of player
+                clear {_name}
+            else:
+                slot_if_spin_button(player, event-block)
+
+on right click:
+    if event-block is not indirectly redstone powered:
+        if event-block is mangrove button:
+            if metadata value "slot_set_location_button" of player is set:
+                set {_name} to metadata value "slot_set_location_button" of player
+                send "&aスロット &f%{_name}% &aの回すボタンの位置を設定しました。" to player
+                set {slot.info::%{_name}%::button} to event-block
+                sound_success2(player)
+                slot_holo_refresh({_name})
+                clear metadata value "slot_set_location_button" of player
+                clear {_name}
+            else:
+                slot_if_spin_button(player, event-block)
+
+function slot_create(p: player):
+    close {_p}'s inventory
+    sound_question({_p})
+    execute console command "/jp %{_p}% off"
+    set metadata value "slot_create_set_name" of {_p} to true
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+    send "&r" to {_p}
+    send "&e 作成するスロットの名前を指定する。" to {_p}
+    send "&r" to {_p}
+    send "&fチャットに名前を送信してください。" to {_p}
+    send "&f(キャンセルの場合はcancelと送信してください。)" to {_p}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+
+function slot_remove(p: player):
+    sound_question({_p})
+    open chest inventory with 6 rows named "&c【 スロット名を選択してください 】" to {_p}
+    set {_n} to 0
+    loop {slot.list::*}:
+        set slot {_n} of {_p}'s current inventory to chest named "&f&l%loop-value%" with nbt compound from "{slot_name:""%loop-value%""}"
+        add 1 to {_n}
+
+function slot_remove_confirm(p: player, name: text):
+    sound_question({_p})
+    open chest inventory with 3 rows named "&c【 本当に削除しますか？ 】&0" to {_p}
+    set slot 12 of {_p}'s current inventory to green terracotta named "&a&lキャンセル&aする"
+    set slot 14 of {_p}'s current inventory to red terracotta named "&c&l削除&cする" with lore "&c&l※一度削除すると、二度と元に戻せません！！" with nbt compound from "{slot_name:""%{_name}%""}"
+
+function slot_edit(p: player):
+    sound_question({_p})
+    open chest inventory with 6 rows named "&e【 スロット名を選択してください 】" to {_p}
+    set {_n} to 0
+    loop {slot.list::*}:
+        set slot {_n} of {_p}'s current inventory to chest named "&f&l%loop-value%" with nbt compound from "{slot_name:""%loop-value%""}"
+        add 1 to {_n}
+
+function slot_edit_gui(p: player, name: text):
+    open chest inventory with 3 rows named "&e【 スロットの編集 】" to {_p}
+    set slot 0 of {_p}'s current inventory to {_p}'s skull named "&8&l* &7スロット情報" with lore "&eスロット名: &f%{_name}%"
+    if {slot.info::%{_name}%::price} is not set:
+        set slot 10 of {_p}'s current inventory to gold ingot named "&b金額" with lore "&7スロットを1回回すのに必要な金額です。", "&b現在値: &c未設定" and "&e[ クリックして設定 ]" with nbt compound from "{slot_name:""%{_name}%""}"
+    else:
+        set slot 10 of {_p}'s current inventory to gold ingot named "&b金額" with lore "&7スロットを1回回すのに必要な金額です。", "&b現在値: &f%{slot.info::%{_name}%::price}%円" and "&e[ クリックして設定 ]" with nbt compound from "{slot_name:""%{_name}%""}"
+    if {slot.info::%{_name}%::award} is not set:
+        set slot 11 of {_p}'s current inventory to diamond named "&b賞金" with lore "&7スロットが当たった時に貰える金額です。", "&b現在値: &c未設定" and "&e[ クリックして設定 ]" with nbt compound from "{slot_name:""%{_name}%""}"
+    else:
+        set slot 11 of {_p}'s current inventory to diamond named "&b賞金" with lore "&7スロットが当たった時に貰える金額です。", "&b現在値: &f%{slot.info::%{_name}%::award}%円" and "&e[ クリックして設定 ]" with nbt compound from "{slot_name:""%{_name}%""}"
+    set slot 12 of {_p}'s current inventory to chest named "&b内容" with lore "&7スロットで表示させるブロックです。", "&c※ブロック以外は設定できません。" and "&e[ クリックして設定 ]" with nbt compound from "{slot_name:""%{_name}%""}"
+    set slot 13 of {_p}'s current inventory to beacon named "&bスロットの場所" with lore "&7スロットのそれぞれの場所を指定します。" and "&e[ クリックして設定 ]" with nbt compound from "{slot_name:""%{_name}%""}"
+    if {slot.info::%{_name}%::button} is not set:
+        set slot 14 of {_p}'s current inventory to oak button named "&b回すボタンの場所" with lore "&7スロットを回すときに押すボタンの場所を指定します。", "&b現在位置: &c未設定" and "&e[ クリックして設定 ]" with nbt compound from "{slot_name:""%{_name}%""}"
+    else:
+        set slot 14 of {_p}'s current inventory to oak button named "&b回すボタンの場所" with lore "&7スロットを回すときに押すボタンの場所を指定します。", "&b現在位置: &f%x location of {slot.info::%{_name}%::button}%, %y location of {slot.info::%{_name}%::button}%, %z location of {slot.info::%{_name}%::button}%" and "&e[ クリックして設定 ]" with nbt compound from "{slot_name:""%{_name}%""}"
+    set slot 16 of {_p}'s current inventory to oak sign named "&bホログラム更新" with lore "&7スロットのホログラムを更新します。" with nbt compound from "{slot_name:""%{_name}%""}"
+
+function slot_set_price(p: player, name: text):
+    close {_p}'s inventory
+    sound_question({_p})
+    execute console command "/jp %{_p}% off"
+    set metadata value "slot_set_price" of {_p} to {_name}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+    send "&r" to {_p}
+    send "&e スロットの金額を設定する。" to {_p}
+    send "&r" to {_p}
+    send "&fチャットに&f&n半角数字&fで送信してください。" to {_p}
+    send "&f(キャンセルの場合はcancelと送信してください。)" to {_p}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+
+function slot_set_award(p: player, name: text):
+    close {_p}'s inventory
+    sound_question({_p})
+    execute console command "/jp %{_p}% off"
+    set metadata value "slot_set_award" of {_p} to {_name}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+    send "&r" to {_p}
+    send "&e スロットの賞金を設定する。" to {_p}
+    send "&r" to {_p}
+    send "&fチャットに&f&n半角数字&fで送信してください。" to {_p}
+    send "&f(キャンセルの場合はcancelと送信してください。)" to {_p}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+
+function slot_set_content(p: player, name: text):
+    sound_question({_p})
+    open chest inventory with 6 rows named "&e【 スロット内容の編集 】" to {_p}
+    set {_n} to 0
+    loop {slot.info::%{_name}%::content::*}:
+        set slot {_n} of {_p}'s current inventory to loop-value
+        add 1 to {_n}
+    set {_n} to 45
+    loop 9 times:
+        if {_p} contain "BE_":
+            set slot {_n} of {_p}'s current inventory to gray stained glass named "&c"
+        else:
+            set slot {_n} of {_p}'s current inventory to gray stained glass pane named "&c"
+        add 1 to {_n}
+    set slot 48 of {_p}'s current inventory to red terracotta named "&cキャンセルする"
+    set slot 50 of {_p}'s current inventory to green terracotta named "&a変更を確定する" with nbt compound from "{slot_name:""%{_name}%""}"
+
+function slot_edit_location_gui(p: player, name: text):
+    sound_question({_p})
+    open chest inventory with 3 rows named "&e【 スロットの場所の編集 】" to {_p}
+    set {_n} to 12
+    loop 3 times:
+        if {slot.info::%{_name}%::location::%{_n}-11%} is not set:
+            set slot {_n} of {_p}'s current inventory to green terracotta named "&b%{_n}-11%番目ブロック" with lore "&b現在位置: &c未設定" and "&e[ クリックして設定 ]" with nbt compound from "{slot_name:""%{_name}%"", num:""%{_n}-11%""}"
+        else:
+            set slot {_n} of {_p}'s current inventory to green terracotta named "&b%{_n}-11%番目ブロック" with lore "&b現在位置: &f%x location of {slot.info::%{_name}%::location::%{_n}-11%}%, %y location of {slot.info::%{_name}%::location::%{_n}-11%}%, %z location of {slot.info::%{_name}%::location::%{_n}-11%}%" and "&e[ クリックして設定 ]" with nbt compound from "{slot_name:""%{_name}%"", num:""%{_n}-11%""}"
+        add 1 to {_n}
+
+function slot_set_location(p: player, name: text, num: text):
+    close {_p}'s inventory
+    sound_question({_p})
+    set metadata value "slot_set_location-name" of {_p} to {_name}
+    set metadata value "slot_set_location-num" of {_p} to {_num}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+    send "&r" to {_p}
+    send "&e %{_num}%番目ブロックの場所を設定する。" to {_p}
+    send "&r" to {_p}
+    send "&f該当する場所にブロックを置いてください。" to {_p}
+    send "&f(キャンセルの場合は左クリックしてください。)" to {_p}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+
+function slot_set_location_button(p: player, name: text):
+    close {_p}'s inventory
+    sound_question({_p})
+    set metadata value "slot_set_location_button" of {_p} to {_name}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+    send "&r" to {_p}
+    send "&e ボタンの位置を設定する。" to {_p}
+    send "&r" to {_p}
+    send "&f該当するボタンを押してください。" to {_p}
+    send "&f(キャンセルの場合は左クリックしてください。)" to {_p}
+    send "&a■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" to {_p}
+
+function slot_if_spin_button(p: player, block: block):
+    set {_n} to 0
+    clear {_name}
+    loop {slot.list::*}:
+        if {slot.info::%loop-value%::button} is {_block}:
+            set {_name} to loop-value
+    if {_name} is set:
+        slot_spin({_p}, {_name})
+        clear {_name}
+
+function slot_spin(p: player, name: text):
+    if slot_if_all_information_include({_name}) is true:
+        if {_p}'s money is more than {slot.info::%{_name}%::price}-1:
+            set {_n} to 0
+            set {_button} to block data of {slot.info::%{_name}%::button}
+            remove {slot.info::%{_name}%::price} from {_p}'s money
+            wait a tick
+            set {_x} to x location of {slot.info::%{_name}%::button}
+            set {_y} to y location of {slot.info::%{_name}%::button}
+            set {_z} to z location of {slot.info::%{_name}%::button}
+            set {_world} to world of {slot.info::%{_name}%::button}
+            set {_coord} to location at {_x}, {_y}, {_z} in world {_world}
+            set block at location of {_coord} to air
+            set {_breq::*} to {slot.info::%{_name}%::content::*}
+            set {_bsize} to size of {_breq::*}
+            
+            #25%アイテム処理
+            if slot_is_specialitem_doing({_p}, 1) = true:
+                loop {_bsize} times:
+                    chance of 25%:
+                        remove (random element out of {_breq::*}) from {_breq::*}
+            if slot_is_specialitem_doing({_p}, 2) = true:
+                loop {_bsize} times:
+                    chance of 20%:
+                        remove (random element out of {_breq::*}) from {_breq::*}
+            if slot_is_specialitem_doing({_p}, 3) = true:
+                loop {_bsize} times:
+                    chance of 50%:
+                        remove (random element out of {_breq::*}) from {_breq::*}
+            if slot_is_specialitem_doing({_p}, 4) = true:
+                loop {_bsize} times:
+                    chance of 100%:
+                        remove (random element out of {_breq::*}) from {_breq::*}
+
+            loop 3 times:
+                add 1 to {_n}
+                loop 30 times:
+                    slot_random_place({_p}, {_name}, {_n}, {_breq::*})
+                    sound_slot_spinning({_p})
+                    wait a tick
+                sound_slot_placed({_p})
+            if slot_if_hit({_name}) is true:
+                sound_slot_hit({_p})
+                add {slot.info::%{_name}%::award} to {_p}'s money
+                send title "" with subtitle "&6当たり！" to {_p}
+                send "&aスロットで当たったため &f%{slot.info::%{_name}%::award}%円 &aを受け取りました。" to {_p}
+                mine_quest_thread({_p}, "SLOT_HIT", 0)
+            set block at location of {_coord} to {_button}
+        else:
+            sound_error({_p})
+            send "&cお金が足りません。&7(%{slot.info::%{_name}%::price}-{_p}'s money%円不足)" to {_p}
+    else:
+        sound_error({_p})
+        send "&c設定が不十分なため、このスロットは回せません。" to {_p}
+
+function slot_random_place(p: player, name: text, step: integer, breq: objects):
+    if {_step} is 1:
+        set {_n} to 0
+        loop 3 times:
+            add 1 to {_n}
+            if {_breq::*} is not set:
+                set {_bs::*} to {slot.info::%{_name}%::content::*}
+            else:
+                set {_bs::*} to {_breq::*}
+            set {_b} to random element out of {_bs::*}
+            set block at location of {slot.info::%{_name}%::location::%{_n}%} to {_b}
+    else if {_step} is 2:
+        set {_n} to 1
+        loop 2 times:
+            add 1 to {_n}
+            if {_breq::*} is not set:
+                set {_bs::*} to {slot.info::%{_name}%::content::*}
+            else:
+                set {_bs::*} to {_breq::*}
+            set {_b} to random element out of {_bs::*}
+            set block at location of {slot.info::%{_name}%::location::%{_n}%} to {_b}
+    else if {_step} is 3:
+        set {_n} to 3
+        if {_breq::*} is not set:
+            set {_bs::*} to {slot.info::%{_name}%::content::*}
+        else:
+            set {_bs::*} to {_breq::*}
+        set {_b} to random element out of {_bs::*}
+        set block at location of {slot.info::%{_name}%::location::%{_n}%} to {_b}
+
+function slot_if_hit(name: text) :: boolean:
+    set {_n} to 0
+    loop 3 times:
+        add 1 to {_n}
+        add block data of block at {slot.info::%{_name}%::location::%{_n}%} to {_b::*}
+    loop {_b::*}:
+        if {_old} is not set:
+            set {_old} to loop-value
+        else:
+            if {_old} is not loop-value:
+                return false
+    return true
+
+function slot_if_all_information_include(name: text) :: boolean:
+    if {slot.info::%{_name}%::price} is not set:
+        return false
+    if {slot.info::%{_name}%::award} is not set:
+        return false
+    if {slot.info::%{_name}%::content::*} is not set:
+        return false
+    set {_n} to 0
+    loop 3 times:
+        add 1 to {_n}
+        if {slot.info::%{_name}%::location::%{_n}%} is not set:
+            return false
+    if {slot.info::%{_name}%::button} is not set:
+        return false
+    return true
+
+function slot_holo_refresh(name: text):
+    delete holo object "slot_%{_name}%"
+    create holo object "&e&lスロット;&f&l%{_name}%;&c金額&7: &f&l%{slot.info::%{_name}%::price}%円 &7| &6賞金&7: &f&l%{slot.info::%{_name}%::award}%円;&7[ ボタンを押して回す ]" with id "slot_%{_name}%" at location of block 2 above {slot.info::%{_name}%::button}
+
+on break:
+    loop {slot.list::*}:
+        if {slot.info::%loop-value%::location::1} is location of event-block:
+            add 1 to {_n}
+        if {slot.info::%loop-value%::location::2} is location of event-block:
+            add 1 to {_n}
+        if {slot.info::%loop-value%::location::3} is location of event-block:
+            add 1 to {_n}
+    if {_n} is set:
+        cancel event
+
+#以下特殊アイテムの処理
+
+command /admin_slot_get [<integer>]:
+    permission: admin
+    trigger:
+        {@mine_align} = true
+        if arg-1 is not set:
+            send "&4&l! &cアイテム番号を入力してください。" to player
+        else if {slot.specialitems::%arg-1%} is not set:
+            send "&4&l! &cこのアイテム番号は登録されていません。" to player
+        else:
+            send "&2&l! &a入手しました。" to player
+            give {slot.specialitems::%arg-1%} to player
+
+#アイテム登録
+on load:
+    {@mine_align} = true
+    set {slot.specialitems::1} to glowing paper named "&e25%%確率上昇券" with lore "&7これを使用することで1時間の間" and "&7すべてのスロットの当たる確率が25%%上昇します。" and "&e[ 右クリックして使用する ]"
+    set {slot.specialitems::2} to {mine.rewards::2}
+    set {slot.specialitems::3} to {mine.rewards::3}
+    set {slot.specialitems::4} to {mine.rewards::4}
+
+#アイテム動作処理
+on right click:
+    {@mine_align} = true
+    if 1 of player's tool is {slot.specialitems::1}:
+        if slot_is_specialitem_doing(player, 1): 
+            send "&4&l! &cすでにこのアイテムの効果を発動しています。" to player
+        else:
+            remove 1 of {slot.specialitems::1} from player's tool
+            send "&2&l! &a%name of {slot.specialitems::1}%&aを発動しました！" to player
+            sound_do_skill(player)
+            set {mine.players::%player's uuid%::slot_last_used.1} to unix timestamp of now
+    if 1 of player's tool is {slot.specialitems::2}:
+        if slot_is_specialitem_doing(player, 1): 
+            send "&4&l! &cすでにこのアイテムの効果を発動しています。" to player
+        else:
+            remove 1 of {slot.specialitems::2} from player's tool
+            send "&2&l! &a%name of {slot.specialitems::2}%&aを発動しました！" to player
+            sound_do_skill(player)
+            set {mine.players::%player's uuid%::slot_last_used.2} to unix timestamp of now
+    if 1 of player's tool is {slot.specialitems::3}:
+        if slot_is_specialitem_doing(player, 1): 
+            send "&4&l! &cすでにこのアイテムの効果を発動しています。" to player
+        else:
+            remove 1 of {slot.specialitems::3} from player's tool
+            send "&2&l! &a%name of {slot.specialitems::3}%&aを発動しました！" to player
+            sound_do_skill(player)
+            set {mine.players::%player's uuid%::slot_last_used.3} to unix timestamp of now
+    if 1 of player's tool is {slot.specialitems::4}:
+        if slot_is_specialitem_doing(player, 1): 
+            send "&4&l! &cすでにこのアイテムの効果を発動しています。" to player
+        else:
+            remove 1 of {slot.specialitems::4} from player's tool
+            send "&2&l! &a%name of {slot.specialitems::4}%&aを発動しました！" to player
+            sound_do_skill(player)
+            set {mine.players::%player's uuid%::slot_last_used.4} to unix timestamp of now
+
+function slot_is_specialitem_doing(p: player, id: integer) :: boolean:
+    return false if {_id} is not set
+    return false if {_p} is not set
+    if (unix timestamp of now)-{mine.players::%{_p}'s uuid%::slot_last_used.1} < 60*60*1:
+        return true
+    return false
+    

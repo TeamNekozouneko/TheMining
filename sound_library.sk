@@ -1,0 +1,59 @@
+function sound_error(p: player):
+    play sound "block.note_block.bass" to {_p}
+
+function sound_success(p: player):
+    play sound "entity.player.levelup" to {_p}
+
+function sound_success2(p: player):
+    play sound "entity.experience_orb.pickup" to {_p}
+
+function sound_question(p: player):
+    play sound "ui.button.click" to {_p}
+
+function sound_gatya_roll(p: player):
+    play sound "ui.button.click" with volume 0.5 to {_p}
+
+function sound_gatya_result(p: player):
+    play sound "entity.player.levelup" with volume 0.5 to {_p}
+    play sound "entity.firework_rocket.twinkle" with volume 0.5 to {_p}
+
+function sound_slot_spinning(p: player):
+    play sound "ui.button.click" with volume 0.2 to {_p}
+
+function sound_slot_placed(p: player):
+    play sound "entity.experience_orb.pickup" to {_p}
+
+function sound_slot_hit(p: player):
+    play sound "entity.player.levelup" with volume 0.5 to {_p}
+    play sound "entity.firework_rocket.twinkle" with volume 0.5 to {_p}
+
+function sound_opened(p: player):
+    play sound "ui.button.click" to {_p}
+
+function sound_click(p: player):
+    play sound "ui.button.click" to {_p}
+
+function sound_telling(p: player):
+    play sound "entity.experience_orb.pickup" to {_p}
+
+function sound_notification(p: player):
+    play sound "block.anvil.land" with pitch 2 to {_p}
+
+function sound_enchanted(p: player):
+    play sound "entity.player.levelup" with volume 0.5 to {_p}
+
+function sound_portal_wait(p: player):
+    play sound "entity.experience_orb.pickup" to {_p}
+
+function sound_portal_success(p :player):
+    play sound "entity.player.levelup" with volume 0.5 to {_p}
+
+function sound_portal_failed(p: player):
+    sound_error({_p})
+
+function sound_do_skill(p: player):
+    play sound "minecraft:entity.blaze.shoot" to {_p}
+
+function sound_quest_success(p: player):
+    play sound "entity.player.levelup" to {_p}
+    play sound "entity.firework_rocket.twinkle" with volume 0.5 to {_p}

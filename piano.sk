@@ -1,0 +1,145 @@
+on load:
+    clear {piano.notes::*}
+    set {piano.notes::0} to 0.5
+    set {piano.notes::1} to 0.53
+    set {piano.notes::2} to 0.56
+    set {piano.notes::3} to 0.59
+    set {piano.notes::4} to 0.63
+    set {piano.notes::5} to 0.67
+    set {piano.notes::6} to 0.71
+    set {piano.notes::7} to 0.75
+    set {piano.notes::8} to 0.79
+    set {piano.notes::9} to 0.84
+    set {piano.notes::10} to 0.89
+    set {piano.notes::11} to 0.94
+    set {piano.notes::12} to 1
+    set {piano.notes::13} to 1.06
+    set {piano.notes::14} to 1.12
+    set {piano.notes::15} to 1.19
+    set {piano.notes::16} to 1.26
+    set {piano.notes::17} to 1.33
+    set {piano.notes::18} to 1.41
+    set {piano.notes::19} to 1.5
+    set {piano.notes::20} to 1.59
+    set {piano.notes::21} to 1.68
+    set {piano.notes::22} to 1.78
+    set {piano.notes::23} to 1.89
+    set {piano.notes::24} to 2
+
+on rightclick:
+    if event-block is diamond block:
+        if block under event-block is redstone block or lapis block:
+            piano_autoplay(player, block under event-block, 0, event-block)
+    else:
+        piano_play(player, event-block, 0, event-block)
+
+function piano_autoplay(pd: player, bd: block, w: integer, db: block):
+    loop {_w} times:
+        wait a tick
+    if {_bd} is redstone block:
+        piano_play({_p}, block under {_bd}, 0, {_bd})
+
+    if block south {_bd} is redstone block:
+        block south {_bd} is not {_db}
+        piano_autoplay({_p}, block south {_bd}, 5, {_bd})
+    if block north {_bd} is redstone block:
+        block north {_bd} is not {_db}
+        piano_autoplay({_p}, block north {_bd}, 5, {_bd})
+    if block west {_bd} is redstone block:
+        block west {_bd} is not {_db}
+        piano_autoplay({_p}, block west {_bd}, 5, {_bd})
+    if block east {_bd} is redstone block:
+        block east {_bd} is not {_db}
+        piano_autoplay({_p}, block east {_bd}, 5, {_bd})
+
+    loop {_w} times:
+        wait a tick
+    if {_bd} is lapis block:
+        piano_play({_p}, block under {_bd}, 0, {_bd})
+
+    if block south {_bd} is lapis block:
+        block south {_bd} is not {_db}
+        piano_autoplay({_p}, block south {_bd}, 1, {_bd})
+    if block north {_bd} is lapis block:
+        block north {_bd} is not {_db}
+        piano_autoplay({_p}, block north {_bd}, 1, {_bd})
+    if block west {_bd} is lapis block:
+        block west {_bd} is not {_db}
+        piano_autoplay({_p}, block west {_bd}, 1, {_bd})
+    if block east {_bd} is lapis block:
+        block east {_bd} is not {_db}
+        piano_autoplay({_p}, block east {_bd}, 1, {_bd})
+
+function piano_play(pd: player, bd: block, w: integer, db: block):
+    loop {_w} times:
+        wait a tick
+    if {_bd} is white terracotta or black terracotta or white concrete or black concrete:
+        set {_n} to 1
+        set {_p} to 0
+        set {_b} to block data of {_bd}
+        set block at {_bd} to red terracotta
+        loop 25 times:
+            if block {_n} under {_bd} is gold block:
+                add 1 to {_p}
+            else if block {_n} under {_bd} is diamond block:
+                add 2 to {_p}
+            else if block {_n} under {_bd} is emerald block:
+                add 5 to {_p}
+            else if block {_n} under {_bd} is glowstone:
+                add 1 to {_type}
+            else:
+                exit loop
+            add 1 to {_n}
+        loop all players in radius 15 around {_bd}:
+            if {_type} is not set:
+                play sound "minecraft:block.note_block.harp" with pitch {piano.notes::%{_p}%} to loop-player
+            else if {_type} is 1:
+                play sound "minecraft:block.note_block.pling" with pitch {piano.notes::%{_p}%} to loop-player
+        if block south {_bd} is coal block:
+            add block south {_bd} to {_bd2::*}
+        else if block north {_bd} is coal block:
+            add block north {_bd} to {_bd2::*}
+        else if block west {_bd} is coal block:
+            add block west {_bd} to {_bd2::*}
+        else if block east {_bd} is coal block:
+            add block east {_bd} to {_bd2::*}
+        if {_bd2::*} is set:
+            loop {_bd2::*}:
+                if block south loop-value is white terracotta or black terracotta or white concrete or black concrete:
+                    block south loop-value is not {_db}
+                    piano_play({_pd}, block south loop-value, {_w}+3, {_bd})
+                if block north loop-value is white terracotta or black terracotta or white concrete or black concrete:
+                    block north loop-value is not {_db}
+                    piano_play({_pd}, block north loop-value, {_w}+3, {_bd})
+                if block west loop-value is white terracotta or black terracotta or white concrete or black concrete:
+                    block west loop-value is not {_db}
+                    piano_play({_pd}, block west loop-value, {_w}+3, {_bd})
+                if block east loop-value is white terracotta or black terracotta or white concrete or black concrete:
+                    block east loop-value is not {_db}
+                    piano_play({_pd}, block east loop-value, {_w}+3, {_bd})
+        clear {_bd2::*}
+        if block south {_bd} is magenta glazed terracotta:
+            add block south {_bd} to {_bd2::*}
+        else if block north {_bd} is magenta glazed terracotta:
+            add block north {_bd} to {_bd2::*}
+        else if block west {_bd} is magenta glazed terracotta:
+            add block west {_bd} to {_bd2::*}
+        else if block east {_bd} is magenta glazed terracotta:
+            add block east {_bd} to {_bd2::*}
+        if {_bd2::*} is set:
+            loop {_bd2::*}:
+                if block south loop-value is white terracotta or black terracotta or white concrete or black concrete:
+                    block south loop-value is not {_db}
+                    piano_play({_pd}, block south loop-value, 0, {_bd})
+                if block north loop-value is white terracotta or black terracotta or white concrete or black concrete:
+                    block north loop-value is not {_db}
+                    piano_play({_pd}, block north loop-value, 0, {_bd})
+                if block west loop-value is white terracotta or black terracotta or white concrete or black concrete:
+                    block west loop-value is not {_db}
+                    piano_play({_pd}, block west loop-value, 0, {_bd})
+                if block east loop-value is white terracotta or black terracotta or white concrete or black concrete:
+                    block east loop-value is not {_db}
+                    piano_play({_pd}, block east loop-value, 0, {_bd})
+        wait 3 tick
+        set block at {_bd} to {_b}
+        #send {_p} to player

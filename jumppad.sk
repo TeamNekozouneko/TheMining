@@ -1,0 +1,4 @@
+on step on pressure plate:
+    if block under event-block is gold block:
+        set {_v} to vector from yaw player's yaw and pitch abs(player's pitch)*-1
+        push player {_v} at speed 3
