@@ -7,4 +7,4 @@ on break:
             if slot {_n} of player's inventory is air:
                 add 1 to {_n2}
             add 1 to {_n}
-        send "%{_n}%  |  %{_n2}%"
+        send "%{_n}% | %{_n2}%"
