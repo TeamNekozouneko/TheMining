@@ -1948,6 +1948,7 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
     #以下条件設定
     if {_n} is 1:
         return true 
+        set {player.loc.spawn::%{_p}%} to 4
     if {_n} is 2:
         if {mine.level::%{_p}'s uuid%} >= 30:
             if {mine.players::%{_p}'s uuid%::recipes::*} contains 21:
@@ -1956,6 +1957,7 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
                 return true
         return false
     else if {_n} is 3:
+        set {player.loc.spawn::%{_p}%} to 3
         return true
     else if {_n} is 4:
         set {player.loc.spawn::%{_p}%} to 4
