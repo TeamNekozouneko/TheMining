@@ -3,14 +3,12 @@ function nupo_calc_reduction(a: integer, b: integer) :: objects: #約分演算 (
     set {_v} to {_a} if {_a} < {_b}
     set {_v} to {_b} if {_a} > {_b}
     return 1 and 1 if {_a} = {_b}
-    send "REDU" to ops
     while {_v} > 0:
         set {_flag} to 0
         add 1 to {_flag} if nupo_calc_rounded({_a}/{_v})
         add 1 to {_flag} if nupo_calc_rounded({_b}/{_v})
         exit loop if {_flag} = 2
         remove 1 from {_v}
-    send "C %{_a}/{_v}% - %{_b}/{_v}%" to ops
     return {_a}/{_v} and {_b}/{_v} if {_a} and {_b} is not 0
     return 1 and 1
 
@@ -20,9 +18,9 @@ function nupo_calc_rounded(a: number) :: boolean: #小数判定演算
     return true if {_floor} is {_a}
     return false
 
-function nupo_calc_random(a: number, b: number) :: boolean: #ランダム関数 (a: 分母, b:分子)
+function nupo_calc_random(a: number, b: number, t: integer = 1) :: boolean: #ランダム関数 (a: 分母, b:分子, t: 分母倍数[一括処理用] )
     set {_v::*} to nupo_calc_reduction({_a}, {_b})
-    set {_p} to {_v::1}/{_v::2}
+    set {_p} to ({_v::1}*{_t})/{_v::2}
     set {_r} to random number between 0 and 1
     return true if {_r} is between 0 and {_p}
     return false
