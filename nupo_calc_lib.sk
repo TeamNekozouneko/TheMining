@@ -18,9 +18,9 @@ function nupo_calc_rounded(a: number) :: boolean: #小数判定演算
     return true if {_floor} is {_a}
     return false
 
-function nupo_calc_random(a: number, b: number, t: integer = 1) :: boolean: #ランダム関数 (a: 分母, b:分子, t: 分母倍数[一括処理用] )
+function nupo_calc_random(a: number, b: number, t: integer = 1) :: boolean: #ランダム関数 (a: 分母, b:分子, t: 分母乗数[一括処理用] )
     set {_v::*} to nupo_calc_reduction({_a}, {_b})
-    set {_p} to ({_v::1}*{_t})/{_v::2}
+    set {_p} to ({_v::1}^{_t})/{_v::2}
     set {_r} to random number between 0 and 1
     return true if {_r} is between 0 and {_p}
     return false
