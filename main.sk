@@ -1172,20 +1172,14 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
     if {@slot} is true:
         loop {slot.list::*}:
-            if {slot.info::%loop-value%::location::1} is location of {_b}:
-                add 1 to {_n}
-            if {slot.info::%loop-value%::location::2} is location of {_b}:
-                add 1 to {_n}
-            if {slot.info::%loop-value%::location::3} is location of {_b}:
-                add 1 to {_n}
-        if {_n} is set:
-            return false
+            return false if {slot.info::%loop-value%::location::1} is location of {_b}:
+            return false if {slot.info::%loop-value%::location::2} is location of {_b}:
+            return false if {slot.info::%loop-value%::location::3} is location of {_b}:
     set {_name} to "%blockdata of {_b}%"
     replace all "minecraft:" with "" in {_name}
     if {mine.ores::%{_name}%} is set:
-        loop {mine.items::*}:
-            if {_p}'s tool is loop-value:
-                set {_index} to loop-index
+        set {_index} to {mine.items::*} where [{_p}'s tool is input]
+        return false if {_index} is not set
         #send {_index} to {_p}
         if {mine.orewhite::%{_index}%::*} contains {mine.ores::%{_name}%}:
             send action bar "&4&l! &cこのピッケルではこの鉱石を壊すことはできません。" to {_p}
@@ -1209,10 +1203,8 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 set {_money} to {mine.price::%{_name}%}
                 add {_money} to {_p}'s money
 
-            loop {mine.seller.sellprice::*}:
-                if 1 of {mine.items::%loop-index%} is 1 of {mine.ores::%{_name}%}:
-                    set {_price} to loop-value
-                    exit loop
+            set {_price} to {mine.seller.sellprice::*} where [1 of {mine.items::%input%} is 1 of {mine.ores::%{_name}%}]
+            send "[Debug] %{_price}%" to {_p} if {_p} is op
             if {mine.levelprice::%{_name}%} is not set: #個別で採掘時のEXP獲得量を設定するためのコード by ぬぽ
                 set {_exp} to {_price}*2
                 remove {_exp} from {mine.exp::%{_p}'s uuid%}
