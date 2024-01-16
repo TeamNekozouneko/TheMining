@@ -1658,18 +1658,14 @@ on break:
     if {particles.player.set::%player%} is 6:
         make 3 of dripping water at location of block
 
-on break:
-    if player's yaw is between 45 and 134:
-        set {mine.status.hougaku::%player%} to "west"
-    if player's yaw is between 135 and 224:
-        set {mine.status.hougaku::%player%} to "north"
-    if player's yaw is between 225 and 314:
-        set {mine.status.hougaku::%player%} to "east"
-    if player's yaw is not between 45 and 314:
-        set {mine.status.hougaku::%player%} to "south"
+function get_player_direction(p: player) :: string:
+    return "west" if {_p}'s yaw is between 45 and 134:
+    return "north" if {_p}'s yaw is between 135 and 224:
+    return "east" if {_p}' s yaw is between 225 and 314:
+    return "south" if {_p}'s yaw is not between 45 and 314:
 
 function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: integer, v: block):
-    if {mine.status.hougaku::%{_p}%} is {_h}:
+    if get_player_direction({_p}) is {_h}:
         set {_loc} to location of {_v}
         add {_a} to x-coord of {_loc}
         add {_i} to y-coord of {_loc}
@@ -1685,7 +1681,7 @@ function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: i
             #wait a tick
 
 function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: number, v: block):
-    if {mine.status.hougaku::%{_p}%} is {_h}:
+    if get_player_direction({_p}) is {_h}:
         set {_loc} to location of {_v}
         add {_a} to z-coord of {_loc}
         add {_i} to y-coord of {_loc}
