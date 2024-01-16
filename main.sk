@@ -1172,13 +1172,13 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
     if {@slot} is true:
         loop {slot.list::*}:
-            return false if {slot.info::%loop-value%::location::1} is location of {_b}:
-            return false if {slot.info::%loop-value%::location::2} is location of {_b}:
-            return false if {slot.info::%loop-value%::location::3} is location of {_b}:
+            return false if {slot.info::%loop-value%::location::1} is location of {_b}
+            return false if {slot.info::%loop-value%::location::2} is location of {_b}
+            return false if {slot.info::%loop-value%::location::3} is location of {_b}
     set {_name} to "%blockdata of {_b}%"
     replace all "minecraft:" with "" in {_name}
     if {mine.ores::%{_name}%} is set:
-        set {_index} to {mine.items::*} where [{_p}'s tool is input]
+        set {_index} to first element of  {mine.items::*} where [{_p}'s tool is input]
         return false if {_index} is not set
         #send {_index} to {_p}
         if {mine.orewhite::%{_index}%::*} contains {mine.ores::%{_name}%}:
@@ -1203,7 +1203,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 set {_money} to {mine.price::%{_name}%}
                 add {_money} to {_p}'s money
 
-            set {_price} to {mine.seller.sellprice::*} where [1 of {mine.items::%input%} is 1 of {mine.ores::%{_name}%}]
+            set {_price} to first element of {mine.seller.sellprice::*} where [1 of {mine.items::%input%} is 1 of {mine.ores::%{_name}%}]
             send "[Debug] %{_price}%" to {_p} if {_p} is op
             if {mine.levelprice::%{_name}%} is not set: #個別で採掘時のEXP獲得量を設定するためのコード by ぬぽ
                 set {_exp} to {_price}*2
