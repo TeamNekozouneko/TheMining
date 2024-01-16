@@ -3,12 +3,14 @@ function nupo_calc_reduction(a: integer, b: integer) :: objects: #約分演算 (
     set {_v} to {_a} if {_a} < {_b}
     set {_v} to {_b} if {_a} > {_b}
     return 1 and 1 if {_a} = {_b}
+    send "REDU" to ops
     while {_v} > 0:
         set {_flag} to 0
         add 1 to {_flag} if nupo_calc_rounded({_a}/{_v})
         add 1 to {_flag} if nupo_calc_rounded({_b}/{_v})
         exit loop if {_flag} = 2
         remove 1 from {_v}
+    send "C %{_a}/{_v}% - %{_b}/{_v}%" to ops
     return {_a}/{_v} and {_b}/{_v} if {_a} and {_b} is not 0
     return 1 and 1
 
