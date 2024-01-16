@@ -1179,7 +1179,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
     replace all "minecraft:" with "" in {_name}
     if {mine.ores::%{_name}%} is set:
         set {_index} to first element of {mine.items::*} where [{_p}'s tool is input]
-        send "[Debug] %{_index}%" to {_p} if {_p} is op
+        #send "[Debug] %{_index}% - %{mine.items::*} where [{_p}'s tool is input]%" to {_p} if {_p} is op
         return false if {_index} is not set
         #send {_index} to {_p}
         if {mine.orewhite::%{_index}%::*} contains {mine.ores::%{_name}%}:
@@ -1669,7 +1669,6 @@ on break:
         set {mine.status.hougaku::%player%} to "south"
 
 function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: integer, v: block):
-    wait 10 tick
     if {mine.status.hougaku::%{_p}%} is {_h}:
         set {_loc} to location of {_v}
         add {_a} to x-coord of {_loc}
@@ -1683,9 +1682,9 @@ function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: i
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
+            #wait a tick
 
 function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: number, v: block):
-    wait 10 tick
     if {mine.status.hougaku::%{_p}%} is {_h}:
         set {_loc} to location of {_v}
         add {_a} to z-coord of {_loc}
@@ -1699,6 +1698,7 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
+            #wait a tick
 
 #以下特殊アイテム
 
