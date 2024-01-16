@@ -1658,11 +1658,11 @@ on break:
     if {particles.player.set::%player%} is 6:
         make 3 of dripping water at location of block
 
-function get_player_direction(p: player) :: string:
-    return "west" if {_p}'s yaw is between 45 and 134:
-    return "north" if {_p}'s yaw is between 135 and 224:
-    return "east" if {_p}' s yaw is between 225 and 314:
-    return "south" if {_p}'s yaw is not between 45 and 314:
+function get_player_direction(p: player) :: text:
+    return "west" if {_p}'s yaw is between 45 and 134
+    return "north" if {_p}'s yaw is between 135 and 224
+    return "east" if {_p}'s yaw is between 225 and 314
+    return "south"
 
 function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: integer, v: block):
     if get_player_direction({_p}) is {_h}:
