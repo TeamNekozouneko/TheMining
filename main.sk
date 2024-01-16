@@ -1178,7 +1178,8 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
     set {_name} to "%blockdata of {_b}%"
     replace all "minecraft:" with "" in {_name}
     if {mine.ores::%{_name}%} is set:
-        set {_index} to first element of  {mine.items::*} where [{_p}'s tool is input]
+        set {_index} to first element of {mine.items::*} where [{_p}'s tool is input]
+        send "[Debug] %{_index}%" to {_p} if {_p} is op
         return false if {_index} is not set
         #send {_index} to {_p}
         if {mine.orewhite::%{_index}%::*} contains {mine.ores::%{_name}%}:
@@ -1202,9 +1203,11 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
             if {mine.hojo.%{_p}'s uuid%} is true:
                 set {_money} to {mine.price::%{_name}%}
                 add {_money} to {_p}'s money
-
-            set {_price} to first element of {mine.seller.sellprice::*} where [1 of {mine.items::%input%} is 1 of {mine.ores::%{_name}%}]
-            send "[Debug] %{_price}%" to {_p} if {_p} is op
+            
+            loop {mine.seller.sellprice::*}:
+                if 1 of {mine.items::%loop-index%} is 1 of {mine.ores::%{_name}%}:
+                    set {_price} to loop-value
+                    exit loop
             if {mine.levelprice::%{_name}%} is not set: #個別で採掘時のEXP獲得量を設定するためのコード by ぬぽ
                 set {_exp} to {_price}*2
                 remove {_exp} from {mine.exp::%{_p}'s uuid%}
