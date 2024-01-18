@@ -1645,20 +1645,6 @@ function mine_skill_thread_wait(p: player, index: integer, v: object):
             mine_all_x({_p}, "south", 2, 2, -1, -1, {_v})
             mine_all_x({_p}, "north", 1, -1, -2, 2, {_v})
 
-on break:
-    if {particles.player.set::%player%} is 1:
-        make 3 of lava at location of block
-    If {particles.player.set::%player%} is 2:
-        make 3 of item slime at location of block
-    if {particles.player.set::%player%} is 3:
-        make 1 of note at location of block
-    if {particles.player.set::%player%} is 4:
-        make 3 of falling water at location of block
-    if {particles.player.set::%player%} is 5:
-        make 3 of landing lava at location of block
-    if {particles.player.set::%player%} is 6:
-        make 3 of dripping water at location of block
-
 function get_player_direction(p: player) :: text:
     return "west" if {_p}'s yaw is between 45 and 134
     return "north" if {_p}'s yaw is between 135 and 224

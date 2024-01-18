@@ -94,14 +94,14 @@ function particle_menu(p: player):
         set slot 16 of {_p}'s current inventory to water bucket named {@heart} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
 
 # TempX
-function buyParticle(player: player, particle: string, particle_name: string, price: number):
+function buyParticle(player: player, particle: string, particle_name: string, particle_id: number, price: number):
     if {mine.status.%{_particle}%.money::%{_player}'s uuid%} is true:
         if {mine.status.%{_particle}%::%{_player}'s uuid%} is true:
             set {mine.status.%{_particle}%::%{_player}'s uuid%} to false
             particle_menu({_player})
             send "&2&l! %{_particle_name}%&aを無効化しました。" to {_player}
             reset_particle({_player})
-            clear {particles.player.set::%player%}
+            clear {particles.player.set::%{_player}%}
         else:
             reset_particle({_player})
             set {mine.status.%{_particle}%::%{_player}'s uuid%} to true
@@ -111,9 +111,9 @@ function buyParticle(player: player, particle: string, particle_name: string, pr
     else: 
         if {_player}'s money >= {_price}:
             remove {_price} from {_player}'s money
-            send "&2&l! &a購入しました！" 
-            set {mine.status.%{_particle}%.money::%player's uuid%} to true
-            set {mine.status.%{_particle}%::%player's uuid%} to false
+            send "&2&l! &a購入しました！"  to {_player}
+            set {mine.status.%{_particle}%.money::%{_player}'s uuid%} to true
+            set {mine.status.%{_particle}%::%{_player}'s uuid%} to false
             particle_menu({_player})
 
 # てすと
@@ -124,14 +124,14 @@ on inventory click:
             if {mine.status.lava.money::%player's uuid%} is true:
                 if {mine.status.lava::%player's uuid%} is true:
                     set {mine.status.lava::%player's uuid%} to false
-                    particle_menu({_player})
+                    particle_menu(player)
                     send "&2&l! &4マグマパーティクル&aを無効化しました。" to player
-                    reset_particle({_player})
+                    reset_particle(player)
                     clear {particles.player.set::%player%}
                 else:
-                    reset_particle({_player})
+                    reset_particle(player)
                     set {mine.status.lava::%player's uuid%} to true
-                    particle_menu({_player})
+                    particle_menu(player)
                     send "&2&l! &4マグマパーティクル&aを有効化しました。" to player
                     set {particles.player.set::%player%} to 1
             else: 
@@ -259,7 +259,7 @@ on inventory click:
                     set {mine.status.heart::%player's uuid%} to true
                     particle_menu(player)
                     send "&2&l! %{@heart}%&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 6
+                    set {particles.player.set::%player%} to 7
             else: 
                 if player's money >= 5500:
                     remove 5500 from player's money
@@ -267,3 +267,19 @@ on inventory click:
                     set {mine.status.heart.money::%player's uuid%} to true
                     set {mine.status.heart::%player's uuid%} to false
                     particle_menu(player)
+
+on break:
+    if {particles.player.set::%player%} is 1:
+        make 3 of lava at location of block
+    If {particles.player.set::%player%} is 2:
+        make 3 of item slime at location of block
+    if {particles.player.set::%player%} is 3:
+        make 1 of note at location of block
+    if {particles.player.set::%player%} is 4:
+        make 3 of falling water at location of block
+    if {particles.player.set::%player%} is 5:
+        make 3 of landing lava at location of block
+    if {particles.player.set::%player%} is 6:
+        make 3 of dripping water at location of block
+    if {particles.player.set::%player%} is 7:
+        make 3 of heart at location of block
