@@ -124,7 +124,7 @@ on inventory click:
             buyParticle(player, "water", {@water}, 6, 5500)
         if name of event-item is {@heart}:
             buyParticle(player, "heart", {@heart}, 7, 5500)
-        if name of event-item is {@villagers}:
+        if name of event-item is {@villager}:
             buyParticle(player, "villager", {@villager}, 8, 5500)
 
 function buyParticle(player: player, particle: string, particle_name: string, particle_id: number, price: number):
@@ -165,4 +165,4 @@ on break:
     if {particles.player.set::%player%} is 7:
         make 3 of heart at location of block
     if {particles.player.set::%player%} is 8:
-        make 3 of villager happy at location of block
+        make 3 of happy villager at location of block
