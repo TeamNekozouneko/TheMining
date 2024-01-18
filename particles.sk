@@ -116,7 +116,7 @@ function buyParticle(player: player, particle: string, particle_name: string, pa
             set {mine.status.%{_particle}%::%{_player}'s uuid%} to false
             particle_menu({_player})
 
-# てすと
+# てすとなにかおかし
 on inventory click:
     if name of player's current inventory is {@title}:
         cancel event
