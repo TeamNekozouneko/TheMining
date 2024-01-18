@@ -40,7 +40,7 @@ function reset_particle(p: player):
     set {mine.status.heart::%{_p}'s uuid%} to false
     set {mine.status.villager::%{_p}'s uuid%} to false
 
-#skbeeバグでnbtを数字として受け付けないらしい
+#SkBeeバグでnbtを数字として受け付けないらしい
 function particle_menu(p: player):
     open chest inventory with 4 row named {@title} to {_p}
     if {mine.status.lava.money::%{_p}'s uuid%} is true:
@@ -50,6 +50,7 @@ function particle_menu(p: player):
             set slot 10 of {_p}'s current inventory to lava bucket named {@lava} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
     else:
         set slot 10 of {_p}'s current inventory to lava bucket named {@lava} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
+
     if {mine.status.slime.money::%{_p}'s uuid%} is true:
         if {mine.status.slime::%{_p}'s uuid%} is true:
             set slot 11 of {_p}'s current inventory to glowing slimeball named {@slime} with lore "&8&m-------------------------------" and "&e選択中"
@@ -57,6 +58,7 @@ function particle_menu(p: player):
             set slot 11 of {_p}'s current inventory to slimeball named {@slime} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
     else:
         set slot 11 of {_p}'s current inventory to slimeball named {@slime} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"  
+
     if {mine.status.note.money::%{_p}'s uuid%} is true:
         if {mine.status.note::%{_p}'s uuid%} is true:
             set slot 12 of {_p}'s current inventory to glowing note block named {@note} with lore "&8&m-------------------------------" and "&e選択中"
@@ -64,6 +66,7 @@ function particle_menu(p: player):
             set slot 12 of {_p}'s current inventory to note block named {@note} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
     else:
         set slot 12 of {_p}'s current inventory to note block named {@note} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
+
     if {mine.status.blue.money::%{_p}'s uuid%} is true:
         if {mine.status.blue::%{_p}'s uuid%} is true:
             set slot 13 of {_p}'s current inventory to glowing blue dye named {@blue} with lore "&8&m-------------------------------" and "&e選択中"
@@ -71,6 +74,7 @@ function particle_menu(p: player):
             set slot 13 of {_p}'s current inventory to blue dye named {@blue} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
     else:
         set slot 13 of {_p}'s current inventory to blue dye named {@blue} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
+
     if {mine.status.red.money::%{_p}'s uuid%} is true:
         if {mine.status.red::%{_p}'s uuid%} is true:
             set slot 14 of {_p}'s current inventory to glowing red dye named {@red} with lore "&8&m-------------------------------" and "&e選択中"
@@ -78,22 +82,51 @@ function particle_menu(p: player):
             set slot 14 of {_p}'s current inventory to red dye named {@red} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
     else:
         set slot 14 of {_p}'s current inventory to red dye named {@red} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"      
+
     if {mine.status.water.money::%{_p}'s uuid%} is true:
         if {mine.status.water::%{_p}'s uuid%} is true:
             set slot 15 of {_p}'s current inventory to glowing water bucket named {@water} with lore "&8&m-------------------------------" and "&e選択中"
         else:
             set slot 15 of {_p}'s current inventory to water bucket named {@water} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
     else:
-        set slot 15 of {_p}'s current inventory to water bucket named {@water} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
+        set slot 15 of {_p}'s current inventory to apple named {@heart} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
+
     if {mine.status.heart.money::%{_p}'s uuid%} is true:
         if {mine.status.heart::%{_p}'s uuid%} is true:
-            set slot 16 of {_p}'s current inventory to glowing water bucket named {@heart} with lore "&8&m-------------------------------" and "&e選択中"
+            set slot 16 of {_p}'s current inventory to glowing apple named {@heart} with lore "&8&m-------------------------------" and "&e選択中"
         else:
-            set slot 16 of {_p}'s current inventory to water bucket named {@heart} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+            set slot 16 of {_p}'s current inventory to apple named {@heart} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
     else:
-        set slot 16 of {_p}'s current inventory to water bucket named {@heart} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
+        set slot 16 of {_p}'s current inventory to apple named {@heart} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
 
-# TempX
+    if {mine.status.villager.money::%{_p}'s uuid%} is true:
+        if {mine.status.villager::%{_p}'s uuid%} is true:
+            set slot 20 of {_p}'s current inventory to glowing stripped oak log named {@villager} with lore "&8&m-------------------------------" and "&e選択中"
+        else:
+            set slot 20 of {_p}'s current inventory to stripped oak log named {@villager} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+    else:
+        set slot 20 of {_p}'s current inventory to stripped oak log named {@villager} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
+
+on inventory click:
+    if name of player's current inventory is {@title}:
+        cancel event
+        if name of event-item is {@lava}:
+            buyParticle(player, "lava", {@lava}, 1, 5500)
+        if name of event-item is {@slime}:
+            buyParticle(player, "slime", {@slime}, 2, 5500)
+        if name of event-item is {@note}:
+            buyParticle(player, "note", {@note}, 3, 5500)
+        if name of event-item is {@blue}:
+            buyParticle(player, "blue", {@blue}, 4, 5500)
+        if name of event-item is {@red}:
+            buyParticle(player, "red", {@red}, 5, 5500)
+        if name of event-item is {@water}:
+            buyParticle(player, "water", {@water}, 6, 5500)
+        if name of event-item is {@heart}:
+            buyParticle(player, "heart", {@heart}, 7, 5500)
+        if name of event-item is {@villagers}:
+            buyParticle(player, "villager", {@villager}, 8, 5500)
+
 function buyParticle(player: player, particle: string, particle_name: string, particle_id: number, price: number):
     if {mine.status.%{_particle}%.money::%{_player}'s uuid%} is true:
         if {mine.status.%{_particle}%::%{_player}'s uuid%} is true:
@@ -116,159 +149,6 @@ function buyParticle(player: player, particle: string, particle_name: string, pa
             set {mine.status.%{_particle}%::%{_player}'s uuid%} to false
             particle_menu({_player})
 
-# てすとなにかおかし
-on inventory click:
-    if name of player's current inventory is {@title}:
-        cancel event
-        if name of event-item is {@lava}:
-            # if {mine.status.lava.money::%player's uuid%} is true:
-            #     if {mine.status.lava::%player's uuid%} is true:
-            #         set {mine.status.lava::%player's uuid%} to false
-            #         particle_menu(player)
-            #         send "&2&l! &4マグマパーティクル&aを無効化しました。" to player
-            #         reset_particle(player)
-            #         clear {particles.player.set::%player%}
-            #     else:
-            #         reset_particle(player)
-            #         set {mine.status.lava::%player's uuid%} to true
-            #         particle_menu(player)
-            #         send "&2&l! &4マグマパーティクル&aを有効化しました。" to player
-            #         set {particles.player.set::%player%} to 1
-            # else: 
-            #     if player's money >= 5500:
-            #         remove 5500 from player's money
-            #         send "&2&l! &a購入しました！" 
-            #         set {mine.status.lava.money::%player's uuid%} to true
-            #         set {mine.status.lava::%player's uuid%} to false
-            #         particle_menu(player)
-            buyParticle(player, "lava", {@lava}, 1, 5500)
-        if name of event-item is "&aスライムパーティクル":
-            if {mine.status.slime.money::%player's uuid%} is true:
-                if {mine.status.slime::%player's uuid%} is true:
-                    set {mine.status.slime::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! &aスライムパーティクルを無効化しました。" to player
-                    reset_particle(player)
-                    clear {particles.player.set::%player%}
-                else:
-                    reset_particle(player)
-                    set {mine.status.slime::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &aスライムパーティクルを有効化しました。" to player
-                    set {particles.player.set::%player%} to 2
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.slime.money::%player's uuid%} to true
-                    set {mine.status.slime::%player's uuid%} to false
-                    particle_menu(player)
-        if name of event-item is "&6音符パーティクル":
-            if {mine.status.note.money::%player's uuid%} is true:
-                if {mine.status.note::%player's uuid%} is true:
-                    set {mine.status.note::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! &6音符パーティクル&aを無効化しました。" to player
-                    clear {particles.player.set::%player%}
-                    reset_particle(player)
-                else:
-                    reset_particle(player)
-                    set {mine.status.note::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &6音符パーティクル&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 3
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.note.money::%player's uuid%} to true
-                    set {mine.status.note::%player's uuid%} to false
-                    particle_menu(player)
-        if name of event-item is "&9青パーティクル":
-            if {mine.status.blue.money::%player's uuid%} is true:
-                if {mine.status.blue::%player's uuid%} is true:
-                    set {mine.status.blue::%player's uuid%} to false
-                    clear {particles.player.set::%player%}
-                    particle_menu(player)
-                    send "&2&l! &9青パーティクル&aを無効化しました。" to player
-                    reset_particle(player)
-                else:
-                    reset_particle(player)
-                    set {mine.status.blue::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &9青パーティクル&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 4
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.blue.money::%player's uuid%} to true
-                    set {mine.status.blue::%player's uuid%} to false
-                    particle_menu(player)
-        if name of event-item is "&c赤パーティクル":
-            if {mine.status.red.money::%player's uuid%} is true:
-                if {mine.status.red::%player's uuid%} is true:
-                    clear {particles.player.set::%player%}
-                    set {mine.status.red::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! &c赤パーティクル&aを無効化しました。" to player
-                    reset_particle(player)
-                else:
-                    reset_particle(player)
-                    set {mine.status.red::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &c赤パーティクル&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 5
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.red.money::%player's uuid%} to true
-                    set {mine.status.red::%player's uuid%} to false
-                    particle_menu(player)
-        if name of event-item is "&b水パーティクル":
-            if {mine.status.water.money::%player's uuid%} is true:
-                if {mine.status.water::%player's uuid%} is true:
-                    clear {particles.player.set::%player%}
-                    set {mine.status.water::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! &b水パーティクル&aを無効化しました。" to player
-                    reset_particle(player)
-                else:
-                    reset_particle(player)
-                    set {mine.status.water::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &b水パーティクル&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 6
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.water.money::%player's uuid%} to true
-                    set {mine.status.water::%player's uuid%} to false
-                    particle_menu(player)
-        if name of event-item is {@heart}:
-            if {mine.status.heart.money::%player's uuid%} is true:
-                if {mine.status.heart::%player's uuid%} is true:
-                    clear {particles.player.set::%player%}
-                    set {mine.status.heart::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! %{@heart}%&aを無効化しました。" to player
-                    reset_particle(player)
-                else:
-                    reset_particle(player)
-                    set {mine.status.heart::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! %{@heart}%&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 7
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.heart.money::%player's uuid%} to true
-                    set {mine.status.heart::%player's uuid%} to false
-                    particle_menu(player)
-
 on break:
     if {particles.player.set::%player%} is 1:
         make 3 of lava at location of block
@@ -284,3 +164,5 @@ on break:
         make 3 of dripping water at location of block
     if {particles.player.set::%player%} is 7:
         make 3 of heart at location of block
+    if {particles.player.set::%player%} is 8:
+        make 3 of villager happy at location of block
