@@ -1,5 +1,5 @@
 # Roulette Skript by @yeahn
-# from Nekozouneko Developer Team
+# from Nekozouneko Developer Team (test)
 options:
     pre: &a[&6ルーレット&a]&f
     # システムメッセージの最初につくメッセージです。
