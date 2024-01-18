@@ -17,17 +17,18 @@ on npc right click:
 command /particles:
     trigger:
         particle_menu(player)
+
 on join:
     if {mine.status.lava::%player's uuid%} is not set:
         reset_particle(player)
-        set {mine.status.lava.money::%{_p}'s uuid%} to false
-        set {mine.status.slime.money::%{_p}'s uuid%} to false
-        set {mine.status.note.money::%{_p}'s uuid%} to false
-        set {mine.status.blue.money::%{_p}'s uuid%} to false
-        set {mine.status.red.money::%{_p}'s uuid%} to false
-        set {mine.status.water.money::%{_p}'s uuid%} to false
-        set {mine.status.heart.money::%{_p}'s uuid%} to false
-        set {mine.status.villager.money::%{_p}'s uuid%} to false
+        set {mine.status.lava.money::%player's uuid%} to false
+        set {mine.status.slime.money::%player's uuid%} to false
+        set {mine.status.note.money::%player's uuid%} to false
+        set {mine.status.blue.money::%player's uuid%} to false
+        set {mine.status.red.money::%player's uuid%} to false
+        set {mine.status.water.money::%player's uuid%} to false
+        set {mine.status.heart.money::%player's uuid%} to false
+        set {mine.status.villager.money::%player's uuid%} to false
 
 function reset_particle(p: player):
     set {mine.status.lava::%{_p}'s uuid%} to false
@@ -93,27 +94,27 @@ function particle_menu(p: player):
         set slot 16 of {_p}'s current inventory to water bucket named {@heart} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
 
 # TempX
-function buyParticle(p: player, particle: string, particle_name: string, price: number):
-    if {mine.status.%{_particle}%.money::%player's uuid%} is true:
-        if {mine.status.%{_particle}%::%player's uuid%} is true:
-            set {mine.status.%{_particle}%::%player's uuid%} to false
-            particle_menu(player)
-            send "&2&l! %{_particle_name}%&aを無効化しました。" to player
-            reset_particle(player)
+function buyParticle(player: player, particle: string, particle_name: string, price: number):
+    if {mine.status.%{_particle}%.money::%{_player}'s uuid%} is true:
+        if {mine.status.%{_particle}%::%{_player}'s uuid%} is true:
+            set {mine.status.%{_particle}%::%{_player}'s uuid%} to false
+            particle_menu({_player})
+            send "&2&l! %{_particle_name}%&aを無効化しました。" to {_player}
+            reset_particle({_player})
             clear {particles.player.set::%player%}
         else:
-            reset_particle(player)
-            set {mine.status.%{_particle}%::%player's uuid%} to true
-            particle_menu(player)
-            send "&2&l! %{_particle_name}%&aを有効化しました。" to player
-            set {particles.player.set::%player%} to 1
+            reset_particle({_player})
+            set {mine.status.%{_particle}%::%{_player}'s uuid%} to true
+            particle_menu({_player})
+            send "&2&l! %{_particle_name}%&aを有効化しました。" to {_player}
+            set {particles.player.set::%{_player}%} to 1
     else: 
-        if player's money >= {_price}:
-            remove {_price} from player's money
+        if {_player}'s money >= {_price}:
+            remove {_price} from {_player}'s money
             send "&2&l! &a購入しました！" 
             set {mine.status.%{_particle}%.money::%player's uuid%} to true
             set {mine.status.%{_particle}%::%player's uuid%} to false
-            particle_menu(player)
+            particle_menu({_player})
 
 # てすと
 on inventory click:
@@ -123,14 +124,14 @@ on inventory click:
             if {mine.status.lava.money::%player's uuid%} is true:
                 if {mine.status.lava::%player's uuid%} is true:
                     set {mine.status.lava::%player's uuid%} to false
-                    particle_menu(player)
+                    particle_menu({_player})
                     send "&2&l! &4マグマパーティクル&aを無効化しました。" to player
-                    reset_particle(player)
+                    reset_particle({_player})
                     clear {particles.player.set::%player%}
                 else:
-                    reset_particle(player)
+                    reset_particle({_player})
                     set {mine.status.lava::%player's uuid%} to true
-                    particle_menu(player)
+                    particle_menu({_player})
                     send "&2&l! &4マグマパーティクル&aを有効化しました。" to player
                     set {particles.player.set::%player%} to 1
             else: 
