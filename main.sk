@@ -277,8 +277,9 @@ on load:
 
 on join:
     clear metadata value "mine_add_orerange" of player
-    set {mine.status.autoore.money::%player's uuid%} to {mine.status.autoore.money::%player%}
-    set {mine.status.autoore::%players's uuid%} to {mine.status.autoore::%player%}
+    if {mine.status.autoore.money::%player's uuid%} is not set::
+        set {mine.status.autoore.money::%player's uuid%} to {mine.status.autoore.money::%player%}
+        set {mine.status.autoore::%players's uuid%} to {mine.status.autoore::%player%}
 
 
 command /admin_inv [<player>]:
