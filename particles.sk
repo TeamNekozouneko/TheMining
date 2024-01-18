@@ -86,11 +86,11 @@ function particle_menu(p: player):
         set slot 15 of {_p}'s current inventory to water bucket named {@water} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
     if {mine.status.heart.money::%{_p}'s uuid%} is true:
         if {mine.status.heart::%{_p}'s uuid%} is true:
-            set slot 15 of {_p}'s current inventory to glowing water bucket named {@heart} with lore "&8&m-------------------------------" and "&e選択中"
+            set slot 16 of {_p}'s current inventory to glowing water bucket named {@heart} with lore "&8&m-------------------------------" and "&e選択中"
         else:
-            set slot 15 of {_p}'s current inventory to water bucket named {@heart} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+            set slot 16 of {_p}'s current inventory to water bucket named {@heart} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
     else:
-        set slot 15 of {_p}'s current inventory to water bucket named {@heart} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
+        set slot 16 of {_p}'s current inventory to water bucket named {@heart} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
 
 function buyParticle(p: player, particle: string, particle_name: string, price: number):
     if {mine.status.%{_particle}%.money::%player's uuid%} is true:
@@ -242,4 +242,25 @@ on inventory click:
                     send "&2&l! &a購入しました！" 
                     set {mine.status.water.money::%player's uuid%} to true
                     set {mine.status.water::%player's uuid%} to false
+                    particle_menu(player)
+        if name of event-item is {@heart}:
+            if {mine.status.heart.money::%player's uuid%} is true:
+                if {mine.status.heart::%player's uuid%} is true:
+                    clear {particles.player.set::%player%}
+                    set {mine.status.heart::%player's uuid%} to false
+                    particle_menu(player)
+                    send "&2&l! %{@heart}%&aを無効化しました。" to player
+                    reset_particle(player)
+                else:
+                    reset_particle(player)
+                    set {mine.status.heart::%player's uuid%} to true
+                    particle_menu(player)
+                    send "&2&l! %{@heart}%&aを有効化しました。" to player
+                    set {particles.player.set::%player%} to 6
+            else: 
+                if player's money >= 5500:
+                    remove 5500 from player's money
+                    send "&2&l! &a購入しました！" 
+                    set {mine.status.heart.money::%player's uuid%} to true
+                    set {mine.status.heart::%player's uuid%} to false
                     particle_menu(player)
