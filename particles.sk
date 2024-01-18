@@ -92,6 +92,7 @@ function particle_menu(p: player):
     else:
         set slot 16 of {_p}'s current inventory to water bucket named {@heart} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
 
+# Temp
 function buyParticle(p: player, particle: string, particle_name: string, price: number):
     if {mine.status.%{_particle}%.money::%player's uuid%} is true:
         if {mine.status.%{_particle}%::%player's uuid%} is true:
