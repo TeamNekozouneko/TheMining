@@ -121,26 +121,27 @@ on inventory click:
     if name of player's current inventory is {@title}:
         cancel event
         if name of event-item is {@lava}:
-            if {mine.status.lava.money::%player's uuid%} is true:
-                if {mine.status.lava::%player's uuid%} is true:
-                    set {mine.status.lava::%player's uuid%} to false
-                    particle_menu(player)
-                    send "&2&l! &4マグマパーティクル&aを無効化しました。" to player
-                    reset_particle(player)
-                    clear {particles.player.set::%player%}
-                else:
-                    reset_particle(player)
-                    set {mine.status.lava::%player's uuid%} to true
-                    particle_menu(player)
-                    send "&2&l! &4マグマパーティクル&aを有効化しました。" to player
-                    set {particles.player.set::%player%} to 1
-            else: 
-                if player's money >= 5500:
-                    remove 5500 from player's money
-                    send "&2&l! &a購入しました！" 
-                    set {mine.status.lava.money::%player's uuid%} to true
-                    set {mine.status.lava::%player's uuid%} to false
-                    particle_menu(player)
+            # if {mine.status.lava.money::%player's uuid%} is true:
+            #     if {mine.status.lava::%player's uuid%} is true:
+            #         set {mine.status.lava::%player's uuid%} to false
+            #         particle_menu(player)
+            #         send "&2&l! &4マグマパーティクル&aを無効化しました。" to player
+            #         reset_particle(player)
+            #         clear {particles.player.set::%player%}
+            #     else:
+            #         reset_particle(player)
+            #         set {mine.status.lava::%player's uuid%} to true
+            #         particle_menu(player)
+            #         send "&2&l! &4マグマパーティクル&aを有効化しました。" to player
+            #         set {particles.player.set::%player%} to 1
+            # else: 
+            #     if player's money >= 5500:
+            #         remove 5500 from player's money
+            #         send "&2&l! &a購入しました！" 
+            #         set {mine.status.lava.money::%player's uuid%} to true
+            #         set {mine.status.lava::%player's uuid%} to false
+            #         particle_menu(player)
+            buyParticle(player, "lava", {@lava}, 1, 5500)
         if name of event-item is "&aスライムパーティクル":
             if {mine.status.slime.money::%player's uuid%} is true:
                 if {mine.status.slime::%player's uuid%} is true:
