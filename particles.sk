@@ -127,7 +127,7 @@ on inventory click:
         if name of event-item is {@villager}:
             buyParticle(player, "villager", {@villager}, 8, 5500)
 
-# Fixedssssssssssssssssssssssssss
+# Fixedssss
 function buyParticle(player: player, particle: string, particle_name: string, particle_id: number, price: number):
     if {mine.status.%{_particle}%.money::%{_player}'s uuid%} is true:
         if {mine.status.%{_particle}%::%{_player}'s uuid%} is true:
