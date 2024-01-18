@@ -277,8 +277,9 @@ on load:
 
 on join:
     clear metadata value "mine_add_orerange" of player
-    set {mine.status.autoore.money::%player's uuid%} to {mine.status.autoore.money::%player%}
-    set {mine.status.autoore::%players's uuid%} to {mine.status.autoore::%player%}
+    if {mine.status.autoore.money::%player's uuid%} is not set:
+        set {mine.status.autoore.money::%player's uuid%} to {mine.status.autoore.money::%player%}
+        set {mine.status.autoore::%players's uuid%} to {mine.status.autoore::%player%}
 
 
 command /admin_inv [<player>]:
@@ -1172,43 +1173,38 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
     #send "[Mine Debug] %{_p}% - %{_thread_bypass}%" to ops
     if {@slot} is true:
         loop {slot.list::*}:
-            if {slot.info::%loop-value%::location::1} is location of {_b}:
-                add 1 to {_n}
-            if {slot.info::%loop-value%::location::2} is location of {_b}:
-                add 1 to {_n}
-            if {slot.info::%loop-value%::location::3} is location of {_b}:
-                add 1 to {_n}
-        if {_n} is set:
-            return false
+            return false if {slot.info::%loop-value%::location::1} is location of {_b}
+            return false if {slot.info::%loop-value%::location::2} is location of {_b}
+            return false if {slot.info::%loop-value%::location::3} is location of {_b}
     set {_name} to "%blockdata of {_b}%"
     replace all "minecraft:" with "" in {_name}
     if {mine.ores::%{_name}%} is set:
-        loop {mine.items::*}:
-            if {_p}'s tool is loop-value:
-                set {_index} to loop-index
+        set {_index} to first element of {mine.items::*} where [{_p}'s tool is input]
+        #send "[Debug] %{_index}% - %{mine.items::*} where [{_p}'s tool is input]%" to {_p} if {_p} is op
+        return false if {_index} is not set
         #send {_index} to {_p}
         if {mine.orewhite::%{_index}%::*} contains {mine.ores::%{_name}%}:
             send action bar "&4&l! &cこのピッケルではこの鉱石を壊すことはできません。" to {_p}
             return false
         else:
-            set {_n} to 0
-            set {_n2} to 0
-            loop 36 times:
-                if slot {_n} of {_p}'s inventory is air:
-                    add 1 to {_n2}
-                add 1 to {_n}
-            if {_n2} is 0:
-                add {mine.ores::%{_name}%} to {pickup.%{_p}'s uuid%::*}
-                send action bar "&4&l! &cインベントリーが満杯のため拾えませんでした。&c&l/pickup&cで後から回収できます。" to {_p}
-            else:    
-                give {mine.ores::%{_name}%} to {_p}
-                add 1 to {mine.mnum::%{_p}'s uuid%}
+            #set {_n} to 0
+            #set {_n2} to 0
+            #loop 36 times:
+            #    if slot {_n} of {_p}'s inventory is air:
+            #        add 1 to {_n2}
+            #    add 1 to {_n}
+            #if {_n2} is 0:
+            #    add {mine.ores::%{_name}%} to {pickup.%{_p}'s uuid%::*}
+            #    send action bar "&4&l! &cインベントリーが満杯のため拾えませんでした。&c&l/pickup&cで後から回収できます。" to {_p}
+            #else:    
+            give {mine.ores::%{_name}%} to {_p}
+            add 1 to {mine.mnum::%{_p}'s uuid%}
             
             #初見さんキャンペーン対応のために復活
             if {mine.hojo.%{_p}'s uuid%} is true:
                 set {_money} to {mine.price::%{_name}%}
                 add {_money} to {_p}'s money
-
+            
             loop {mine.seller.sellprice::*}:
                 if 1 of {mine.items::%loop-index%} is 1 of {mine.ores::%{_name}%}:
                     set {_price} to loop-value
@@ -1663,19 +1659,14 @@ on break:
     if {particles.player.set::%player%} is 6:
         make 3 of dripping water at location of block
 
-on break:
-    if player's yaw is between 45 and 134:
-        set {mine.status.hougaku::%player%} to "west"
-    if player's yaw is between 135 and 224:
-        set {mine.status.hougaku::%player%} to "north"
-    if player's yaw is between 225 and 314:
-        set {mine.status.hougaku::%player%} to "east"
-    if player's yaw is not between 45 and 314:
-        set {mine.status.hougaku::%player%} to "south"
+function get_player_direction(p: player) :: text:
+    return "west" if {_p}'s yaw is between 45 and 134
+    return "north" if {_p}'s yaw is between 135 and 224
+    return "east" if {_p}'s yaw is between 225 and 314
+    return "south"
 
 function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: integer, v: block):
-    wait 10 tick
-    if {mine.status.hougaku::%{_p}%} is {_h}:
+    if get_player_direction({_p}) is {_h}:
         set {_loc} to location of {_v}
         add {_a} to x-coord of {_loc}
         add {_i} to y-coord of {_loc}
@@ -1688,10 +1679,10 @@ function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: i
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
+            #wait a tick
 
 function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: number, v: block):
-    wait 10 tick
-    if {mine.status.hougaku::%{_p}%} is {_h}:
+    if get_player_direction({_p}) is {_h}:
         set {_loc} to location of {_v}
         add {_a} to z-coord of {_loc}
         add {_i} to y-coord of {_loc}
@@ -1704,6 +1695,7 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
             set {_loop} to loop-block
             if mine_break({_p}, loop-block, true):
                 set loop-block to air
+            #wait a tick
 
 #以下特殊アイテム
 
@@ -1948,6 +1940,7 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
     #以下条件設定
     if {_n} is 1:
         return true 
+        set {player.loc.spawn::%{_p}%} to 4
     if {_n} is 2:
         if {mine.level::%{_p}'s uuid%} >= 30:
             if {mine.players::%{_p}'s uuid%::recipes::*} contains 21:
@@ -1956,6 +1949,7 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
                 return true
         return false
     else if {_n} is 3:
+        set {player.loc.spawn::%{_p}%} to 3
         return true
     else if {_n} is 4:
         set {player.loc.spawn::%{_p}%} to 4
