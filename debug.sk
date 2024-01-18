@@ -1,10 +1,9 @@
 on break:
     if player is "Hideko_Dev":
         send "Hello" to event-player
-        set {_n} to 0
+        set {_n}
         set {_n2} to 0
         loop 36 times:
             if slot {_n} of player's inventory is air:
                 add 1 to {_n2}
-            add 1 to {_n}
-        send "%{_n}%   |   %{_n2}%"
+        send "%{_n2}%"
