@@ -1521,16 +1521,8 @@ on inventory click:
                     sound_enchanted(player)
                     send "&2&l! &aエンチャントしました！" to player
                     if "%{_index}%:%{_cindex}%" is "2:1":
-                        if {mine.player.quest.isCreatedAdvancedPickaxe} is not true:
-                            set {mine.player.quest.isCreatedAdvancedPickaxe} to true
-                            mine_quest_thread(player, "NEW_ADVANCED_PICKAXE", 1)
+                        mine_quest_thread(player, "NEW_ADVANCED_PICKAXE", 1)
                     mine_quest_thread(player, "ENCHANT", 0)
-
-command /dpbawrkb:
-    permission: admin
-    trigger:
-        loop all players:
-            delete {mine.loop-player.quest.isCreatedAdvancedPickaxe}
 
 #以下スキル
 command /skill:
