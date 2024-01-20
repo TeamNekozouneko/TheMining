@@ -2052,6 +2052,7 @@ function autoore(p: player):
         if {_p} has 64 coal named "&a石炭":
             remove 64 coal named "&a石炭" from {_p}'s inventory
             give {_p} {mine.items::17}
+
 on inventory click:
     if name of player's current inventory is "{@menu_obsidian_crafting}":
         if name of event-item is "&6&lレシピ本" or "&a" or "&cこの構成では利用できません":
