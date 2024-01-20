@@ -1473,6 +1473,7 @@ every 5 tick:
                         add 1 to {temp.n3}
                     if {temp.n3} is 4:
                         set slot 16 of loop-player's current inventory to netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
+                        mine_quest_thread(player, "NEW_OBSIDIAN_PICKAXE", 1)
                     else:
                         set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
             clear {temp.n3}
@@ -1483,6 +1484,7 @@ every 5 tick:
                         add 1 to {_n4}
                     if {_n4} is 4:
                         set slot 16 of loop-player's current inventory to glowing gold pickaxe named "&7[&c&lマグマのピッケル&7] " with lore "&cとてつもない熱を感じる"
+                        mine_quest_thread(player, "NEW_MAGMA_PICKAXE", 1)
                     else:
                         if {temp.n3} is set:
                             set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
@@ -1520,7 +1522,10 @@ on inventory click:
                     give {mine.enchant_result::%{_index}%::%{_cindex}%} to player
                     sound_enchanted(player)
                     send "&2&l! &aエンチャントしました！" to player
-                    send "結果: %{_index}%::%{_cindex}%" to player
+                    if "%{_index}%:%{_cindex}%" is "2:1":
+                        if {mine.player.quest.isCreatedAdvancedPickaxe} is none:
+                            set {mine.player.quest.isCreatedAdvancedPickaxe} to true
+                            mine_quest_thread(player, "NEW_ADVANCED_PICKAXE", 1)
                     mine_quest_thread(player, "ENCHANT", 0)
 
 #以下スキル
