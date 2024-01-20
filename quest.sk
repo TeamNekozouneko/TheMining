@@ -174,7 +174,7 @@ on inventory click:
             mine_open_quest(player)
 
 function mine_open_quest(p: player):
-    open chest inventory with 6 row named "{@mine_quest_title}" to {_p}
+    open chest inventory with 6 row named {@mine_quest_title} to {_p}
     mine_open_quest_refancy({_p})
     set slot 8 of {_p}'s current inventory to book named "aaa" with nbt compound from "{mine_index:10}"
 
@@ -441,7 +441,7 @@ function mine_quest_thread(p: player, type: string, v: object):
 
 every second:    
     loop all players:
-        if name of loop-player's current inventory is "{@mine_quest_title}":
+        if name of loop-player's current inventory is {@mine_quest_title}:
             mine_open_quest_refancy(loop-player)
         loop {mine.quests::*}: #クエスト表示
             continue if mine_quest_conditions(loop-player, loop-index parsed as integer) = false #クエスト対象のフィルタリング
