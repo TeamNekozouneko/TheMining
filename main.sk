@@ -1838,7 +1838,7 @@ on inventory close:
             mine_quest_thread(player, "SELL", 1)
             send {mine.player_quest_data::%{_p}'s uuid%::47} to ops
             send {mine.player_quests::%{_p}'s uuid%::*} to ops
-            delete {tmp.%player%.isContainsAnyOre}
+        delete {tmp.%player%.isContainsAnyOre}
         add {_price} to player's money
         send "&2&l! &a売却結果: %{_price}%円" to player
 
