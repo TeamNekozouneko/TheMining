@@ -1834,10 +1834,11 @@ on inventory close:
                                 set {tmp.%player%.isContainsAnyOre} to true
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
+        send {tmp.%player%.isContainsAnyOre} to ops
         if {tmp.%player%.isContainsAnyOre} is true:
             send "aaaa" to ops
             mine_quest_thread(player, "SELL", 1)
-        delete {tmp.%player%.isContainsAnyOre}
+        set {tmp.%player%.isContainsAnyOre} to false
         add {_price} to player's money
         send "&2&l! &a売却結果: %{_price}%円" to player
 
