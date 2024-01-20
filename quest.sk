@@ -158,7 +158,7 @@ on npc right click:
         mine_open_quest(player)
 
 on inventory click:
-    if name of player's current inventory is "{@mine_quest_title}":
+    if name of player's current inventory is {@mine_quest_title}:
         cancel event
         set {_index} to tag "mine_index" of nbt compound of event-item
         if {_index} is set:
