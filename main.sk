@@ -2061,14 +2061,14 @@ on inventory click:
             set slot 4 of player's current inventory to air
             cancel event
             give {mine.items::36} to player
-            mine_quest_thread(loop-player, "NEW_OBSIDIAN_PICKAXE", 1)
+            mine_quest_thread(player, "NEW_OBSIDIAN_PICKAXE", 1)
             play sound "minecraft:block.anvil.use" to player
         if name of event-item is "&7[&c&lマグマのピッケル&7] ":
             set slot 3 of player's current inventory to air
             set slot 4 of player's current inventory to air
             cancel event
             give {mine.items::40} to player
-            mine_quest_thread(loop-player, "NEW_MAGMA_PICKAXE", 1)
+            mine_quest_thread(player, "NEW_MAGMA_PICKAXE", 1)
             play sound "minecraft:block.anvil.use" to player
         if name of event-item is "&6&lレシピ本":
             open chest inventory with 3 row named "&6&lレシピリスト" to player
