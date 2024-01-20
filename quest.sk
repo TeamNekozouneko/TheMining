@@ -341,7 +341,7 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A53", {_v})
     else if {_type} = "NEW_MAGMA_PICKAXE":
         mine_quest_thread({_p}, "A54", {_v})
-        
+
     else if {_type} = "A1":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 1:
             add {_v} to {mine.player_quest_data::%{_p}'s uuid%::1}
@@ -490,6 +490,15 @@ function mine_quest_thread(p: player, type: string, v: object):
         if {mine.player_quests::%{_p}'s uuid%::*} contains 50:
             add 1 to {mine.player_quest_data::%{_p}'s uuid%::50}
     else if {_type} = "A51":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 51:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::51}
+    else if {_type} = "A52":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 51:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::51}
+    else if {_type} = "A53":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 51:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::51}
+    else if {_type} = "A54":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 51:
             add 1 to {mine.player_quest_data::%{_p}'s uuid%::51}
 
