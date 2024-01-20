@@ -1834,7 +1834,7 @@ on inventory close:
                                 set {tmp.%player%.isContainsAnyOre} to true
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
-        send {tmp.%player%.isContainsAnyOre} to ops
+        send {tmp.%player%.isContainsAnyOre} to player
         if {tmp.%player%.isContainsAnyOre} is true:
             send "aaaa" to ops
             mine_quest_thread(player, "SELL", 1)
