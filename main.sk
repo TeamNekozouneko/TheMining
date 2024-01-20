@@ -1831,12 +1831,12 @@ on inventory close:
                     if 1 of {mine.items::%loop-index%} is 1 of loop-item:
                         loop (item amount of loop-item) times:
                             if type of loop-item is any ore:
-                                set {_isContainsAnyOre} to true
+                                set {tmp.%player%.isContainsAnyOre} to true
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
-                        send {_isContainsAnyOre} to ops
-                        if {_isContainsAnyOre} is true:
+                        if {tmp.%player%.isContainsAnyOre}:
                             send "鉱石ひとつでもあるし！！" to ops
+                        delete {tmp.%player%.isContainsAnyOre}
         add {_price} to player's money
         send "&2&l! &a売却結果: %{_price}%円" to player
 
