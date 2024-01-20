@@ -1237,7 +1237,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                     send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
                     add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
                 mine_quest_thread({_p}, "MABOROSHI_DROP", 0)
-                mine_quest_thread(player, "RARE_DROP", 1)
+                mine_quest_thread({_p}, "RARE_DROP", 1)
 
             if mine_thread_throw_OBSIDIAN("MINE_OBSIDIAN_DROP"):
                 sound_notification({_p})
@@ -1248,7 +1248,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                     send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
                     send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
                     add {mine.items::37} to {pickup.%{_p}'s uuid%::*}
-                mine_quest_thread(player, "RARE_DROP", 1)
+                mine_quest_thread({_p}, "RARE_DROP", 1)
             if mine_thread_throw_MAGMA("MINE_MAGMA_DROP"):
                 sound_notification({_p})
                 if mine_is_space_inventory({_p}):
@@ -1258,7 +1258,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                     send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
                     send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
                     add {mine.items::39} to {pickup.%{_p}'s uuid%::*}
-                mine_quest_thread(player, "RARE_DROP", 1)
+                mine_quest_thread({_p}, "RARE_DROP", 1)
             return true
     else if {_p} is not op:
         return false
