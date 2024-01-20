@@ -1473,7 +1473,7 @@ every 5 tick:
                         add 1 to {temp.n3}
                     if {temp.n3} is 4:
                         set slot 16 of loop-player's current inventory to netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
-                        mine_quest_thread(player, "NEW_OBSIDIAN_PICKAXE", 1)
+                        mine_quest_thread(loop-player, "NEW_OBSIDIAN_PICKAXE", 1)
                     else:
                         set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
             clear {temp.n3}
@@ -1484,7 +1484,7 @@ every 5 tick:
                         add 1 to {_n4}
                     if {_n4} is 4:
                         set slot 16 of loop-player's current inventory to glowing gold pickaxe named "&7[&c&lマグマのピッケル&7] " with lore "&cとてつもない熱を感じる"
-                        mine_quest_thread(player, "NEW_MAGMA_PICKAXE", 1)
+                        mine_quest_thread(loop-player, "NEW_MAGMA_PICKAXE", 1)
                     else:
                         if {temp.n3} is set:
                             set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
