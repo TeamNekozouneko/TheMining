@@ -1,5 +1,5 @@
 Options:
-    mine_quest_title: &c&lTheMining &7- &fクエストマスター
+    mine_quest_title: "&f&lクエストマスター"
     
 on load:
     clear {mine.quests::*}
@@ -174,7 +174,7 @@ on inventory click:
             mine_open_quest(player)
 
 function mine_open_quest(p: player):
-    open chest inventory with 5 row named "{@mine_quest_title}" to {_p}
+    open chest inventory with 6 row named "{@mine_quest_title}" to {_p}
     mine_open_quest_refancy({_p})
     set slot 8 of {_p}'s current inventory to book named "aaa" with nbt compound from "{mine_index:10}"
 

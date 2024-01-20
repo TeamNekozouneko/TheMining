@@ -50,7 +50,6 @@ function setItem(p: player, slot: number, particle: string, itemstack: item, nam
     else:
         set slot {_slot} of {_p}'s current inventory to {_itemstack} named {_name} with lore "&8&m-------------------------------" and "&e値段: &6%{_price}%" and "&7[ クリックして購入 ]"
 
-#SkBeeバグでnbtを数字として受け付けないらしい
 function particle_menu(p: player):
     open chest inventory with 4 row named {@title} to {_p}
     setItem({_p}, 10, "lava", lava bucket, {@lava}, 5500)
@@ -61,68 +60,6 @@ function particle_menu(p: player):
     setItem({_p}, 15, "water", water bucket, {@water}, 5500)
     setItem({_p}, 16, "heart", apple, {@heart}, 5500)
     setItem({_p}, 19, "villager", stripped oak log, {@villager}, 5500)
-    # if {mine.status.lava.money::%{_p}'s uuid%} is true:
-    #     if {mine.status.lava::%{_p}'s uuid%} is true:
-    #         set slot 10 of {_p}'s current inventory to glowing lava bucket named {@lava} with lore "&8&m-------------------------------" and "&e選択中"
-    #     else:
-    #         set slot 10 of {_p}'s current inventory to lava bucket named {@lava} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-    # else:
-    #     set slot 10 of {_p}'s current inventory to lava bucket named {@lava} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
-#     if {mine.status.slime.money::%{_p}'s uuid%} is true:
-#         if {mine.status.slime::%{_p}'s uuid%} is true:
-#             set slot 11 of {_p}'s current inventory to glowing slimeball named {@slime} with lore "&8&m-------------------------------" and "&e選択中"
-#         else:
-#             set slot 11 of {_p}'s current inventory to slimeball named {@slime} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-#     else:
-#         set slot 11 of {_p}'s current inventory to slimeball named {@slime} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"  
-# 
-#     if {mine.status.note.money::%{_p}'s uuid%} is true:
-#         if {mine.status.note::%{_p}'s uuid%} is true:
-#             set slot 12 of {_p}'s current inventory to glowing note block named {@note} with lore "&8&m-------------------------------" and "&e選択中"
-#         else:
-#             set slot 12 of {_p}'s current inventory to note block named {@note} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-#     else:
-#         set slot 12 of {_p}'s current inventory to note block named {@note} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
-# 
-#     if {mine.status.blue.money::%{_p}'s uuid%} is true:
-#         if {mine.status.blue::%{_p}'s uuid%} is true:
-#             set slot 13 of {_p}'s current inventory to glowing blue dye named {@blue} with lore "&8&m-------------------------------" and "&e選択中"
-#         else:
-#             set slot 13 of {_p}'s current inventory to blue dye named {@blue} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-#     else:
-#         set slot 13 of {_p}'s current inventory to blue dye named {@blue} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
-# 
-#     if {mine.status.red.money::%{_p}'s uuid%} is true:
-#         if {mine.status.red::%{_p}'s uuid%} is true:
-#             set slot 14 of {_p}'s current inventory to glowing red dye named {@red} with lore "&8&m-------------------------------" and "&e選択中"
-#         else:
-#             set slot 14 of {_p}'s current inventory to red dye named {@red} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-#     else:
-#         set slot 14 of {_p}'s current inventory to red dye named {@red} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"      
-# 
-#     if {mine.status.water.money::%{_p}'s uuid%} is true:
-#         if {mine.status.water::%{_p}'s uuid%} is true:
-#             set slot 15 of {_p}'s current inventory to glowing water bucket named {@water} with lore "&8&m-------------------------------" and "&e選択中"
-#         else:
-#             set slot 15 of {_p}'s current inventory to water bucket named {@water} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-#     else:
-#         set slot 15 of {_p}'s current inventory to water bucket named {@water} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
-# 
-#     if {mine.status.heart.money::%{_p}'s uuid%} is true:
-#         if {mine.status.heart::%{_p}'s uuid%} is true:
-#             set slot 16 of {_p}'s current inventory to glowing apple named {@heart} with lore "&8&m-------------------------------" and "&e選択中"
-#         else:
-#             set slot 16 of {_p}'s current inventory to apple named {@heart} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-#     else:
-#         set slot 16 of {_p}'s current inventory to apple named {@heart} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
-# 
-#     if {mine.status.villager.money::%{_p}'s uuid%} is true:
-#         if {mine.status.villager::%{_p}'s uuid%} is true:
-#             set slot 19 of {_p}'s current inventory to glowing stripped oak log named {@villager} with lore "&8&m-------------------------------" and "&e選択中"
-#         else:
-#             set slot 19 of {_p}'s current inventory to stripped oak log named {@villager} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-#     else:
-#         set slot 19 of {_p}'s current inventory to stripped oak log named {@villager} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
 
 on inventory click:
     if name of player's current inventory is {@title}:
