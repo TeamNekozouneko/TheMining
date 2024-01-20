@@ -1230,14 +1230,14 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
 
             if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
                 sound_notification({_p})
+                send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
                 if mine_is_space_inventory({_p}):
-                    send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
                     give {mine.items::30} to {_p}
                 else:
-                    send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
                     send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
                     add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
                 mine_quest_thread({_p}, "MABOROSHI_DROP", 0)
+                mine_quest_thread(player, "RARE_DROP", 1)
 
             if mine_thread_throw_OBSIDIAN("MINE_OBSIDIAN_DROP"):
                 sound_notification({_p})
@@ -1248,6 +1248,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                     send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
                     send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
                     add {mine.items::37} to {pickup.%{_p}'s uuid%::*}
+                mine_quest_thread(player, "RARE_DROP", 1)
             if mine_thread_throw_MAGMA("MINE_MAGMA_DROP"):
                 sound_notification({_p})
                 if mine_is_space_inventory({_p}):
@@ -1257,6 +1258,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                     send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
                     send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
                     add {mine.items::39} to {pickup.%{_p}'s uuid%::*}
+                mine_quest_thread(player, "RARE_DROP", 1)
             return true
     else if {_p} is not op:
         return false
@@ -1516,6 +1518,7 @@ on inventory click:
                     set slot 10 of player's current inventory to air
                     set slot 11 of player's current inventory to air
                     give {mine.enchant_result::%{_index}%::%{_cindex}%} to player
+                    send {mine.enchant_result::%{_index}%::%{_cindex}%} to player
                     sound_enchanted(player)
                     send "&2&l! &aエンチャントしました！" to player
                     mine_quest_thread(player, "ENCHANT", 0)
