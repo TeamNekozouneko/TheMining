@@ -1835,8 +1835,8 @@ on inventory close:
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
         if {tmp.%player%.isContainsAnyOre} is true:
-            send "鉱石ひとつでもあるし！！" to ops
-            delete {tmp.%player%.isContainsAnyOre}
+            mine_quest_thread(player, "SELL", 1)
+        delete {tmp.%player%.isContainsAnyOre}
         add {_price} to player's money
         send "&2&l! &a売却結果: %{_price}%円" to player
 
