@@ -1831,9 +1831,11 @@ on inventory close:
                     if 1 of {mine.items::%loop-index%} is 1 of loop-item:
                         loop (item amount of loop-item) times:
                             if loop-item is diamond:
-                                send loop-item to ops
+                                add type of loop-item to {_tmpItems}
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
+                        if {_tmpItems} contains any ore:
+                            send loop-item to ops
         add {_price} to player's money
         send "&2&l! &a売却結果: %{_price}%円" to player
 
