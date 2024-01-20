@@ -1834,6 +1834,7 @@ on inventory close:
                                 set {_isContainsAnyOre} to true
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
+                        send {_isContainsAnyOre} to ops
                         if {_isContainsAnyOre} is true:
                             send "鉱石ひとつでもあるし！！" to ops
         add {_price} to player's money
