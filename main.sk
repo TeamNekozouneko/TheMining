@@ -1473,7 +1473,6 @@ every 5 tick:
                         add 1 to {temp.n3}
                     if {temp.n3} is 4:
                         set slot 16 of loop-player's current inventory to netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
-                        mine_quest_thread(loop-player, "NEW_OBSIDIAN_PICKAXE", 1)
                     else:
                         set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
             clear {temp.n3}
@@ -1484,7 +1483,6 @@ every 5 tick:
                         add 1 to {_n4}
                     if {_n4} is 4:
                         set slot 16 of loop-player's current inventory to glowing gold pickaxe named "&7[&c&lマグマのピッケル&7] " with lore "&cとてつもない熱を感じる"
-                        mine_quest_thread(loop-player, "NEW_MAGMA_PICKAXE", 1)
                     else:
                         if {temp.n3} is set:
                             set slot 16 of loop-player's current inventory to red stained glass pane named "&cこの構成では利用できません"
@@ -2063,12 +2061,14 @@ on inventory click:
             set slot 4 of player's current inventory to air
             cancel event
             give {mine.items::36} to player
+            mine_quest_thread(loop-player, "NEW_OBSIDIAN_PICKAXE", 1)
             play sound "minecraft:block.anvil.use" to player
         if name of event-item is "&7[&c&lマグマのピッケル&7] ":
             set slot 3 of player's current inventory to air
             set slot 4 of player's current inventory to air
             cancel event
             give {mine.items::40} to player
+            mine_quest_thread(loop-player, "NEW_MAGMA_PICKAXE", 1)
             play sound "minecraft:block.anvil.use" to player
         if name of event-item is "&6&lレシピ本":
             open chest inventory with 3 row named "&6&lレシピリスト" to player
