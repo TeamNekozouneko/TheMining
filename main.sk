@@ -1830,8 +1830,7 @@ on inventory close:
                 loop {mine.seller.sellprice::*}:
                     if 1 of {mine.items::%loop-index%} is 1 of loop-item:
                         loop (item amount of loop-item) times:
-                            if loop-item is diamond:
-                                add type of loop-item to {_tmpItems}
+                            add type of loop-item to {_tmpItems}
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
                         send {_tmpItems} to ops
