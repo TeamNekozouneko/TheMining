@@ -1830,8 +1830,8 @@ on inventory close:
                 loop {mine.seller.sellprice::*}:
                     if 1 of {mine.items::%loop-index%} is 1 of loop-item:
                         loop (item amount of loop-item) times:
-                            if loop-item contains any ore:
-                                send "&7debug" to player
+                            if loop-item is any ore:
+                                send loop-item to player
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
         add {_price} to player's money
