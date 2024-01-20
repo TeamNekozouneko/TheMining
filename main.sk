@@ -1831,7 +1831,7 @@ on inventory close:
                     if 1 of {mine.items::%loop-index%} is 1 of loop-item:
                         loop (item amount of loop-item) times:
                             if loop-item contains any ore:
-                                send "おれはいってんじゃん！" to "Hideko-Dev"
+                                send "&7debug" to player
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
         add {_price} to player's money

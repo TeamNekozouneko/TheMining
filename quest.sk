@@ -49,7 +49,6 @@ on load:
     set {mine.quests::44} to "ランダムイベントを10回する"
     set {mine.quests::45} to "lv2MAPに30回行く"
     set {mine.quests::46} to "第四MAPに30回行く"
-
     set {mine.quests::47} to "鉱石を売店で3回売る"
 
 
