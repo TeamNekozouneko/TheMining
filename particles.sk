@@ -42,6 +42,7 @@ function reset_particle(p: player):
     set {mine.status.villager::%{_p}'s uuid%} to false
 
 function setItem(p: player, slot: number, particle: string, itemstack: item, name: string, price: number):
+    send "%{_p}%, %{_slot}% %{_particle}% %{_itemstack}% %{_name}% %{_price}%" to {_p}
     if {mine.status.%{_particle}%.money::%{_p}'s uuid%} is true:
         if {mine.status.%{_particle}%::%{_p}'s uuid%} is true:
             set slot {_slot} of {_p}'s current inventory to glowing {_itemstack} named {_name} with lore "&8&m-------------------------------" and "&e選択中"
