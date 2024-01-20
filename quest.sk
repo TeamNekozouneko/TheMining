@@ -33,22 +33,25 @@ on load:
     set {mine.quests::28} to "map2で1時間遊ぶ"
     set {mine.quests::29} to "map4で30分遊ぶ"
     set {mine.quests::30} to "map4で1時間遊ぶ"
-    set {mine.quests::31} to "売店でレアアイテムを1個購入する。"
-    set {mine.quests::32} to "売店でレアアイテムを2個購入する。"
-    set {mine.quests::33} to "売店でレアアイテムを3個購入する。"
-    set {mine.quests::34} to "ジャンプブーストを3レベルに上げる。"
-    set {mine.quests::35} to "破壊の王を1回使用する。"
-    set {mine.quests::36} to "破壊の王を2回使用する。"
-    set {mine.quests::37} to "破壊の王を3回使用する。"
+    set {mine.quests::31} to "売店でレアアイテムを1個購入する"
+    set {mine.quests::32} to "売店でレアアイテムを2個購入する"
+    set {mine.quests::33} to "売店でレアアイテムを3個購入する"
+    set {mine.quests::34} to "ジャンプブーストを3レベルに上げる"
+    set {mine.quests::35} to "破壊の王を1回使用する"
+    set {mine.quests::36} to "破壊の王を2回使用する"
+    set {mine.quests::37} to "破壊の王を3回使用する"
     set {mine.quests::38} to "ガチャを1回まわす"
     set {mine.quests::39} to "ガチャを20回まわす"
     set {mine.quests::40} to "ガチャを30回まわす"
     set {mine.quests::41} to "50時間遊ぶ"
-    set {mine.quests::42} to "破壊の王を6回使用する。"
-    set {mine.quests::43} to "破壊の王を10回使用する。"
+    set {mine.quests::42} to "破壊の王を6回使用する"
+    set {mine.quests::43} to "破壊の王を10回使用する"
     set {mine.quests::44} to "ランダムイベントを10回する"
     set {mine.quests::45} to "lv2MAPに30回行く"
     set {mine.quests::46} to "第四MAPに30回行く"
+
+    set {mine.quests::47} to "鉱石を売店で3回売る"
+
 
     clear {mine.quest_max::*}
     set {mine.quest_max::1} to 20000
@@ -96,7 +99,7 @@ on load:
     set {mine.quest_max::43} to 10
     set {mine.quest_max::44} to 10
     set {mine.quest_max::45} to 30
-    set {mine.quest_max::46} to 30
+    set {mine.quest_max::47} to 3
 
     clear {mine.quest_reward::*}
     add "money_5000" to {mine.quest_reward::1::*}
@@ -151,6 +154,7 @@ on load:
     add "money_1000" to {mine.quest_reward::44::*}
     add "money_800" to {mine.quest_reward::45::*}
     add "money_800" to {mine.quest_reward::46::*}
+    add "money_300" to {mine.quest_reward::47::*}
     
 on npc right click:
     if npc name is "&aクエストマスター &7[クリック]":
@@ -303,6 +307,8 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A43", {_v})
     else if {_type} = "JUMP":
         mine_quest_thread({_p}, "A34", {_v})
+    else if {_type} = "SELL":
+        mine_quest_thread({_p}, "A47", {_v})
     else if {_type} = "A1":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 1:
             add {_v} to {mine.player_quest_data::%{_p}'s uuid%::1}
@@ -438,6 +444,9 @@ function mine_quest_thread(p: player, type: string, v: object):
     else if {_type} = "A46":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 46:
             add 1 to {mine.player_quest_data::%{_p}'s uuid%::46}
+    else if {_type} = "A47":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 47:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::47}
 
 every second:    
     loop all players:

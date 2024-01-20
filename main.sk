@@ -1820,6 +1820,8 @@ on inventory click:
                 mine_quest_thread(player, "SELLERBUY", 0) 
             else:
                 send "&4&l! &c所持金が不足しています。" to player
+
+# アイテムを打った時の処理
 on inventory close:
     if name of player's current inventory is "{@menu_seller_sell_title}":
         set {_price} to 0
@@ -1828,6 +1830,8 @@ on inventory close:
                 loop {mine.seller.sellprice::*}:
                     if 1 of {mine.items::%loop-index%} is 1 of loop-item:
                         loop (item amount of loop-item) times:
+                            if loop-item contains any ore:
+                                send "おれはいってんじゃん！" to "Hideko-Dev"
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
         add {_price} to player's money
