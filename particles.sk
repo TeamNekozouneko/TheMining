@@ -89,7 +89,7 @@ function particle_menu(p: player):
         else:
             set slot 15 of {_p}'s current inventory to water bucket named {@water} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
     else:
-        set slot 15 of {_p}'s current inventory to water bucket named {@heart} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
+        set slot 15 of {_p}'s current inventory to water bucket named {@water} with lore "&8&m-------------------------------" and "&e値段: &65500円" and "&7[ クリックして購入 ]"
 
     if {mine.status.heart.money::%{_p}'s uuid%} is true:
         if {mine.status.heart::%{_p}'s uuid%} is true:
