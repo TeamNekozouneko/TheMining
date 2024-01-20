@@ -1520,7 +1520,7 @@ on inventory click:
                     give {mine.enchant_result::%{_index}%::%{_cindex}%} to player
                     sound_enchanted(player)
                     send "&2&l! &aエンチャントしました！" to player
-                    send "結果: %{mine.enchant_result::%{_index}%::%{_cindex}%}%" to player
+                    send "結果: %{_index}%::%{_cindex}%" to player
                     mine_quest_thread(player, "ENCHANT", 0)
 
 #以下スキル
