@@ -42,7 +42,6 @@ function reset_particle(p: player):
     set {mine.status.villager::%{_p}'s uuid%} to false
 
 function setItem(p: player, slot: number, particle: string, itemstack: item, name: string, price: number):
-    send "%{_p}%, %{_slot}% %{_particle}% %{_itemstack}% %{_name}% %{_price}%" to {_p}
     if {mine.status.%{_particle}%.money::%{_p}'s uuid%} is true:
         if {mine.status.%{_particle}%::%{_p}'s uuid%} is true:
             set slot {_slot} of {_p}'s current inventory to glowing {_itemstack} named {_name} with lore "&8&m-------------------------------" and "&e選択中"
@@ -54,14 +53,14 @@ function setItem(p: player, slot: number, particle: string, itemstack: item, nam
 #SkBeeバグでnbtを数字として受け付けないらしい
 function particle_menu(p: player):
     open chest inventory with 4 row named {@title} to {_p}
-    setItem({_p}, 10, "lava", "lava bucket", {@lava}, 5500)
-    setItem({_p}, 11, "slime", "slimeball", {@slime}, 5500)
-    setItem({_p}, 12, "note", "note block", {@note}, 5500)
-    setItem({_p}, 13, "blue", "blue dye", {@blue}, 5500)
-    setItem({_p}, 14, "red", "red dye", {@red}, 5500)
-    setItem({_p}, 15, "water", "water  bucket", {@water}, 5500)
-    setItem({_p}, 16, "heart", "apple", {@heart}, 5500)
-    setItem({_p}, 19, "villager", "stripped oak log", {@villager}, 5500)
+    setItem({_p}, 10, "lava", lava bucket, {@lava}, 5500)
+    setItem({_p}, 11, "slime", slimeball, {@slime}, 5500)
+    setItem({_p}, 12, "note", note block, {@note}, 5500)
+    setItem({_p}, 13, "blue", blue dye, {@blue}, 5500)
+    setItem({_p}, 14, "red", red dye, {@red}, 5500)
+    setItem({_p}, 15, "water", water bucket, {@water}, 5500)
+    setItem({_p}, 16, "heart", apple, {@heart}, 5500)
+    setItem({_p}, 19, "villager", stripped oak log, {@villager}, 5500)
     # if {mine.status.lava.money::%{_p}'s uuid%} is true:
     #     if {mine.status.lava::%{_p}'s uuid%} is true:
     #         set slot 10 of {_p}'s current inventory to glowing lava bucket named {@lava} with lore "&8&m-------------------------------" and "&e選択中"
