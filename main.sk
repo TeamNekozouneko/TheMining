@@ -1834,8 +1834,7 @@ on inventory close:
                                 add type of loop-item to {_tmpItems}
                             add {mine.seller.sellprice::%loop-index%} to {_price}
                         exit loop
-                        if {_tmpItems} contains any ore:
-                            send loop-item to ops
+                        send {_tmpItems} to ops
         add {_price} to player's money
         send "&2&l! &a売却結果: %{_price}%円" to player
 
