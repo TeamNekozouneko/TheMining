@@ -1,4 +1,5 @@
 options:
+    prefix: "&8[&eパーティクル&8]"
     title: "&bパーティクルショップ"
     lava: "&4マグマ"
     slime: "&aスライム"
@@ -39,6 +40,15 @@ function reset_particle(p: player):
     set {mine.status.water::%{_p}'s uuid%} to false
     set {mine.status.heart::%{_p}'s uuid%} to false
     set {mine.status.villager::%{_p}'s uuid%} to false
+
+function setItem(p: player, slot: number, particle: stringm, itemstack: string, price: number):
+    if {mine.status.%{_particle}%.money::%{_p}'s uuid%} is true:
+        if {mine.status.%{_particle}%::%{_p}'s uuid%} is true:
+            set slot {_slot} of {_p}'s current inventory to glowing {_itemstack} named {@lava} with lore "&8&m-------------------------------" and "&e選択中"
+        else:
+            set slot {_slot} of {_p}'s current inventory to {_itemstack} named {@lava} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
+    else:
+        set slot {_slot} of {_p}'s current inventory to {_itemstack} named {@lava} with lore "&8&m-------------------------------" and "&e値段: &6%{_price}%" and "&7[ クリックして購入 ]"
 
 #SkBeeバグでnbtを数字として受け付けないらしい
 function particle_menu(p: player):
@@ -127,25 +137,24 @@ on inventory click:
         if name of event-item is {@villager}:
             buyParticle(player, "villager", {@villager}, 8, 5500)
 
-# Fixedssbeaabwrebss
 function buyParticle(player: player, particle: string, particle_name: string, particle_id: number, price: number):
     if {mine.status.%{_particle}%.money::%{_player}'s uuid%} is true:
         if {mine.status.%{_particle}%::%{_player}'s uuid%} is true:
             set {mine.status.%{_particle}%::%{_player}'s uuid%} to false
             particle_menu({_player})
-            send "&2&l! %{_particle_name}%&aを無効化しました。" to {_player}
+            send "%{@prefix}% %{_particle_name}%&8を&c無効化&8しました。" to {_player}
             reset_particle({_player})
             clear {particles.player.set::%{_player}%}
         else:
             reset_particle({_player})
             set {mine.status.%{_particle}%::%{_player}'s uuid%} to true
             particle_menu({_player})
-            send "&2&l! %{_particle_name}%&aを有効化しました。" to {_player}
+            send "%{@prefix}% %{_particle_name}%&8を&a有効化&8しました。" to {_player}
             set {particles.player.set::%{_player}%} to {_particle_id}
     else: 
         if {_player}'s money >= {_price}:
             remove {_price} from {_player}'s money
-            send "&2&l! &a購入しました！"  to {_player}
+            send "%{@prefix}% &a購入しました！"  to {_player}
             set {mine.status.%{_particle}%.money::%{_player}'s uuid%} to true
             set {mine.status.%{_particle}%::%{_player}'s uuid%} to false
             particle_menu({_player})
