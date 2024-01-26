@@ -240,6 +240,7 @@ function mine_open_quest_refancy(p: player):
                 add 1 to {_n}
                 if {_n} is 45:
                     send "%{mine.quest_max::%loop-index parsed as integer%}%" to {_p}
+                    send "%loop-index%" to {_p}
                     add 1 to {_n}
         else:
             clear {_lores::*}
