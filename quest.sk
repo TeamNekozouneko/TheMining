@@ -238,7 +238,7 @@ function mine_open_quest_refancy(p: player):
                 add "&a現在クエストを受注しています！" to {_lores::*}
                 set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
                 if {_n} is 46:
-                    send "%{mine.quest_max::%loop-index parsed as integer%}%" to loop-player
+                    send "%{mine.quest_max::%loop-index parsed as integer%}%" to {_p}
                     add 1 to {_n}
                 add 1 to {_n}
         else:
