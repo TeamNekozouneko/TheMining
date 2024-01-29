@@ -1,0 +1,15 @@
+on load:
+    clear {texture_fix.items::*}
+    add 12 to {texture_fix.items::*}
+    clear {texture_fix.contents::*}
+    set {texture_fix.contents::12} to unbreakable diamond pickaxe of efficiency 2 named "&7[&aビギナーピッケル&e&lテスト&7] &e&lLv.1" with lore "&aエメラルド&7が掘れるようになった！" with nbt compound from "{mine_price: 1200}" with enchants flag hidden
+
+on join:
+    player is "runq_JP"
+    set {_n} to 0
+    loop 36 times:
+        loop {mine.items::*} where [input is slot {_n} of player's inventory]:
+            {texture_fix.items::*} contains loop-index
+            set slot {_n} of player's inventory to {texture_fix.contents::%loop-index%}
+
+        add 1 to {_n}
