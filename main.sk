@@ -41,14 +41,14 @@ on load:
     set {mine.items::7} to glowing diamond ore named "&a圧縮ダイヤモンド" with nbt compound from "{mine_price: 0}"
     set {mine.items::8} to glowing obsidian named "&7&l圧縮黒曜石" with nbt compound from "{mine_price: 0}"
     set {mine.items::9} to glowing emerald ore named "&l圧縮エメラルド" with nbt compound from "{mine_price: 0}"
-    set {mine.items::11} to diamond pickaxe named "&7[&aビギナーピッケル&7]"
+    set {mine.items::11} to diamond pickaxe named "&7[&aビギナーピッケル&7]" with nbt compound from "{CustomModelData: 5000}"
     set {mine.items::12} to unbreakable diamond pickaxe of efficiency 2 named "&7[&aビギナーピッケル&7] &e&lLv.1" with lore "&aエメラルド&7が掘れるようになった！" with nbt compound from "{CustomModelData: 5000, mine_price: 1200}" with enchants flag hidden
     set {mine.items::13} to unbreakable diamond pickaxe of efficiency 4 named "&7[&aビギナーピッケル&7] &e&lLv.2" with lore "&aエメラルド&7が掘れるようになった！" with nbt compound from "{CustomModelData: 5000, mine_price: 1600}" with enchants flag hidden
     set {mine.items::14} to unbreakable diamond pickaxe of efficiency 6 named "&7[&aビギナーピッケル&7] &e&lLv.3" with lore "&aエメラルド&7が掘れるようになった！" with nbt compound from "{CustomModelData: 5000, mine_price: 1800}" with enchants flag hidden
     set {mine.items::15} to unbreakable diamond pickaxe of efficiency 8 named "&7[&aビギナーピッケル&7] &e&lLv.4" with lore "&aエメラルド&7が掘れるようになった！" with nbt compound from "{CustomModelData: 5000, mine_price: 2000}" with enchants flag hidden
     set {mine.items::16} to unbreakable diamond pickaxe of efficiency 10 named "&7[&aビギナーピッケル&7] &e&lLv.5" with lore "&aエメラルド&7が掘れるようになった！" with nbt compound from "{CustomModelData: 5000, mine_price: 2200}" with enchants flag hidden
     set {mine.items::17} to glowing coal ore named "&a圧縮石炭" with nbt compound from "{mine_price: 0}"
-    set {mine.items::18} to diamond pickaxe named "&7[&cアドバンスピッケル&7]"
+    set {mine.items::18} to diamond pickaxe named "&7[&cアドバンスピッケル&7]" with nbt compound from "{CustomModelData: 5001}"
     set {mine.items::19} to spider eye named "&7[&cビギナーピッケルを溶かしたもの&7]" with lore "&7どうやって素手でこれを・・・"
     set {mine.items::20} to brick named "&7[&cアドバンスピッケルの素&7]"
     set {mine.items::21} to unbreakable diamond pickaxe of efficiency 10 named "&7[&cアドバンスピッケル&7] &e&lLv.1" with lore "&a次のレベルの採掘所へ行けるようになった！" and "&7とある村人から作り方を教わったんだ..." with nbt compound from "{CustomModelData: 5001}" with enchants flag hidden
