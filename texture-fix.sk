@@ -16,8 +16,8 @@ command /admin_texture_fix:
 function texture_fix(p: player):
     set {_n} to 0
     loop 36 times:
+        send loop-value to {_p}
         loop {mine.items::*} where [input is slot {_n} of {_p}'s inventory]:
-            send loop-value-1 to {_p}
             {texture_fix.items::*} contains loop-index
             set slot {_n} of {_p}'s inventory to {texture_fix.contents::%loop-index%}
 
