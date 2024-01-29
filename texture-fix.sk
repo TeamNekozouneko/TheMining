@@ -41,7 +41,7 @@ on load:
     set {texture_fix.old_items::40} to unbreakable glowing gold pickaxe of efficiency 17 named "&7[&c&lマグマのピッケル&7]" with lore "&cとてつもない熱を感じる" with enchants flag hidden
 
 on join:
-    player is "runq_JP"
+#    player is "runq_JP"
     texture_fix(player)
 
 command /admin_texture_fix:
