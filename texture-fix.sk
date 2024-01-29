@@ -6,10 +6,18 @@ on load:
 
 on join:
     player is "runq_JP"
+    texture_fix(player)
+
+command /admin_texture_fix:
+    permission: admin
+    trigger:
+        texture_fix(player)
+
+function texture_fix(p: player):
     set {_n} to 0
     loop 36 times:
-        loop {mine.items::*} where [input is slot {_n} of player's inventory]:
+        loop {mine.items::*} where [input is slot {_n} of {_p}'s inventory]:
             {texture_fix.items::*} contains loop-index
-            set slot {_n} of player's inventory to {texture_fix.contents::%loop-index%}
+            set slot {_n} of {_p}'s inventory to {texture_fix.contents::%loop-index%}
 
         add 1 to {_n}
