@@ -18,5 +18,4 @@ function texture_fix(p: player):
         loop {mine.items::*}: 
             loop-value-2 is slot (loop-value-1)-1 of {_p}'s inventory
             {texture_fix.items::*} contains loop-index parsed as integer
-            send "%loop-index% - %loop-value-2%" to {_p}
             set slot (loop-value-1)-1 of {_p}'s inventory to {texture_fix.contents::%loop-index%}
