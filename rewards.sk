@@ -15,7 +15,7 @@ on npc right click:
 function rewards(p: player):
     open chest inventory with 6 row named "&e&llevel rewards" to {_p}
     if {rewards.1::%{_p}%} is not 1:
-        set slot 10 of {_p}'s current inventory to glowing gold block named "&6100level" 
+        set slot 10 of {_p}'s current inventory to glowing gold block named "&6100level"
     else:
         set slot 10 of {_p}'s current inventory to gold block named "&6クリア済み"
     if {rewards.2::%{_p}%} is not 1:

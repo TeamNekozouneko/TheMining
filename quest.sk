@@ -207,6 +207,8 @@ function mine_open_quest_refancy(p: player):
     set {_b} to 0
     set {_n} to {_b}
     loop {mine.quests::*}: #クエスト表示
+        if player is op:
+            send loop-index to player
         continue if mine_quest_conditions({_p}, loop-index parsed as integer) = false #クエスト対象のフィルタリング
         clear {_rewards::*}
         clear {_lores::*}
