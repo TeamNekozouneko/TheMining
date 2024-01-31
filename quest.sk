@@ -226,10 +226,8 @@ function mine_open_quest_refancy(p: player):
                 add "&r" to {_l ores::*}
                 add "&aこのクエストは完了しています！" to {_lores::*}
                 set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
-
-                if {_n} is 46:
+                if loop-index parsed as integer is 46:
                     add 1 to {_n}
-
                 add 1 to {_n}
             else:
                 clear {_lores::*}
@@ -264,10 +262,6 @@ function mine_open_quest_refancy(p: player):
             add "&cこのクエストはまだ受注していません" to {_lores::*}
             add "&e[ クリックして受注する ]" to {_lores::*}
             set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
-
-            if {_n} is 46:
-                add 1 to {_n}
-
             add 1 to {_n}
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
