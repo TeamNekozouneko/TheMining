@@ -229,6 +229,8 @@ function mine_open_quest_refancy(p: player):
                 set {_index} to loop-index parsed as integer
                 if {_index} is 47:
                     set slot {_index} of {_p}'s current inventory to cobblestone named "&c< &7戻る"
+                    if {_p} is op:
+                        send {_index} to {_p}
                     add 1 to {_n}
                 add 1 to {_n}
             else:
