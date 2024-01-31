@@ -256,9 +256,10 @@ function mine_open_quest_refancy(p: player):
             add "&e[ クリックして受注する ]" to {_lores::*}
             set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
             add 1 to {_n}
-        if "%loop-index%" is "46":
+        set {_c} to "%loop-index%" parsed as integer
+        if {_c} is 46:
             if {_p} is op:
-                set slot {_n} of {_p}'s current inventory to stone named "TEST" with lore "TEST LORE"
+                set slot {_c} of {_p}'s current inventory to stone named "TEST" with lore "TEST LORE"
                 send "は" to {_p}
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
