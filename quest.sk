@@ -228,7 +228,6 @@ function mine_open_quest_refancy(p: player):
                 set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
 
                 if {_n} is 46:
-                    set slot {_n} of {_p}'s current inventory to glowing paper named "eeeeeeee" with lore "aa"
                     add 1 to {_n}
 
                 add 1 to {_n}
@@ -245,7 +244,6 @@ function mine_open_quest_refancy(p: player):
                 set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
 
                 if {_n} is 46:
-                    set slot {_n} of {_p}'s current inventory to glowing paper named "eeeeeeee" with lore "aa"
                     add 1 to {_n}
 
                 add 1 to {_n}
@@ -268,7 +266,6 @@ function mine_open_quest_refancy(p: player):
             set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
 
             if {_n} is 46:
-                set slot {_n} of {_p}'s current inventory to glowing paper named "eeeeeeee" with lore "aa"
                 add 1 to {_n}
 
             add 1 to {_n}
