@@ -226,8 +226,9 @@ function mine_open_quest_refancy(p: player):
                 add "&r" to {_l ores::*}
                 add "&aこのクエストは完了しています！" to {_lores::*}
                 set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
-                if loop-index parsed as integer is 47:
-                    set slot loop-index parsed as integer of {_p}'s current inventory to oak button named "&c< &7戻る"
+                set {_index} to loop-index parsed as integer
+                if {_index} is 47:
+                    set slot {_index} of {_p}'s current inventory to cobblestone named "&c< &7戻る"
                     add 1 to {_n}
                 add 1 to {_n}
             else:
@@ -242,8 +243,9 @@ function mine_open_quest_refancy(p: player):
                 add "&a現在クエストを受注しています！" to {_lores::*}
                 set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
 
-                if loop-index parsed as integer is 47:
-                    set slot loop-index parsed as integer of {_p}'s current inventory to oak button named "&c< &7戻る"
+                set {_index} to loop-index parsed as integer
+                if {_index} is 47:
+                    set slot {_index} of {_p}'s current inventory to cobblestone named "&c< &7戻る"
                     add 1 to {_n}
 
                 add 1 to {_n}
@@ -265,8 +267,9 @@ function mine_open_quest_refancy(p: player):
             add "&e[ クリックして受注する ]" to {_lores::*}
             set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
 
-            if loop-index parsed as integer is 47:
-                set slot loop-index parsed as integer of {_p}'s current inventory to oak button named "&c< &7戻る"
+            set {_index} to loop-index parsed as integer
+            if {_index} is 47:
+                set slot {_index} of {_p}'s current inventory to cobblestone named "&c< &7戻る"
                 add 1 to {_n}
             add 1 to {_n}
 
