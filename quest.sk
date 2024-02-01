@@ -228,7 +228,7 @@ function mine_open_quest_refancy(p: player):
                     add "&r" to {_l ores::*}
                     add "&aこのクエストは完了しています！" to {_lores::*}
                     set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
-                    if {_index} is 46:
+                    if {_index} is 45:
                         add 1 to {_n}
                     add 1 to {_n}
                 else:
@@ -242,7 +242,7 @@ function mine_open_quest_refancy(p: player):
                     add "&r" to {_lores::*}
                     add "&a現在クエストを受注しています！" to {_lores::*}
                     set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
-                    if {_index} is 46:
+                    if {_index} is 45:
                         add 1 to {_n}
                     add 1 to {_n}
             else:
@@ -261,6 +261,8 @@ function mine_open_quest_refancy(p: player):
                 add "&r" to {_lores::*}
                 add "&cこのクエストはまだ受注していません" to {_lores::*}
                 add "&e[ クリックして受注する ]" to {_lores::*}
+                if {_index} is 45:
+                    add 1 to {_n}
                 set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
         else:
             if {_p} is op:
