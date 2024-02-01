@@ -603,7 +603,7 @@ every second:
                         send "&8&l≫ &7%{mine.quests::%loop-index%}%" to loop-player
                         send "&r" to loop-player
                         send "&3&m&l=&b 報酬" to loop-player
-                        loop {_rewards::*}: #報酬の描写
+                        loop {_rewards::*}: #報酬の描写eee
                             send "&3&l・&b%loop-value-3%" to loop-player
                         send "&r" to loop-player
                         clear {mine.player_quest_data::%loop-player's uuid%::%loop-index%}
