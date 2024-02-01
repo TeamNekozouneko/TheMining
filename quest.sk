@@ -217,7 +217,7 @@ function mine_open_quest_refancy(p: player):
 
 function mine_open_quest_refancy_core(index: number, value: string, p: player):
     set {_cover} to 0
-    continue if mine_quest_conditions({_p}, {_index}) = false #クエスト対象のフィルタリング
+    #continue if mine_quest_conditions({_p}, {_index}) = false #クエスト対象のフィルタリング
     clear {_rewards::*}
     clear {_lores::*}
     loop {mine.quest_reward::%{_index}%::*}: #報酬を変数から解析
