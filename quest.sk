@@ -208,7 +208,7 @@ function mine_open_quest_refancy(p: player):
     set {_n} to {_b}
     loop {mine.quests::*}: #クエスト表示
         set {_index} to loop-index parsed as integer
-        if {_index} < 55:
+        if {_index} < 46:
             set {_cover} to 0
             continue if mine_quest_conditions({_p}, {_index}) = false #クエスト対象のフィルタリング
             clear {_rewards::*}
@@ -228,11 +228,8 @@ function mine_open_quest_refancy(p: player):
                     add "&r" to {_l ores::*}
                     add "&aこのクエストは完了しています！" to {_lores::*}
                     set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
-                    if {_index} is 47:
-                        set slot ({_n}+1) of {_p}'s current inventory to stick named "&c&l< &8戻る"
-                        add 1 to {_n}
-                    if {_index} is 54:
-                        set slot ({_n}+1) of {_p}'s current inventory to stick named "&8次のページ &a&l>"
+                    set slot 53 of {_p}'s current inventory to stick named "&c&l< &8前のページ"
+                    set slot 54 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
                     add 1 to {_n}
                 else:
                     clear {_lores::*}
@@ -245,11 +242,8 @@ function mine_open_quest_refancy(p: player):
                     add "&r" to {_lores::*}
                     add "&a現在クエストを受注しています！" to {_lores::*}
                     set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
-                    if {_index} is 47:
-                        set slot ({_n}+1) of {_p}'s current inventory to stick named "&c&l< &8前のページ"
-                        add 1 to {_n}
-                    if {_index} is 54:
-                        set slot ({_n}+1) of {_p}'s current inventory to stick named "&8次のページ &a&l>"
+                    set slot 53 of {_p}'s current inventory to stick named "&c&l< &8前のページ"
+                    set slot 54 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
                     add 1 to {_n}
             else:
                 clear {_lores::*}
@@ -267,12 +261,9 @@ function mine_open_quest_refancy(p: player):
                 add "&r" to {_lores::*}
                 add "&cこのクエストはまだ受注していません" to {_lores::*}
                 add "&e[ クリックして受注する ]" to {_lores::*}
-                if {_index} is 47:
-                    set slot ({_n}+1) of {_p}'s current inventory to stick named "&c&l< &8戻る"
-                    add 1 to {_n}
-                if {_index} is 54:
-                    set slot ({_n}+1) of {_p}'s current inventory to stick named "&8次のページ &a&l>"
                 set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
+                set slot 53 of {_p}'s current inventory to stick named "&c&l< &8前のページ"
+                set slot 54 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
         else:
             if {_p} is op:
                 send "Uppered." to {_p}
