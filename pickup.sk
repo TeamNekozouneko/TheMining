@@ -36,21 +36,3 @@ command /pickup:
                 else:
                     send "%{_i}% &a個のアイテムを回収しました！" to player
                 sound_success2(player)
-
-command /admin_pickup_clear_data:
-    permission: admin
-    trigger:
-        send "&eデータの検索をしています...." to player
-        set {_n::*} to all offline players
-        set {_n2} to 0
-        send "&a%size of {_n::*}%件のデータが見つかりました。" to player
-        send "&cデータを削除しています..." to player
-        loop all offline players:
-            if {pickup.%loop-value's uuid%::*} is set:
-                clear {pickup.%loop-value's uuid%::*}
-                add 1 to {_n2}
-                if {_n2}/10 is floor({_n2}/10):
-                    send "&7削除経過: %{_n2}%件が完了しています" to player
-                wait a tick
-        send "&aデータの削除が完了しました。" to player
-        send "&a%{_n2}%件のデータが削除されました。" to player
