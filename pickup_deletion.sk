@@ -5,3 +5,23 @@ command /admin_pickup_fetch:
         loop all offline players where [{pickup.%input's uuid%::*} is set]:
             add 1 to {_n}
         send "%{_n}%件のpickupデータ" to player
+
+command /admin_pickup_deletion:
+    permission: admin
+    trigger:
+        set {_undelete::*} to 30, 37 and 39
+
+        set {_n} to 0
+        loop all offline players where [{pickup.%input's uuid%::*} is set]:
+            loop {pickup.%loop-player's uuid%::*}:
+                clear {_flag}
+                set {_flag} to true if {mine.items::*} doesn't contain loop-value-2:
+                loop {mine.items::*} where [input is loop-value-2]:
+                    set {_index} to loop-index
+                    exit loop
+                set {_flag} to true if {_index} is not set
+                send "Index: %{_index}%" to player if {_flag} is not set
+                send "Flag: %{_flag}%" to player
+                wait 1 second
+            exit loop
+            add 1 to {_n}  
