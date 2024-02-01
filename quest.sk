@@ -205,13 +205,12 @@ on inventory click:
 function mine_open_quest(p: player):
     open chest inventory with 6 row named {@mine_quest_title} to {_p}
     mine_open_quest_refancy({_p}, 1)
-    set slot 8 of {_p}'s current inventory to book named "aaa" with nbt compound from "{mine_index:10}"
 
 
 function mine_open_quest_refancy(p: player, page: number, MAX_ITEMS_PER_PAGE: integer = 45):
     set {_b} to 0
     set {_n} to {_b}
-    
+
     #slotの初期化
     loop {_MAX_ITEMS_PER_PAGE} times:
         set slot (loop-value)-1 of {_p}'s current inventory to air
