@@ -538,6 +538,21 @@ function mine_quest_thread(p: player, type: string, v: object):
     else if {_type} = "A54":
         if {mine.player_quests::%{_p}'s uuid%::*} contains 54:
             add 1 to {mine.player_quest_data::%{_p}'s uuid%::54}
+    else if {_type} = "A55":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 55:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::55}
+    else if {_type} = "A56":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 56:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::56}
+    else if {_type} = "A57":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 57:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::57}
+    else if {_type} = "A58":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 58:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::58}
+    else if {_type} = "A59":
+        if {mine.player_quests::%{_p}'s uuid%::*} contains 59:
+            add 1 to {mine.player_quest_data::%{_p}'s uuid%::59}
 
 every second:    
     loop all players:
