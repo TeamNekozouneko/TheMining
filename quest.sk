@@ -214,7 +214,7 @@ function mine_open_quest_refancy(p: player, page: number, MAX_ITEMS_PER_PAGE: in
 
     #slotの初期化
     loop {_MAX_ITEMS_PER_PAGE} times:
-        send loop-value to {_p} if {_p} is op
+        set slot (loop-value)-1 of {_p}'s current inventory to air
 
     loop {mine.quests::*}:
         set {_index} to loop-index parsed as integer
