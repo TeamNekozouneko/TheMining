@@ -197,9 +197,9 @@ on inventory click:
                 add {_index} to {mine.player_quests::%player's uuid%::*}
                 set {mine.player_quest_data::%player's uuid%::%{_index}%} to 0
             mine_open_quest(player)
-        if slot of clicked item is 52:
+        if clicked slot is 52:
             mine_open_quest_refancy(player, 1)
-        if slot of clicked item is 53:
+        if clicked slot is 53:
             mine_open_quest_refancy(player, 2)
 
 function mine_open_quest(p: player):
