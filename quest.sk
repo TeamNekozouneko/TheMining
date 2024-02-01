@@ -209,64 +209,58 @@ function mine_open_quest_refancy(p: player):
     loop {mine.quests::*}: #クエスト表示
         set {_index} to loop-index parsed as integer
         if {_index} < 55:
-            mine_open_quest_refancy_core({_index}, loop-value, {_p})
-        #else:
-            #mine_open_quest_refancy_core({_index}, loop-value, {_p})
-            #if {_p} is op:
-                #send "Uppered." to {_p}
-
-function mine_open_quest_refancy_core(index: number, value: string, p: player):
-    set {_cover} to 0
-    #continue if mine_quest_conditions({_p}, {_index}) = false #クエスト対象のフィルタリング
-    clear {_rewards::*}
-    clear {_lores::*}
-    loop {mine.quest_reward::%{_index}%::*}: #報酬を変数から解析
-        set {_tmp::*} to loop-value split at "_"
-        add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
-        add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
-    if {mine.player_quests::%{_p}'s uuid%::*} contains ({_index}):
-        if {mine.players::%{_p}'s uuid%::quest_done::*} contains ({_index}):
+            set {_cover} to 0
+            continue if mine_quest_conditions({_p}, {_index}) = false #クエスト対象のフィルタリング
+            clear {_rewards::*}
             clear {_lores::*}
-            add "&8&l≫ &7%{_value}%" to {_lores::*}
-            add "&r" to {_lores::*}
-            add "&3&m&l=&b 報酬" to {_lores::*}
-            loop {_rewards::*}: #報酬の描写
-                add "&3&l・&b%loop-value%" to {_lores::*}
-            add "&r" to {_l ores::*}
-            add "&aこのクエストは完了しています！" to {_lores::*}
-            set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
-            add 1 to {_n}
+            loop {mine.quest_reward::%loop-index%::*}: #報酬を変数から解析
+                set {_tmp::*} to loop-value-2 split at "_"
+                add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
+                add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
+            if {mine.player_quests::%{_p}'s uuid%::*} contains (loop-index parsed as integer):
+                if {mine.players::%{_p}'s uuid%::quest_done::*} contains (loop-index parsed as integer):
+                    clear {_lores::*}
+                    add "&8&l≫ &7%loop-value%" to {_lores::*}
+                    add "&r" to {_lores::*}
+                    add "&3&m&l=&b 報酬" to {_lores::*}
+                    loop {_rewards::*}: #報酬の描写
+                        add "&3&l・&b%loop-value-2%" to {_lores::*}
+                    add "&r" to {_l ores::*}
+                    add "&aこのクエストは完了しています！" to {_lores::*}
+                    set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
+                    add 1 to {_n}
+                else:
+                    clear {_lores::*}
+                    add "&8&l≫ &7%loop-value%" to {_lores::*}
+                    add "&7(&3%{mine.player_quest_data::%{_p}'s uuid%::%loop-index parsed as integer%}%&7/%{mine.quest_max::%loop-index parsed as integer%}%)" to {_lores::*}
+                    add "&r" to {_lores::*}
+                    add "&3&m&l=&b 報酬" to {_lores::*}
+                    loop {_rewards::*}: #報酬の描写
+                        add "&3&l・&b%loop-value-2%" to {_lores::*}
+                    add "&r" to {_lores::*}
+                    add "&a現在クエストを受注しています！" to {_lores::*}
+                    set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
+                    add 1 to {_n}
+            else:
+                clear {_lores::*}
+                clear {_rewards::*}
+                loop {mine.quest_reward::%loop-index%::*}: #報酬を変数から解析
+                    set {_tmp::*} to loop-value-2 split at "_"
+                    add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
+                    add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
+
+                add "&8&l≫ &7%loop-value%" to {_lores::*}
+                add "&r" to {_lores::*}
+                add "&3&m&l=&b 報酬" to {_lores::*}
+                loop {_rewards::*}: #報酬の描写
+                    add "&3&l・&b%loop-value-2%" to {_lores::*}
+                add "&r" to {_lores::*}
+                add "&cこのクエストはまだ受注していません" to {_lores::*}
+                add "&e[ クリックして受注する ]" to {_lores::*}
+                set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
         else:
-            clear {_lores::*}
-            add "&8&l≫ &7%{_value}%" to {_lores::*}
-            add "&7(&3%{mine.player_quest_data::%{_p}'s uuid%::%{_index}%}%&7/%{mine.quest_max::%{_index}%}%)" to {_lores::*}
-            add "&r" to {_lores::*}
-            add "&3&m&l=&b 報酬" to {_lores::*}
-            loop {_rewards::*}: #報酬の描写
-                add "&3&l・&b%loop-value%" to {_lores::*}
-            add "&r" to {_lores::*}
-            add "&a現在クエストを受注しています！" to {_lores::*}
-            set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
-            add 1 to {_n}
-    else:
-        clear {_lores::*}
-        clear {_rewards::*}
-        loop {mine.quest_reward::%{_index}%::*}: #報酬を変数から解析
-            set {_tmp::*} to loop-value split at "_"
-            add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
-            add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
-
-        add "&8&l≫ &7%{_value}%" to {_lores::*}
-        add "&r" to {_lores::*}
-        add "&3&m&l=&b 報酬" to {_lores::*}
-        loop {_rewards::*}: #報酬の描写
-            add "&3&l・&b%loop-value%" to {_lores::*}
-        add "&r" to {_lores::*}
-        add "&cこのクエストはまだ受注していません" to {_lores::*}
-        add "&e[ クリックして受注する ]" to {_lores::*}
-        set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%{_index}%}"
-
-
+            if {_p} is op:
+                send "Uppered." to {_p}
 
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
