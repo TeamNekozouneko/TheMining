@@ -256,7 +256,7 @@ function mine_open_quest_refancy(p: player, page: number, MAX_ITEMS_PER_PAGE: in
                     set slot 52 of {_p}'s current inventory to stick named "&c&l< &8前のページ"
                     set slot 53 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
                 add 1 to {_n}
-        else if {_n} is between ({_page}-1)*{_MAX_ITEMS_PER_PAGE} and {_page}*{_MAX_ITEMS_PER_PAGE}::
+        else if {_n} is between ({_page}-1)*{_MAX_ITEMS_PER_PAGE} and {_page}*{_MAX_ITEMS_PER_PAGE}:
             clear {_lores::*}
             clear {_rewards::*}
             loop {mine.quest_reward::%loop-index%::*}: #報酬を変数から解析
