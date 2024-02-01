@@ -1,0 +1,7 @@
+command /admin_pickup_fetch:
+    permission: admin
+    trigger:
+        set {_n} to 0
+        loop all offline players where [{pickup.%input's uuid%::*} is set]:
+            add 1 to {_n}
+        send "%{_n}%件のpickupデータ" to player
