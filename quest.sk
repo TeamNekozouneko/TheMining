@@ -203,12 +203,25 @@ function mine_open_quest(p: player):
     mine_open_quest_refancy({_p})
     set slot 8 of {_p}'s current inventory to book named "aaa" with nbt compound from "{mine_index:10}"
 
-function mine_open_quest_refancy(p: player):
+function mine_open_quest_refancy_checker(index: number, page: number) ::boolean:
+    if {_page} is 1:
+        if {_index} < 48:
+            return true
+        else
+            return false
+    if {_page} is 2:
+        if {_index} > 48:
+            return true
+        else
+            return false
+
+
+function mine_open_quest_refancy(p: player, page: number):
     set {_b} to 0
     set {_n} to {_b}
     loop {mine.quests::*}: #クエスト表示
         set {_index} to loop-index parsed as integer
-        if {_index} < 48:
+        if mine_open_quest_refancy_checker({_index}, {_page}) is true:
             set {_cover} to 0
             continue if mine_quest_conditions({_p}, {_index}) = false #クエスト対象のフィルタリング
             clear {_rewards::*}
@@ -264,9 +277,6 @@ function mine_open_quest_refancy(p: player):
                 set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
                 set slot 52 of {_p}'s current inventory to stick named "&c&l< &8前のページ"
                 set slot 53 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
-        else:
-            #if {_p} is op:
-            #    send "Uppered." to {_p}
 
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
