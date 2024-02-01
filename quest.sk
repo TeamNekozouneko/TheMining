@@ -58,6 +58,12 @@ on load:
     set {mine.quests::53} to "新規で黒曜石ピッケルを作る"
     set {mine.quests::54} to "新規でマグマピッケルを作る"
 
+    set {mine.quests::55} to "スロットを1回やる"
+    set {mine.quests::56} to "スロットを3回する"
+    set {mine.quests::57} to "スロットを10回する"
+    set {mine.quests::58} to "スロットを20回する"
+    set {mine.quests::59} to "スロットを30回する"
+
 
     clear {mine.quest_max::*}
     set {mine.quest_max::1} to 20000
@@ -113,6 +119,11 @@ on load:
     set {mine.quest_max::52} to 1
     set {mine.quest_max::53} to 1
     set {mine.quest_max::54} to 1
+    set {mine.quest_max::55} to 1
+    set {mine.quest_max::56} to 3
+    set {mine.quest_max::57} to 10
+    set {mine.quest_max::58} to 20
+    set {mine.quest_max::59} to 30
 
 
     clear {mine.quest_reward::*}
@@ -176,6 +187,12 @@ on load:
     add "money_2000" to {mine.quest_reward::52::*}
     add "money_3000" to {mine.quest_reward::53::*}
     add "money_4000" to {mine.quest_reward::54::*}
+
+    add "money_100" to {mine.quest_reward::55::*}
+    add "money_300" to {mine.quest_reward::56::*}
+    add "money_1000" to {mine.quest_reward::57::*}
+    add "money_2100" to {mine.quest_reward::58::*}
+    add "money_3100" to {mine.quest_reward::59::*}
     
 on npc right click:
     if npc name is "&aクエストマスター &7[クリック]":
@@ -272,7 +289,7 @@ function mine_open_quest_refancy(p: player, page: number, MAX_ITEMS_PER_PAGE: in
     set slot 53 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
 
 function mine_quest_conditions(p: player, i: integer) :: boolean:
-    return true if {_i} = 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 or 10 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23 or 24 or 25 or 26 or 27 or 28 or 29 or 30 or 31 or 32 or 33 or 34 or 35 or 36 or 37 or 38 or 39 or 41 or 42 or 43 or 44 or 45 or 46 or 47 or 48 or 49 or 50 or 51 or 52 or 53 or 54
+    return true if {_i} = 1 or 2 or 3 or 4 or 6 or 7 or 8 or 9 or 10 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23 or 24 or 25 or 26 or 27 or 28 or 29 or 30 or 31 or 32 or 33 or 34 or 35 or 36 or 37 or 38 or 39 or 41 or 42 or 43 or 44 or 45 or 46 or 47 or 48 or 49 or 50 or 51 or 52 or 53 or 54 or 55 or 56 or 57 or 58 or 59
     return false
 
 function mine_quest_thread(p: player, type: string, v: object):
@@ -300,6 +317,12 @@ function mine_quest_thread(p: player, type: string, v: object):
         mine_quest_thread({_p}, "A10", {_v})
         mine_quest_thread({_p}, "A15", {_v})
         mine_quest_thread({_p}, "A24", {_v})
+    else if {_type} = "SLOT":
+        mine_quest_thread({_p}, "A55", {_v})
+        mine_quest_thread({_p}, "A56", {_v})
+        mine_quest_thread({_p}, "A57", {_v})
+        mine_quest_thread({_p}, "A58", {_v})
+        mine_quest_thread({_p}, "A59", {_v})
     else if {_type} = "BUYSKILL":
         mine_quest_thread({_p}, "A11", {_v})
         mine_quest_thread({_p}, "A12", {_v})
