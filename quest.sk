@@ -207,12 +207,12 @@ function mine_open_quest_refancy_checker(index: number, page: number) ::boolean:
     if {_page} is 1:
         if {_index} < 48:
             return true
-        else
+        else:
             return false
     if {_page} is 2:
         if {_index} > 48:
             return true
-        else
+        else:
             return false
 
 
