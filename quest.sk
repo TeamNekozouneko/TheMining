@@ -227,33 +227,36 @@ function mine_open_quest_refancy(p: player, page: number, MAX_ITEMS_PER_PAGE: in
             add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
         if {mine.player_quests::%{_p}'s uuid%::*} contains (loop-index parsed as integer):
             if {mine.players::%{_p}'s uuid%::quest_done::*} contains (loop-index parsed as integer):
-                clear {_lores::*}
-                add "&8&l≫ &7%loop-value%" to {_lores::*}
-                add "&r" to {_lores::*}
-                add "&3&m&l=&b 報酬" to {_lores::*}
-                loop {_rewards::*}: #報酬の描写
-                    add "&3&l・&b%loop-value-2%" to {_lores::*}
-                add "&r" to {_l ores::*}
-                add "&aこのクエストは完了しています！" to {_lores::*}
-                set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
-                set slot 52 of {_p}'s current inventory to stick named "&c&l< &8前のページ"
-                set slot 53 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
+                #番号   最小値: (page-1)*MAX_ITMES_PER_PAGE ,  最大値: page*MAX_ITEMS_PER_PAGE
+                if {_n} is between ({_page}-1)*{_MAX_ITEMS_PER_PAGE} and {_page}*{_MAX_ITEMS_PER_PAGE}:
+                    clear {_lores::*}
+                    add "&8&l≫ &7%loop-value%" to {_lores::*}
+                    add "&r" to {_lores::*}
+                    add "&3&m&l=&b 報酬" to {_lores::*}
+                    loop {_rewards::*}: #報酬の描写
+                        add "&3&l・&b%loop-value-2%" to {_lores::*}
+                    add "&r" to {_l ores::*}
+                    add "&aこのクエストは完了しています！" to {_lores::*}
+                    set slot {_n} of {_p}'s current inventory to book named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
+                    set slot 52 of {_p}'s current inventory to stick named "&c&l< &8前のページ"
+                    set slot 53 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
                 add 1 to {_n}
             else:
-                clear {_lores::*}
-                add "&8&l≫ &7%loop-value%" to {_lores::*}
-                add "&7(&3%{mine.player_quest_data::%{_p}'s uuid%::%loop-index parsed as integer%}%&7/%{mine.quest_max::%loop-index parsed as integer%}%)" to {_lores::*}
-                add "&r" to {_lores::*}
-                add "&3&m&l=&b 報酬" to {_lores::*}
-                loop {_rewards::*}: #報酬の描写
-                    add "&3&l・&b%loop-value-2%" to {_lores::*}
-                add "&r" to {_lores::*}
-                add "&a現在クエストを受注しています！" to {_lores::*}
-                set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
-                set slot 52 of {_p}'s current inventory to stick named "&c&l< &8前のページ"
-                set slot 53 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
+                if {_n} is between ({_page}-1)*{_MAX_ITEMS_PER_PAGE} and {_page}*{_MAX_ITEMS_PER_PAGE}:
+                    clear {_lores::*}
+                    add "&8&l≫ &7%loop-value%" to {_lores::*}
+                    add "&7(&3%{mine.player_quest_data::%{_p}'s uuid%::%loop-index parsed as integer%}%&7/%{mine.quest_max::%loop-index parsed as integer%}%)" to {_lores::*}
+                    add "&r" to {_lores::*}
+                    add "&3&m&l=&b 報酬" to {_lores::*}
+                    loop {_rewards::*}: #報酬の描写
+                        add "&3&l・&b%loop-value-2%" to {_lores::*}
+                    add "&r" to {_lores::*}
+                    add "&a現在クエストを受注しています！" to {_lores::*}
+                    set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
+                    set slot 52 of {_p}'s current inventory to stick named "&c&l< &8前のページ"
+                    set slot 53 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
                 add 1 to {_n}
-        else:
+        else if {_n} is between ({_page}-1)*{_MAX_ITEMS_PER_PAGE} and {_page}*{_MAX_ITEMS_PER_PAGE}::
             clear {_lores::*}
             clear {_rewards::*}
             loop {mine.quest_reward::%loop-index%::*}: #報酬を変数から解析
