@@ -221,7 +221,7 @@ function mine_open_quest_refancy_core(index: number, value: string, p: player):
     clear {_rewards::*}
     clear {_lores::*}
     loop {mine.quest_reward::%{_index}%::*}: #報酬を変数から解析
-        set {_tmp::*} to loop-value-2 split at "_"
+        set {_tmp::*} to loop-value split at "_"
         add "%{_tmp::2}%円" to {_rewards::*} if {_tmp::1} is "money"
         add "%{_tmp::2}% Exp" to {_rewards::*} if {_tmp::1} is "exp"
     if {mine.player_quests::%{_p}'s uuid%::*} contains ({_index}):
@@ -243,7 +243,7 @@ function mine_open_quest_refancy_core(index: number, value: string, p: player):
             add "&r" to {_lores::*}
             add "&3&m&l=&b 報酬" to {_lores::*}
             loop {_rewards::*}: #報酬の描写
-                add "&3&l・&b%loop-value-2%" to {_lores::*}
+                add "&3&l・&b%loop-value%" to {_lores::*}
             add "&r" to {_lores::*}
             add "&a現在クエストを受注しています！" to {_lores::*}
             set slot {_n} of {_p}'s current inventory to glowing paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*}
@@ -260,11 +260,12 @@ function mine_open_quest_refancy_core(index: number, value: string, p: player):
         add "&r" to {_lores::*}
         add "&3&m&l=&b 報酬" to {_lores::*}
         loop {_rewards::*}: #報酬の描写
-            add "&3&l・&b%loop-value-2%" to {_lores::*}
+            add "&3&l・&b%loop-value%" to {_lores::*}
         add "&r" to {_lores::*}
         add "&cこのクエストはまだ受注していません" to {_lores::*}
         add "&e[ クリックして受注する ]" to {_lores::*}
         set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%{_index}%}"
+
 
 
 
