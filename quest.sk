@@ -208,7 +208,7 @@ function mine_open_quest_refancy(p: player):
     set {_n} to {_b}
     loop {mine.quests::*}: #クエスト表示
         set {_index} to loop-index parsed as integer
-        if {_index} < 55:
+        if {_index} < 54:
             set {_cover} to 0
             continue if mine_quest_conditions({_p}, {_index}) = false #クエスト対象のフィルタリング
             clear {_rewards::*}
