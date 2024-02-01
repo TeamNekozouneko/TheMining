@@ -221,6 +221,7 @@ function mine_open_quest_refancy(p: player, page: number, MAX_ITEMS_PER_PAGE: in
         set slot (loop-value)-1 of {_p}'s current inventory to air
 
     loop {mine.quests::*}:
+        send "debug: %{_n}%" to {_p} if {_p} is op
         set {_index} to loop-index parsed as integer
         continue if mine_quest_conditions({_p}, {_index}) = false #クエスト対象のフィルタリング
         clear {_rewards::*}
