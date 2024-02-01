@@ -231,7 +231,7 @@ function mine_open_quest_refancy(p: player):
                     if {_index} is 47:
                         set slot ({_n}+1) of {_p}'s current inventory to stick named "&c&l< &8戻る"
                         add 1 to {_n}
-                    if {_index} is 55:
+                    if {_index} is 54:
                         set slot ({_n}+1) of {_p}'s current inventory to stick named "&8次のページ &a&l>"
                     add 1 to {_n}
                 else:
@@ -248,7 +248,7 @@ function mine_open_quest_refancy(p: player):
                     if {_index} is 47:
                         set slot ({_n}+1) of {_p}'s current inventory to stick named "&c&l< &8前のページ"
                         add 1 to {_n}
-                    if {_index} is 55:
+                    if {_index} is 54:
                         set slot ({_n}+1) of {_p}'s current inventory to stick named "&8次のページ &a&l>"
                     add 1 to {_n}
             else:
@@ -270,7 +270,7 @@ function mine_open_quest_refancy(p: player):
                 if {_index} is 47:
                     set slot ({_n}+1) of {_p}'s current inventory to stick named "&c&l< &8戻る"
                     add 1 to {_n}
-                if {_index} is 55:
+                if {_index} is 54:
                     set slot ({_n}+1) of {_p}'s current inventory to stick named "&8次のページ &a&l>"
                 set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
         else:
