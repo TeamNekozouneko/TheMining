@@ -198,7 +198,7 @@ on inventory click:
                 set {mine.player_quest_data::%player's uuid%::%{_index}%} to 0
             mine_open_quest(player)
         if clicked slot is 52:
-        close {_p}'s inventory
+            close {_p}'s inventory
             mine_open_quest_refancy(player, 1)
         if clicked slot is 53:
             close {_p}'s inventory
