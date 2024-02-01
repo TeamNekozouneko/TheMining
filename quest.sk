@@ -586,8 +586,8 @@ function mine_quest_thread(p: player, type: string, v: object):
 
 every second:    
     loop all players:
-        if name of loop-player's current inventory is {@mine_quest_title}:
-            mine_open_quest_refancy(loop-player, 1)
+        #if name of loop-player's current inventory is {@mine_quest_title}:
+        #    mine_open_quest_refancy(loop-player, 1)
         loop {mine.quests::*}:
             continue if mine_quest_conditions(loop-player, loop-index parsed as integer) = false #クエスト対象のフィルタリング
             if {mine.players::%loop-player's uuid%::quest_done::*} doesn't contain (loop-index parsed as integer):
