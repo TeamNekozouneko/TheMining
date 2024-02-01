@@ -212,6 +212,10 @@ function mine_open_quest_refancy(p: player, page: number, MAX_ITEMS_PER_PAGE: in
     set {_b} to 0
     set {_n} to {_b}
 
+    #debug
+    if {_p} is op:
+        send "min: %({_page}-1)*{_MAX_ITEMS_PER_PAGE}%, max: %{_page}*{_MAX_ITEMS_PER_PAGE}%" to {_p}
+
     #slotの初期化
     loop {_MAX_ITEMS_PER_PAGE} times:
         set slot (loop-value)-1 of {_p}'s current inventory to air
