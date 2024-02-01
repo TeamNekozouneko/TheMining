@@ -208,6 +208,12 @@ function mine_open_quest(p: player):
     set slot 8 of {_p}'s current inventory to book named "aaa" with nbt compound from "{mine_index:10}"
 
 
+command /gomenn_test:
+    trigger:
+        loop 10 times:
+            if loop-value is between 0 and 5:
+                send loop-value to player
+
 function mine_open_quest_refancy(p: player, page: number, MAX_ITEMS_PER_PAGE: integer = 45):
     set {_b} to 0
     set {_n} to {_b}
