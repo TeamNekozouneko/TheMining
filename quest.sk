@@ -221,6 +221,7 @@ function mine_open_quest_refancy_checker(index: number, page: number) ::boolean:
 
 
 function mine_open_quest_refancy(p: player, page: number):
+    close {_p}'s inventory
     set {_b} to 0
     set {_n} to {_b}
     loop {mine.quests::*}:
