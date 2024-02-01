@@ -198,28 +198,14 @@ on inventory click:
                 set {mine.player_quest_data::%player's uuid%::%{_index}%} to 0
             mine_open_quest(player)
         if clicked slot is 52:
-            close {_p}'s inventory
             mine_open_quest_refancy(player, 1)
         if clicked slot is 53:
-            close {_p}'s inventory
-            mine_open_quest_refancy(player, 2)
+            page2(player, 2)
 
 function mine_open_quest(p: player):
     open chest inventory with 6 row named {@mine_quest_title} to {_p}
     mine_open_quest_refancy({_p}, 1)
     set slot 8 of {_p}'s current inventory to book named "aaa" with nbt compound from "{mine_index:10}"
-
-function mine_open_quest_refancy_checker(index: number, page: number) ::boolean:
-    if {_page} is 1:
-        if {_index} < 48:
-            return true
-        else:
-            return false
-    if {_page} is 2:
-        if {_index} > 48:
-            return true
-        else:
-            return false
 
 
 function mine_open_quest_refancy(p: player, page: number):
@@ -284,8 +270,14 @@ function mine_open_quest_refancy(p: player, page: number):
                     set slot {_n} of {_p}'s current inventory to paper named "&eクエスト &e&l##%({_n}-{_b})+1%" with lore {_lores::*} with nbt compound from "{mine_index:%loop-index%}"
                     set slot 52 of {_p}'s current inventory to stick named "&c&l< &8前のページ"
                     set slot 53 of {_p}'s current inventory to stick named "&8次のページ &a&l>"
+
+function page2(p: player, page: number):
+    set {_b} to 0
+    set {_n} to {_b}
+    loop {mine.quests::*}:
+        set {_index} to loop-index parsed as integer
         if {_page} is 2:
-            if {_index} > 48:
+            if {_index} > 47:
                 set {_cover} to 0
                 continue if mine_quest_conditions({_p}, {_index}) = false #クエスト対象のフィルタリング
                 clear {_rewards::*}
