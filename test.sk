@@ -1,0 +1,3 @@
+on break:
+	if player is op:
+		sound_success(player)
