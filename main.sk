@@ -1900,6 +1900,17 @@ function mine_thread_throw_MAGMA(type: string) :: object:
 on player move:
     set metadata value "mine_last_location" of player to location of player
 
+#textをintegerに変換
+function edit(t: text) :: integer:
+    if {_t} is "1":
+        return 1
+    if {_t} is "2":
+        return 2
+    if {_t} is "3":
+        return 3
+    if {_t} is "4":
+        return 4
+
 command /admin_mine_portal_set_connection [<integer>]:
     permission: admin
     permission message: &c権限がありません。
@@ -2218,13 +2229,6 @@ on first join:
             clear {join.message::*}
             clear {join.syoken} 
             
-
-command /temp:
-    permission: admin
-    trigger:
-        loop all players:
-            set {mine.hojo.%loop-players's uuid%} to false
-
 every 1 minute:
     loop all players:
         add 1 to {mine.pickaxe.time::%loop-player%}
