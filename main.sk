@@ -302,8 +302,8 @@ command /mine [<text>] [<text>] [<integer>]:
             mine_show_help(player)
         else if arg-1 is "oremenu":
             mine_open_oremenu(player)
-        else if arg-1 is "reset":
-            mine_reset_allrange(player)
+        #else if arg-1 is "reset":
+        #    mine_reset_allrange(player)
         else if arg-1 is "stop_reset":
             set {mine.temp::stopreset} to true
         else if arg-1 is "clear":
