@@ -2054,6 +2054,7 @@ on inventory click:
         if name of event-item is "&7[&8黒曜石のピッケル&7] ":
             set slot 3 of player's current inventory to air
             set slot 4 of player's current inventory to air
+            set slot 16 of player's current inventory to air
             cancel event
             give {mine.items::36} to player
             mine_quest_thread(player, "NEW_OBSIDIAN_PICKAXE", 1)
@@ -2061,6 +2062,7 @@ on inventory click:
         if name of event-item is "&7[&c&lマグマのピッケル&7] ":
             set slot 3 of player's current inventory to air
             set slot 4 of player's current inventory to air
+            set slot 16 of player's current inventory to air
             cancel event
             give {mine.items::40} to player
             mine_quest_thread(player, "NEW_MAGMA_PICKAXE", 1)
