@@ -661,7 +661,7 @@ function mine_open_oremenu(p: player):
 function mine_show_help(p: player):
     send "&f&m&l----------  &f&l[ &c&lThe Mining &f&l]  &f&m&l----------" to {_p}
     send "&4&l・&c/mine oremenu &8- &f鉱石の範囲を設定します。" to {_p}
-    send "&4&l・&c/mine reset &8- &fすべての鉱石の範囲を補填します。" to {_p}
+    #send "&4&l・&c/mine reset &8- &fすべての鉱石の範囲を補填します。" to {_p}
     send "&4&l・&c/mine stop_reset &8- &f鉱石の補填を一か所ずつ停止します。" to {_p}
     send "&4&l・&c/mine clear &8- &fすべての鉱石の範囲をクリアします。" to {_p}
     send "&4&l・&c/mine stop_clear &8- &f鉱石のクリアを停止します。" to {_p}
@@ -1949,17 +1949,6 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
         mine_quest_thread({_p}, "MAP4", 0)
         return true
 
-#textをintegerに変換
-function edit(t: text) :: integer:
-    if {_t} is "1":
-        return 1
-    if {_t} is "2":
-        return 2
-    if {_t} is "3":
-        return 3
-    if {_t} is "4":
-        return 4
-
 on portal:
     cancel event
     set {_pblock} to block 0.5 south player if block 0.5 south player is nether portal block
@@ -2528,7 +2517,7 @@ command /code_debug:
 command /pay [<player>] [<number>]:
     trigger:
         if arg-1 is set:
-            if arg-1 is player:
+            if arg-1 is not player:
                 if arg-2 is set:
                     set {_int} to arg-2
                     set {_r} to {_int}/2
