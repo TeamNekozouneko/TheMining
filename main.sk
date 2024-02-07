@@ -278,8 +278,8 @@ on load:
 on join:
     clear metadata value "mine_add_orerange" of player
     if {mine.status.autoore.money::%player's uuid%} is not set:
-        set {mine.status.autoore.money::%player's uuid%} to {mine.status.autoore.money::%player%}
-        set {mine.status.autoore::%players's uuid%} to {mine.status.autoore::%player%}
+        set {mine.status.autoore.money::%player's uuid%} to false
+        set {mine.status.autoore::%players's uuid%} to false
 
 
 command /admin_inv [<player>]:
@@ -372,8 +372,8 @@ command /spawn [<text>]:
             send "&4&l! &cこの場所にテレポートする条件を満たしていません。" to player
             sound_portal_failed(player)
 
-#on tab complete of "/spawn":
-#    set tab completions for position 1 to "help", "1", "2", "3" and "4"
+on tab complete of "/spawn":
+   set tab completions for position 1 to "help", "1", "2", "3" and "4"
 
 on inventory click:
     if name of player's current inventory is "{@oremenu_title}":
@@ -528,8 +528,6 @@ on inventory click:
             if {_type} is "skill_switch":
                 set {mine.pselskill::%player's uuid%} to "%{_index}%"
                 mine_skill_page(player, 1)
-                if {_index} is 5:
-                    send "&a軽量化により利用可能時間が制限されています。時刻についてはwikiをご覧ください。"
     else if name of player's current inventory is "{@menu_blacksmith_title}":
         if name of event-item is "&c必要条件が揃っていないため、操作できません。" or "&c" or "&c操作ができません" or "&c溶解しています...":
             cancel event
@@ -1016,12 +1014,6 @@ function mine_variables_check(p: player):
             set {mine.myboostp::%{_p}'s uuid%::1} to 0 
         if {mine.myboostp::%{_p}'s uuid%::2} is not set:
             set {mine.myboostp::%{_p}'s uuid%::2} to 0 
-    if {mine.setting.shift::%{_p}'s uuid%} is not set:
-        set {mine.setting.shift::%{_p}'s uuid%} to "true"
-    if {mine.status.autoore.money::%{_p}'s uuid%} is not set:
-        set {mine.status.autoore.money::%{_p}'s uuid%} to false
-    if {mine.status.autoore.money::%{_p}%} is true:
-        set {mine.status.autoore.money::%{_p}'s uuid%} to true
     if {mine.login.time::%{_p}%} is not set:
         set {mine.login.time::%{_p}%} to 0
 function quest_check(p: player):
@@ -1572,7 +1564,6 @@ function mine_skill_page(p: player, page: integer):
             else:
                 set slot 51 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
         else:
-            set {mine.status.autoore.money::%{_p}'s uuid%} to false
             set slot 51 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&e値段: &6100000円" and "&7[ クリックして購入 ]"
         set {_n} to 47
         loop {mine.myboost::*}:
@@ -2411,7 +2402,7 @@ function asa_login(p: player, m: number, t: text):
     send "&d-------------------------------" to {_p}
     add {_m} to {_p}'s money
 
-command /admin_skill_hoten [<player>]:
+command /admin_skill_hoten [<offline player>]:
     permission: admin
     trigger:
         set {mine.status.autoore.money::%arg-1's uuid%} to true
@@ -2547,7 +2538,6 @@ command /pay [<player>] [<number>]:
                     set {_r} to {_int}/2
                     set {_l} to {_int} + {_r}
                     if player's money >= {_l}:
-                        send "%{_l}% : %player%"
                         remove {_l} from player's money
                         add {_int} to arg-1's money 
                         send "&a送金しました！" to player
