@@ -2555,3 +2555,8 @@ command /auto_check [<player>]:
         send "uuid money: %{mine.status.autoore.money::%player's uuid%}%"
         send "player: %{mine.status.autoore::%player%}%"
         send "player money: %{mine.status.autoore.money::%player%}%"
+
+on npc right click:
+    if npc name is "&aアップデート履歴":
+        send "&aアップデート履歴 - <link:https://srv.nekozouneko.net/archives/95>https://srv.nekozouneko.net/archives/95"
+        send "&a　　　　　　　　 -  <link:https://bit.ly/3Us0C4r>bit.ly/3Us0C4r"
