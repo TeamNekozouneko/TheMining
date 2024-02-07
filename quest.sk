@@ -111,6 +111,7 @@ on load:
     set {mine.quest_max::43} to 10
     set {mine.quest_max::44} to 10
     set {mine.quest_max::45} to 30
+    set {mine.quest_max::46} to 30
     set {mine.quest_max::47} to 3
     set {mine.quest_max::48} to 10
     set {mine.quest_max::49} to 1
