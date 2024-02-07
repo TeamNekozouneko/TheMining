@@ -979,6 +979,7 @@ every 1 second:
     loop all players:
         mine_scoreboardUpdate(loop-player)
         set loop-player's tab list name to "&7[&a%{mine.level::%loop-player's uuid%}%&7] &f%loop-player%"
+        quest_check(loop-player)
 
 on first join:
     wait 10 tick
@@ -2454,7 +2455,7 @@ on break:
         set {_daily.chest.holo} to location of event-block
         if metadata value "daily_chest" of player is set:
             set {daily.chest.location::%{_daily.chest.holo}%} to location of event-block
-            send "&aデイリーボーナスチェストの位置を決定しました！"
+            send "&aデイリーボーナスチェストの位置を決定しました！" to player
             clear metadata value "daily_chest" of player
             create holo object "&eデイリーボーナスチェスト"  with id "daily_%{_daily.chest.holo}%" at location of block 1 above
             cancel event
@@ -2463,7 +2464,7 @@ on break:
                 delete holo object "daily_%{_daily.chest.holo}%"
                 set {_daily.chest.delete} to location of event-block
                 remove {_daily.chest.delete} from {daily.chest.location::%{_daily.chest.holo}%}
-                send "&cデイリーボーナスチェストを削除しました。"
+                send "&cデイリーボーナスチェストを削除しました。" to player
 on right click on chest:
     set {_daily.chest.holo} to location of event-block
     if {daily.chest.location::%{_daily.chest.holo}%} contains location of event-block:
