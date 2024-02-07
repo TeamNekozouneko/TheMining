@@ -755,10 +755,6 @@ function mine_event_allrange():
 function mine_update_allrange_nm():
     set {_bf} to 0
     loop {mine.orerange_list::*}:
-        loop all players:
-            if loop-player is op:
-                send "index: %loop-index%" to loop-player
-
         loop all blocks within {mine.orerange::%loop-value%::1} and {mine.orerange::%loop-value%::2}:
             clear {_n}
             loop all players in radius 2 of loop-block:
