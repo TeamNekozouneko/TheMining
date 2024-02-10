@@ -1065,7 +1065,7 @@ function mine_scoreboardUpdate(p: player):
     set score "&8¦¦  &4" in sidebar of {_p} to 4
     set score "&8¦¦  &b採掘数&7: &b%{mine.mnum::%{_p}'s uuid%}%" in sidebar of {_p} to 3
     set score "&8¦¦  &5" in sidebar of {_p} to 2
-    set score "&8¦¦  &e所持金: &6&l%(({_p}'s money)*10)/10%円" in sidebar of {_p} to 1
+    set score "&8¦¦  &e所持金: &6&l%round({_p}'s money)%円" in sidebar of {_p} to 1
     set score "&8¦¦  &6" in sidebar of {_p} to 0
 
 on right click:
