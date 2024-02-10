@@ -281,6 +281,11 @@ on join:
         set {mine.status.autoore.money::%player's uuid%} to {mine.status.autoore.money::%player%}
         set {mine.status.autoore::%players's uuid%} to {mine.status.autoore::%player%}
 
+command /admin_fix_hojo [<player>]:
+    permission: admin
+    trigger:
+        set {mine.hojo.%arg-1's uuid%} to false
+        send "%arg-1%の補助をfalseにしました。"
 
 command /admin_inv [<player>]:
     permission: admin
@@ -757,10 +762,6 @@ function mine_event_allrange():
 function mine_update_allrange_nm():
     set {_bf} to 0
     loop {mine.orerange_list::*}:
-        loop all players:
-            if loop-player is op:
-                send "index: %loop-index%" to loop-player
-
         loop all blocks within {mine.orerange::%loop-value%::1} and {mine.orerange::%loop-value%::2}:
             clear {_n}
             loop all players in radius 2 of loop-block:
@@ -852,9 +853,6 @@ function mine_update_random_event_nm():
 function mine_reset_allrange_nm():
     set {_bf} to 0
     loop {mine.orerange_list::*}:
-        loop all players:
-            if loop-player is op:
-                send "index: %loop-index%" to loop-player
         loop all blocks within {mine.orerange::%loop-value%::1} and {mine.orerange::%loop-value%::2}:
             if loop-block is air:
                 clear {_n}
