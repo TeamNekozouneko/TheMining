@@ -281,11 +281,6 @@ on join:
         set {mine.status.autoore.money::%player's uuid%} to false
         set {mine.status.autoore::%players's uuid%} to false
 
-command /admin_fix_hojo [<player>]:
-    permission: admin
-    trigger:
-        set {mine.hojo.%arg-1's uuid%} to false
-        send "%arg-1%の補助をfalseにしました。"
 
 command /admin_inv [<player>]:
     permission: admin
@@ -851,6 +846,9 @@ function mine_update_random_event_nm():
 function mine_reset_allrange_nm():
     set {_bf} to 0
     loop {mine.orerange_list::*}:
+        loop all players:
+            if loop-player is op:
+                send "index: %loop-index%" to loop-player
         loop all blocks within {mine.orerange::%loop-value%::1} and {mine.orerange::%loop-value%::2}:
             if loop-block is air:
                 clear {_n}
@@ -1140,6 +1138,7 @@ on tab complete of "/admin_break":
     set tab completions for position 1 to "add" and "delete"
 
 command /admin_break_list:
+    permission: admin
     trigger:
         send "&a--------許可リスト---------"
         loop {break.list::*}:
@@ -1218,11 +1217,38 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
             if {_thread_bypass} is not true:
                 mine_boost_thread_wait({_p}, 1, {_exp})
                 mine_boost_thread_wait({_p}, 2, {_money})
-                mine_skill_thread_wait({_p}, 1, {_b})
-                mine_skill_thread_wait({_p}, 2, {_b})
-                mine_skill_thread_wait({_p}, 3, {_b})
-                mine_skill_thread_wait({_p}, 4, {_b})
-                mine_skill_thread_wait({_p}, 5, {_b})
+                #破壊されたブロックのみだから軽いはず!
+                set {_t} to {mine.pselskill::%{_p}'s uuid%} parsed as integer
+                if {_t} is 1:
+                    if block 2 above {_b} is air:
+                        mine_skill_thread_wait({_p}, 1, {_b})
+                    else:
+                        send action bar "&4&l! &c採掘場では地表からしか採掘できません。" to {_p}
+                        return false
+                if {_t} is 2:
+                    if block 2 above {_b} is air:
+                        mine_skill_thread_wait({_p}, 2, {_b})
+                    else:
+                        send action bar "&4&l! &c採掘場では地表からしか採掘できません。" to {_p}
+                        return false
+                if {_t} is 3:
+                    if block 2 above {_b} is air:
+                        mine_skill_thread_wait({_p}, 3, {_b})
+                    else:
+                        send action bar "&4&l! &c採掘場では地表からしか採掘できません。" to {_p}
+                        return false
+                if {_t} is 4:
+                    if block 2 above {_b} is air:
+                        mine_skill_thread_wait({_p}, 4, {_b})
+                    else:
+                        send action bar "&4&l! &c採掘場では地表からしか採掘できません。" to {_p}
+                        return false
+                if {_t} is 5:
+                    if block 3 above {_b} is air:
+                        mine_skill_thread_wait({_p}, 5, {_b})
+                    else:
+                        send action bar "&4&l! &c採掘場では地表からしか採掘できません。" to {_p}
+                        return false
                 if {mine.hojo.%{_p}'s uuid%} is true:
                     mine_skill_hojo({_p}, {_b})
             mine_quest_thread({_p}, "BREAK", 1)
@@ -1641,7 +1667,6 @@ function mine_skill_thread_wait(p: player, index: integer, v: object):
             mine_all_x({_p}, "north", 1, 1, -1, -1, {_v})
 
         else if {_index} is 5:
-            #if {mine.all} is true:
             mine_all_z({_p}, "west", 2, 2, -1, -1, {_v})
             mine_all_z({_p}, "east", -2, 2, 1, -1, {_v})
             mine_all_x({_p}, "south", 2, 2, -1, -1, {_v})
@@ -2561,4 +2586,4 @@ command /auto_check [<player>]:
 on npc right click:
     if npc name is "&aアップデート履歴":
         send "&aアップデート履歴 - <link:https://srv.nekozouneko.net/archives/95>https://srv.nekozouneko.net/archives/95"
-        send "&a　　　　　　　　 -  <link:https://bit.ly/3Us0C4r>bit.ly/3Us0C4r"
+        send "&a　　　　　　　　 - <link:https://bit.ly/3Us0C4r>bit.ly/3Us0C4r"
