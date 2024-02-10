@@ -278,8 +278,8 @@ on load:
 on join:
     clear metadata value "mine_add_orerange" of player
     if {mine.status.autoore.money::%player's uuid%} is not set:
-        set {mine.status.autoore.money::%player's uuid%} to {mine.status.autoore.money::%player%}
-        set {mine.status.autoore::%players's uuid%} to {mine.status.autoore::%player%}
+        set {mine.status.autoore.money::%player's uuid%} to false
+        set {mine.status.autoore::%players's uuid%} to false
 
 command /admin_fix_hojo [<player>]:
     permission: admin
@@ -307,8 +307,8 @@ command /mine [<text>] [<text>] [<integer>]:
             mine_show_help(player)
         else if arg-1 is "oremenu":
             mine_open_oremenu(player)
-        else if arg-1 is "reset":
-            mine_reset_allrange(player)
+        #else if arg-1 is "reset":
+        #    mine_reset_allrange(player)
         else if arg-1 is "stop_reset":
             set {mine.temp::stopreset} to true
         else if arg-1 is "clear":
@@ -377,8 +377,8 @@ command /spawn [<text>]:
             send "&4&l! &cこの場所にテレポートする条件を満たしていません。" to player
             sound_portal_failed(player)
 
-#on tab complete of "/spawn":
-#    set tab completions for position 1 to "help", "1", "2", "3" and "4"
+on tab complete of "/spawn":
+   set tab completions for position 1 to "help", "1", "2", "3" and "4"
 
 on inventory click:
     if name of player's current inventory is "{@oremenu_title}":
@@ -533,8 +533,6 @@ on inventory click:
             if {_type} is "skill_switch":
                 set {mine.pselskill::%player's uuid%} to "%{_index}%"
                 mine_skill_page(player, 1)
-                if {_index} is 5:
-                    send "&a軽量化により利用可能時間が制限されています。時刻についてはwikiをご覧ください。"
     else if name of player's current inventory is "{@menu_blacksmith_title}":
         if name of event-item is "&c必要条件が揃っていないため、操作できません。" or "&c" or "&c操作ができません" or "&c溶解しています...":
             cancel event
@@ -668,7 +666,7 @@ function mine_open_oremenu(p: player):
 function mine_show_help(p: player):
     send "&f&m&l----------  &f&l[ &c&lThe Mining &f&l]  &f&m&l----------" to {_p}
     send "&4&l・&c/mine oremenu &8- &f鉱石の範囲を設定します。" to {_p}
-    send "&4&l・&c/mine reset &8- &fすべての鉱石の範囲を補填します。" to {_p}
+    #send "&4&l・&c/mine reset &8- &fすべての鉱石の範囲を補填します。" to {_p}
     send "&4&l・&c/mine stop_reset &8- &f鉱石の補填を一か所ずつ停止します。" to {_p}
     send "&4&l・&c/mine clear &8- &fすべての鉱石の範囲をクリアします。" to {_p}
     send "&4&l・&c/mine stop_clear &8- &f鉱石のクリアを停止します。" to {_p}
@@ -1014,12 +1012,6 @@ function mine_variables_check(p: player):
             set {mine.myboostp::%{_p}'s uuid%::1} to 0 
         if {mine.myboostp::%{_p}'s uuid%::2} is not set:
             set {mine.myboostp::%{_p}'s uuid%::2} to 0 
-    if {mine.setting.shift::%{_p}'s uuid%} is not set:
-        set {mine.setting.shift::%{_p}'s uuid%} to "true"
-    if {mine.status.autoore.money::%{_p}'s uuid%} is not set:
-        set {mine.status.autoore.money::%{_p}'s uuid%} to false
-    if {mine.status.autoore.money::%{_p}%} is true:
-        set {mine.status.autoore.money::%{_p}'s uuid%} to true
     if {mine.login.time::%{_p}%} is not set:
         set {mine.login.time::%{_p}%} to 0
 function quest_check(p: player):
@@ -1075,7 +1067,7 @@ function mine_scoreboardUpdate(p: player):
     set score "&8¦¦  &4" in sidebar of {_p} to 4
     set score "&8¦¦  &b採掘数&7: &b%{mine.mnum::%{_p}'s uuid%}%" in sidebar of {_p} to 3
     set score "&8¦¦  &5" in sidebar of {_p} to 2
-    set score "&8¦¦  &e所持金: &6&l%(({_p}'s money)*10)/10%円" in sidebar of {_p} to 1
+    set score "&8¦¦  &e所持金: &6&l%round({_p}'s money)%円" in sidebar of {_p} to 1
     set score "&8¦¦  &6" in sidebar of {_p} to 0
 
 on right click:
@@ -1570,7 +1562,6 @@ function mine_skill_page(p: player, page: integer):
             else:
                 set slot 51 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
         else:
-            set {mine.status.autoore.money::%{_p}'s uuid%} to false
             set slot 51 of {_p}'s current inventory to dropper named "&a自動圧縮" with lore "&7鉱石を自動で圧縮します。" and "&8&m-------------------------------" and "&e値段: &6100000円" and "&7[ クリックして購入 ]"
         set {_n} to 47
         loop {mine.myboost::*}:
@@ -1911,6 +1902,17 @@ function mine_thread_throw_MAGMA(type: string) :: object:
 on player move:
     set metadata value "mine_last_location" of player to location of player
 
+#textをintegerに変換
+function edit(t: text) :: integer:
+    if {_t} is "1":
+        return 1
+    if {_t} is "2":
+        return 2
+    if {_t} is "3":
+        return 3
+    if {_t} is "4":
+        return 4
+
 command /admin_mine_portal_set_connection [<integer>]:
     permission: admin
     permission message: &c権限がありません。
@@ -1959,17 +1961,6 @@ function mine_portal_conditions(p: player, n: integer) :: boolean:
         set {player.loc.spawn::%{_p}%} to 4
         mine_quest_thread({_p}, "MAP4", 0)
         return true
-
-#textをintegerに変換
-function edit(t: text) :: integer:
-    if {_t} is "1":
-        return 1
-    if {_t} is "2":
-        return 2
-    if {_t} is "3":
-        return 3
-    if {_t} is "4":
-        return 4
 
 on portal:
     cancel event
@@ -2065,6 +2056,7 @@ on inventory click:
         if name of event-item is "&7[&8黒曜石のピッケル&7] ":
             set slot 3 of player's current inventory to air
             set slot 4 of player's current inventory to air
+            set slot 16 of player's current inventory to air
             cancel event
             give {mine.items::36} to player
             mine_quest_thread(player, "NEW_OBSIDIAN_PICKAXE", 1)
@@ -2072,6 +2064,7 @@ on inventory click:
         if name of event-item is "&7[&c&lマグマのピッケル&7] ":
             set slot 3 of player's current inventory to air
             set slot 4 of player's current inventory to air
+            set slot 16 of player's current inventory to air
             cancel event
             give {mine.items::40} to player
             mine_quest_thread(player, "NEW_MAGMA_PICKAXE", 1)
@@ -2240,13 +2233,6 @@ on first join:
             clear {join.message::*}
             clear {join.syoken} 
             
-
-command /temp:
-    permission: admin
-    trigger:
-        loop all players:
-            set {mine.hojo.%loop-players's uuid%} to false
-
 every 1 minute:
     loop all players:
         add 1 to {mine.pickaxe.time::%loop-player%}
@@ -2409,7 +2395,7 @@ function asa_login(p: player, m: number, t: text):
     send "&d-------------------------------" to {_p}
     add {_m} to {_p}'s money
 
-command /admin_skill_hoten [<player>]:
+command /admin_skill_hoten [<offline player>]:
     permission: admin
     trigger:
         set {mine.status.autoore.money::%arg-1's uuid%} to true
@@ -2539,25 +2525,40 @@ command /code_debug:
 command /pay [<player>] [<number>]:
     trigger:
         if arg-1 is set:
-            if arg-2 is set:
-                set {_int} to arg-2
-                set {_r} to {_int}/2
-                set {_l} to {_int} + {_r}
-                if player's money >= {_l}:
-                    send "%{_l}% : %player%"
-                    remove {_l} from player's money
-                    add {_int} to arg-1's money 
-                    send "&a送金しました！" to player
-                    send "&c送金額%{_int}%円+税金%{_r}%円=あなたの支払い額%{_l}%円" 
-                    send "&a%player%さんから%{_int}%円送られました！" to arg-1
+            if arg-1 is not player:
+                if arg-2 is set:
+                    set {_int} to arg-2
+                    set {_r} to {_int}/2
+                    set {_l} to {_int} + {_r}
+                    if player's money >= {_l}:
+                        remove {_l} from player's money
+                        add {_int} to arg-1's money 
+                        send "&a送金しました！" to player
+                        send "&c送金額%{_int}%円+税金%{_r}%円=あなたの支払い額%{_l}%円" 
+                        send "&a%player%さんから%{_int}%円送られました！" to arg-1
+                    else:
+                        send "&cお金が足りません。"
+                        send "&c送る額%{_int}%円+税金%{_r}%円=あなたの支払い額%{_l}%円"    
                 else:
-                    send "&cお金が足りません。"
-                    send "&c送る額%{_int}%円+税金%{_r}%円=あなたの支払い額%{_l}%円"    
+                    send "&c送るお金を入力してください。"
             else:
-                send "&c送るお金を入力してください。"
+                send "&c自分自身に送ることはできません。"
         else:
             send "&cプレイヤーを入力してください。"
 
 on join:
     player is not op
     execute console command "/lp user %player% permission set jecon.pay false"
+
+command /auto_check [<player>]:
+    permission: admin
+    trigger:
+        send "uuid: %{mine.status.autoore::%player's uuid%}%"
+        send "uuid money: %{mine.status.autoore.money::%player's uuid%}%"
+        send "player: %{mine.status.autoore::%player%}%"
+        send "player money: %{mine.status.autoore.money::%player%}%"
+
+on npc right click:
+    if npc name is "&aアップデート履歴":
+        send "&aアップデート履歴 - <link:https://srv.nekozouneko.net/archives/95>https://srv.nekozouneko.net/archives/95"
+        send "&a　　　　　　　　 -  <link:https://bit.ly/3Us0C4r>bit.ly/3Us0C4r"
