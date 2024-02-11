@@ -1177,9 +1177,10 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
     set {_name} to "%blockdata of {_b}%"
     replace all "minecraft:" with "" in {_name}
     if {mine.ores::%{_name}%} is set:
+        set {_index} to {_special_item}
         set {_index} to first element of {mine.items::*} where [{_p}'s tool is input]
         #send "[Debug] %{_index}% - %{mine.items::*} where [{_p}'s tool is input]%" to {_p} if {_p} is op
-        return false if {_index} is not set
+        #return false if {_index} is not set
         #send {_index} to {_p}
         if {mine.orewhite::%{_index}%::*} contains {mine.ores::%{_name}%}:
             send action bar "&4&l! &cこのピッケルではこの鉱石を壊すことはできません。" to {_p}
@@ -1254,7 +1255,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
             else:
                 set {_exp} to {_price}
                 remove {_exp} from {mine.exp::%{_p}'s uuid%}
-                
+
             if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
                 sound_notification({_p})
                 send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
@@ -2589,3 +2590,4 @@ on npc right click:
     if npc name is "&aアップデート履歴":
         send "&aアップデート履歴 - <link:https://srv.nekozouneko.net/archives/95>https://srv.nekozouneko.net/archives/95"
         send "&a　　　　　　　　 - <link:https://bit.ly/3Us0C4r>bit.ly/3Us0C4r"
+        
