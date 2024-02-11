@@ -2101,7 +2101,7 @@ on inventory click:
             open chest inventory with 3 row named "&6&lレシピリスト" to player
             set slot 0 of player's current inventory to glowing book and quill named "&8黒曜石のピッケル&6&lのレシピ"
             set slot 1 of player's current inventory to glowing book and quill named "&c&lマグマのピッケル&6&lのレシピ" 
-        if name of event-item is "&7[&8黒曜石のピッケル&7]" or "&7[&c&lマグマのピッケル&7]" or "&c&lマグマのかけら" or "&8黒曜石の塊":
+        if name of event-item is "&7[&8黒曜石のピッケル&7]" or "&7[&c&lマグマのピッケル&7]" or "&c&lマグマのかけら" or "&8黒曜石の塊" or "&7[&cアドバンスピッケル&7] &e&lLv.5":
             set slot 16 of player's current inventory to air
         
     if name of player's current inventory is "&8黒曜石のピッケル&6&lのレシピ": 
