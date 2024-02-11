@@ -532,51 +532,53 @@ on inventory click:
         if name of event-item is "&c必要条件が揃っていないため、操作できません。" or "&c" or "&c操作ができません" or "&c溶解しています...":
             cancel event
         else if name of event-item is "&a操作が可能です":
+            set {_tag} to slot 13 of player's current inventory
             cancel event
-            set {_index} to tag "mine_index" of nbt compound of event-item
-            set {_i} to slot 13 of player's current inventory
-            if {_index} is set:
-                if {_i} is not air:
-                    loop 3*9 times:
-                        set slot {_n} of player's current inventory to light gray stained glass pane named "&c"
-                        add 1 to {_n}
-                    add 3 and 4 and 5 and 9 and 10 and 11 and 12 and 14 and 15 and 16 and 17 and 21 and 22 and 23 to {_s::*}
-                    loop {_s::*}:
-                        set slot (loop-value) of player's current inventory to green stained glass pane named "&c"
-                    set slot 13 of player's current inventory to anvil named "&c溶解しています..." with nbt compound from "{mine_index:%{_index}%}"
-                    set {_n} to 0
-                    loop 9 times:
-                        if name of player's current inventory is not "{@menu_blacksmith_title}":
-                            exit loop
-                        set slot {_n} of player's current inventory to yellow stained glass pane named "&c"
-                        set slot 26-{_n} of player's current inventory to yellow stained glass pane named "&c"
-                        add 1 to {_n}
-                        play sound "block.note_block.chime" with pitch 0.5 to player
-                        wait 2 tick
-                    name of player's current inventory is "{@menu_blacksmith_title}"
-                    set {_n} to 12
-                    set {_n2} to 0
-                    loop 4 times:
-                        if name of player's current inventory is not "{@menu_blacksmith_title}":
-                            exit loop
-                        set {_sloti} to gray stained glass pane named "&c"
-                        set slot {_n} of player's current inventory to {_sloti}
-                        set slot (14+{_n2}) of player's current inventory to {_sloti}
-                        remove 1 from {_n}
-                        add 1 to {_n2}
-                        play sound "block.note_block.chime" with pitch 1 to player
-                        wait 5 tick
-                    set {_n} to 0
-                    name of player's current inventory is "{@menu_blacksmith_title}"
-                    loop 3*9 times:
-                        set slot {_n} of player's current inventory to light gray stained glass pane named "&c"
-                        add 1 to {_n}
-                    add 3 and 4 and 5 and 9 and 10 and 11 and 12 and 14 and 15 and 16 and 17 and 21 and 22 and 23 to {_s::*}
-                    loop {_s::*}:
-                        set slot (loop-value) of player's current inventory to gray stained glass pane named "&c"
-                    set slot 13 of player's current inventory to {mine.blacksmith::%{_index}%}
-                    play sound "entity.player.levelup" to player
-                    play sound "entity.firework_rocket.launch" to player
+            if {_tag} = {mine.items.16}:
+                set {_index} to tag "mine_index" of nbt compound of event-item
+                set {_i} to slot 13 of player's current inventory
+                if {_index} is set:
+                    if {_i} is not air:
+                        loop 3*9 times:
+                            set slot {_n} of player's current inventory to light gray stained glass pane named "&c"
+                            add 1 to {_n}
+                        add 3 and 4 and 5 and 9 and 10 and 11 and 12 and 14 and 15 and 16 and 17 and 21 and 22 and 23 to {_s::*}
+                        loop {_s::*}:
+                            set slot (loop-value) of player's current inventory to green stained glass pane named "&c"
+                        set slot 13 of player's current inventory to anvil named "&c溶解しています..." with nbt compound from "{mine_index:%{_index}%}"
+                        set {_n} to 0
+                        loop 9 times:
+                            if name of player's current inventory is not "{@menu_blacksmith_title}":
+                                exit loop
+                            set slot {_n} of player's current inventory to yellow stained glass pane named "&c"
+                            set slot 26-{_n} of player's current inventory to yellow stained glass pane named "&c"
+                            add 1 to {_n}
+                            play sound "block.note_block.chime" with pitch 0.5 to player
+                            wait 2 tick
+                        name of player's current inventory is "{@menu_blacksmith_title}"
+                        set {_n} to 12
+                        set {_n2} to 0
+                        loop 4 times:
+                            if name of player's current inventory is not "{@menu_blacksmith_title}":
+                                exit loop
+                            set {_sloti} to gray stained glass pane named "&c"
+                            set slot {_n} of player's current inventory to {_sloti}
+                            set slot (14+{_n2}) of player's current inventory to {_sloti}
+                            remove 1 from {_n}
+                            add 1 to {_n2}
+                            play sound "block.note_block.chime" with pitch 1 to player
+                            wait 5 tick
+                        set {_n} to 0
+                        name of player's current inventory is "{@menu_blacksmith_title}"
+                        loop 3*9 times:
+                            set slot {_n} of player's current inventory to light gray stained glass pane named "&c"
+                            add 1 to {_n}
+                        add 3 and 4 and 5 and 9 and 10 and 11 and 12 and 14 and 15 and 16 and 17 and 21 and 22 and 23 to {_s::*}
+                        loop {_s::*}:
+                            set slot (loop-value) of player's current inventory to gray stained glass pane named "&c"
+                        set slot 13 of player's current inventory to {mine.blacksmith::%{_index}%}
+                        play sound "entity.player.levelup" to player
+                        play sound "entity.firework_rocket.launch" to player
     else if name of player's current inventory is "{@menu_enchant_title}":
         if name of event-item is "&c該当のアイテムを入れてください" or "&c":
             cancel event
