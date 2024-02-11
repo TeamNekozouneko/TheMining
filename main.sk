@@ -2101,6 +2101,9 @@ on inventory click:
             open chest inventory with 3 row named "&6&lレシピリスト" to player
             set slot 0 of player's current inventory to glowing book and quill named "&8黒曜石のピッケル&6&lのレシピ"
             set slot 1 of player's current inventory to glowing book and quill named "&c&lマグマのピッケル&6&lのレシピ" 
+        if name of event-item is "&7[&8黒曜石のピッケル&7]" or "&7[&c&lマグマのピッケル&7]" or "&c&lマグマのかけら" or "&8黒曜石の塊":
+            set slot 16 of player's current inventory to air
+        
     if name of player's current inventory is "&8黒曜石のピッケル&6&lのレシピ": 
         cancel event
     if name of player's current inventory is "&c&lマグマのピッケル&6&lのレシピ": 
@@ -2590,4 +2593,3 @@ on npc right click:
     if npc name is "&aアップデート履歴":
         send "&aアップデート履歴 - <link:https://srv.nekozouneko.net/archives/95>https://srv.nekozouneko.net/archives/95"
         send "&a　　　　　　　　 - <link:https://bit.ly/3Us0C4r>bit.ly/3Us0C4r"
-        
