@@ -1205,12 +1205,6 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 if 1 of {mine.items::%loop-index%} is 1 of {mine.ores::%{_name}%}:
                     set {_price} to loop-value
                     exit loop
-            if {mine.levelprice::%{_name}%} is not set: #個別で採掘時のEXP獲得量を設定するためのコード by ぬぽ
-                set {_exp} to {_price}*2
-                remove {_exp} from {mine.exp::%{_p}'s uuid%}
-            else:
-                set {_exp} to {_price}
-                remove {_exp} from {mine.exp::%{_p}'s uuid%}
 
             if {_thread_bypass} is not true:
                 mine_boost_thread_wait({_p}, 1, {_exp})
@@ -1254,6 +1248,13 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
             give {mine.ores::%{_name}%} to {_p}
             add 1 to {mine.mnum::%{_p}'s uuid%}
 
+            if {mine.levelprice::%{_name}%} is not set: #個別で採掘時のEXP獲得量を設定するためのコード by ぬぽ
+                set {_exp} to {_price}*2
+                remove {_exp} from {mine.exp::%{_p}'s uuid%}
+            else:
+                set {_exp} to {_price}
+                remove {_exp} from {mine.exp::%{_p}'s uuid%}
+                
             if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
                 sound_notification({_p})
                 send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
