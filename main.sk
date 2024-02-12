@@ -413,6 +413,7 @@ on inventory click:
                             give {mine.items::%{_index}%} to player
                             send "&2&l! &a購入しました。" to player
                             sound_success(player)
+                            mine_quest_thread(player, "BUY", {_index})
                         else:
                             sound_error(player)
                             if item amount of {mine.require::%{_index}%} is 1:
