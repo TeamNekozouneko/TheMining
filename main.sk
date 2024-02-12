@@ -534,7 +534,7 @@ on inventory click:
         else if name of event-item is "&a操作が可能です":
             set {_tag} to slot 13 of player's current inventory
             cancel event
-            if {_tag} = {mine.items.16}:
+            if {_tag} = {mine.items::16}:
                 set {_index} to tag "mine_index" of nbt compound of event-item
                 set {_i} to slot 13 of player's current inventory
                 if {_index} is set:
