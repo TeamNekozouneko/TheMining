@@ -1,0 +1,41 @@
+#必須アドオン:
+#・Skript
+#・SkQuery
+#
+#※このファイルは基本的に製品の追加や、製品の仕様変更以外には編集しないでください。
+#主にTebex、Skript間を接続するような役目のため、必ずデバッグを厳重にした上で本番環境に導入してください。
+#
+#製品についてのコードは本ファイルがある階層と同じ場所にあるproduct.skに記入してください。
+
+command /eval [<text>]:
+    permission: admin
+    trigger:
+        evaluate arg-1
+
+on load:
+    clear {tebex.items::*}
+    add "EXAMPLE" to {tebex.items::*}
+
+command /tebex_transaction [<offline player>] [<text>] [<text>]:
+    trigger:
+        tebex_transaction(sender, arg-1, arg-2, arg-3)
+
+function tebex_transaction(p: sender, t: offline player, id: text, tid: text) :: boolean:
+    return false if {_tid} is not set
+    return false if check [{_p} is a player]->[{_p} is not op]
+    return false if {tebex.items::*} doesn't contain {_id}
+    tebex_log("[RUN_TRANSACTION] USER: %{_t}%, TID: %{_tid}%, Product: %{_id}%")
+    tebex_transaction_processer({_p}, {_t}, {_id}, {_tid})
+
+function tebex_transaction_processer(p: sender, t: offline player, id: text, tid: text):
+    tebex_log("[TRANSACTION_PROCESSING] TID: %{_tid}%, Product: %{_id}%")
+    set {tebex.transactions::%{_tid}%::name} to {_t}
+    set {tebex.transactions::%{_tid}%::product} to {_id}
+    evaluate "tebex_transaction_processed(""%{_tid}%"", production_%{_id}%(""%{_tid}%""))"
+
+function tebex_transaction_processed(tid: text, status: boolean):
+    tebex_log("[TRANSACTION_ENDED] TID: %{_tid}%, Product: %{tebex.transactions::%{_tid}%::product}%, Status: %{_status}%")
+    clear {tebex.transactions::%{_tid}%::*}
+
+function tebex_log(content: text):
+    log {_content} to "tebex_core/transaction.log"

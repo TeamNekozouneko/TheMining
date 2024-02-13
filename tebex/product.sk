@@ -1,0 +1,18 @@
+###################### 下記トランザクション処理の関数記入欄 ##########################
+#┃ トランザクション処理の関数名について
+#・関数の名前については「production_製品ID」のように先頭に"production_"を必ずつけてください
+#・それ以外のパターンで定義された関数は認識されません。
+#┃ トランザクション情報の取得について
+#・購入者のマインクラフトID: {tebex.transactions::<トランザクションID>::name}
+#・購入されたプロダクションID: {tebex.transactions::<トランザクションID>::product}
+#
+#┃ トランザクションの終了処理について
+#・各トランザクション処理の関数の返り値をbooleanに設定しトランザクションが成功した場合にはreturn true、失敗の場合はreturn falseを設定してください。
+
+
+
+
+#(テスト製品、OP以外の購入を拒否する製品)
+function production_EXAMPLE(tid: text) :: boolean:
+    return false if {tebex.transactions::%{_tid}%::name} parsed as offline player is not op
+    return true
