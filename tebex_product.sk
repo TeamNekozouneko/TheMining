@@ -16,7 +16,7 @@ function production_buySound(tid: text) :: boolean:
 
 
 options:
-    title: "&6&lプレミアムサウンドメニュー"
+    title: "&6&l採掘サウンド"
 
 on load:
     clear {tebex_sounds::*}
@@ -60,16 +60,23 @@ function sound_menu(p: player):
         set {_i} to loop-index parsed as integer
         set {_item} to {tebex_sounds_item::%{_i}%} parsed as itemtype
         if {product.player::%uuid of {_p}%::buyed::%loop-index%} is true:
-            set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&a購入済み"
+            if {product.player::%uuid of player%::selected::%loop-index%} is {_i}:
+                set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&a購入済み" and "&7選択済み"
+            else:
+                set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&a購入済み" and "&7未選択"
         else:
             set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&7未購入"
 
 on inventory click:
     if name of player's current inventory is {@title}:
         loop {tebex_sounds::*}:
-            if clicked slot is loop-index parsed as integer:
-                if {product.player::%uuid of player%::buyed::%loop-index%} is true:
-                    send "お前買ってるやん。飴ちゃんあげちゃう!"
+            set {_index} to loop-index parsed as integer
+            if clicked slot is {_index}:
+                if {product.player::%uuid of player%::buyed::%{_index}%} is true:
+                    set {product.player::%uuid of player%::selected::%loop-index%} to {_index}
+                    send "&a採掘サウンドを変更しました。"
+                    sound_success(player)
                 else:
-                    send "は？いまチームええかんじやねん。"
+                    send "&cあなたはまだこの製品をご購入していません。"
+                    sound_error(player)
         cancel event
