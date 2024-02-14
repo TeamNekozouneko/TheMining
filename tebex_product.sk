@@ -26,7 +26,9 @@ function playSound(p: player, sound: string):
 
 on break:
     if player's name is "Hideko_Dev":
-        playSound(player, "minecraft:block.note_block.harp")
+        #playSound(player, "minecraft:block.note_block.harp")
+        playSound(player, "minecraft:block.note_block.banjo")
+        #playSound(player, "minecraft:block.glass.break")
 
 function sound_menu(p: player):
     open chest inventory with 4 row named {@title} to {_p}
