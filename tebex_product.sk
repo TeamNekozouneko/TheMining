@@ -19,7 +19,25 @@ function production_test(tid: text) :: boolean:
 
 on load:
     clear {tebex_sounds::*}
-    set {tebex_sounds::0} to "標準ホリホリ"
+    clear {tebex_sounds_id::*}
+    clear {tebex_sounds_item::*}
+
+    set {tebex_sounds::0} to "音ブロック"
+    set {tebex_sounds::1} to "猫ちゃん"
+    set {tebex_sounds::2} to "ガラス割っちゃった"
+    set {tebex_sounds::3} to "経験値のアレ"
+
+    set {tebex_sounds_id::0} to "block.note_block.harp"
+    set {tebex_sounds_id::1} to "minecraft:entity.cat.ambient"
+    set {tebex_sounds_id::2} to "block.glass.break"
+    set {tebex_sounds_id::3} to "entity.experience_orb.pickup"
+
+    set {tebex_sounds_item::0} to note blook
+    set {tebex_sounds_item::1} to tropical fish
+    set {tebex_sounds_item::2} to glass
+    set {tebex_sounds_item::3} to bottle of enchanting
+
+
 
 function playSound(p: player, sound: string):
     play sound {_sound} to {_p}
@@ -31,9 +49,16 @@ on break:
         #playSound(player, "minecraft:block.glass.break")
         playSound(player, "minecraft:entity.experience_orb.pickup")
 
+command /soundebug:
+    permission: admin
+    trigger:
+        sound_menu(player)
+
 function sound_menu(p: player):
     open chest inventory with 4 row named {@title} to {_p}
-    set slot 0 of {_p}'s current inventory to note block named "音ブロック" with lore "&8&m-------------------------------" and "&7[ クリックして購入 ]"
+    loop {tebex_sounds::*}:
+        set {_i} to loop-index parsed as integer
+        set slot {_i} of {_p}'s current inventory to {tebex_sounds_item::%{_i}%} named loop-value with lore "&8&m-------------------------------" and "&7[ クリックして購入 ]"
 
 on inventory click:
     if name of player's current inventory is {@title}:
