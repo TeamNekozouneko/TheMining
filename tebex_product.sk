@@ -12,6 +12,7 @@
 function production_buySound(tid: text) :: boolean:
     set {_p} to {tebex.transactions::%{_tid}%::name}
     set {product.player::%uuid of {_p}%::buyed::%{_tid}%} to true
+    send "%{product.player::%uuid of {_p}%::buyed::%{_tid}%}%" to {_p}
     return true
 
 
