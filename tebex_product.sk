@@ -63,4 +63,7 @@ function sound_menu(p: player):
 
 on inventory click:
     if name of player's current inventory is {@title}:
-        cancel event
+        loop {tebex_sounds::*}:
+            if clicked slot is loop-index parsed as integer:
+                send "%loop-value%"
+    cancel event
