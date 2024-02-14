@@ -14,3 +14,9 @@ function production_EXAMPLE(tid: text) :: boolean:
     set {_p} to {tebex.transactions::%{_tid}%::name} parsed as offline player
     send "もしかしてあんた買った？" to {_p}
     return true
+
+function production_test(tid: text) :: boolean:
+    loop all players:
+        if loop-player's name is "Hideko_Dev":
+            send "%{tebex.transactions::%{_tid}%::name} parsed as offline player%" to loop-player
+    return true
