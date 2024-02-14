@@ -79,7 +79,7 @@ on inventory click:
                         set {product.player::%uuid of player%::selected} to {_index}
                         send "&a採掘サウンドを変更しました。"
                         sound_success(player)
-                        sound_menu(player)
+                    sound_menu(player)
                 else:
                     send "&cあなたはまだこの製品をご購入していません。"
                     sound_error(player)
