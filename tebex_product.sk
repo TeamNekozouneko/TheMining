@@ -17,6 +17,9 @@ function production_test(tid: text) :: boolean:
             send "%uuid of {_p}%" to loop-player
     return true
 
+options:
+    title: "&6&lプレミアムサウンドメニュー"
+
 on load:
     clear {tebex_sounds::*}
     clear {tebex_sounds_id::*}
