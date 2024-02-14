@@ -28,35 +28,10 @@ on break:
     if player's name is "Hideko_Dev":
         playSound(player, "minecraft:block.note_block.harp")
 
-function setItem(p: player, slot: number, particle: string, itemstack: item, name: string, price: number):
-    if {mine.status.%{_particle}%.money::%{_p}'s uuid%} is true:
-        if {mine.status.%{_particle}%::%{_p}'s uuid%} is true:
-            set slot {_slot} of {_p}'s current inventory to glowing {_itemstack} named {_name} with lore "&8&m-------------------------------" and "&e選択中"
-        else:
-            set slot {_slot} of {_p}'s current inventory to {_itemstack} named {_name} with lore "&8&m-------------------------------" and "&aあなたはこれを所有しています" and "&7[ クリックして切り替え ]"       
-    else:
-        set slot {_slot} of {_p}'s current inventory to {_itemstack} named {_name} with lore "&8&m-------------------------------" and "&e値段: &6%{_price}%" and "&7[ クリックして購入 ]"
-
 function sound_menu(p: player):
     open chest inventory with 4 row named {@title} to {_p}
-    setItem({_p}, 1, ,stripped oak log, {@villager}, 5500)
+    set slot 0 of {_p}'s current inventory to note block named "音ブロック" with lore "&8&m-------------------------------" and "&7[ クリックして購入 ]"
 
 on inventory click:
     if name of player's current inventory is {@title}:
         cancel event
-        if name of event-item is {@lava}:
-            buyParticle(player, "lava", {@lava}, 1, 5500)
-        if name of event-item is {@slime}:
-            buyParticle(player, "slime", {@slime}, 2, 5500)
-        if name of event-item is {@note}:
-            buyParticle(player, "note", {@note}, 3, 5500)
-        if name of event-item is {@blue}:
-            buyParticle(player, "blue", {@blue}, 4, 5500)
-        if name of event-item is {@red}:
-            buyParticle(player, "red", {@red}, 5, 5500)
-        if name of event-item is {@water}:
-            buyParticle(player, "water", {@water}, 6, 5500)
-        if name of event-item is {@heart}:
-            buyParticle(player, "heart", {@heart}, 7, 5500)
-        if name of event-item is {@villager}:
-            buyParticle(player, "villager", {@villager}, 8, 5500)
