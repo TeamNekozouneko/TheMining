@@ -35,7 +35,7 @@ on load:
     set {tebex_sounds_item::0} to "note block"
     set {tebex_sounds_item::1} to "tropical fish"
     set {tebex_sounds_item::2} to "glass"
-    set {tebex_sounds_item::3} to "experience_bottle"
+    set {tebex_sounds_item::3} to "experience bottle"
 
 
 
