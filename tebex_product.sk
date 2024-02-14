@@ -9,13 +9,11 @@
 #・各トランザクション処理の関数の返り値をbooleanに設定しトランザクションが成功した場合にはreturn true、失敗の場合はreturn falseを設定してください。
 
 
-#(テスト製品、OP以外の購入を拒否する製品)
-function production_test(tid: text) :: boolean:
+function production_buySound(tid: text) :: boolean:
     set {_p} to {tebex.transactions::%{_tid}%::name}
-    loop all players:
-        if loop-player's name is "Hideko_Dev":
-            send "%uuid of {_p}%" to loop-player
+    set {product.player::%uuid of {_p}%::buyed::%{_tid}%} to true
     return true
+
 
 options:
     title: "&6&lプレミアムサウンドメニュー"
@@ -39,7 +37,6 @@ on load:
     set {tebex_sounds_item::1} to "tropical fish"
     set {tebex_sounds_item::2} to "glass"
     set {tebex_sounds_item::3} to "experience bottle"
-
 
 
 function playSound(p: player, sound: string):
@@ -68,5 +65,8 @@ on inventory click:
     if name of player's current inventory is {@title}:
         loop {tebex_sounds::*}:
             if clicked slot is loop-index parsed as integer:
-                send "%loop-value%"
+                if {product.player::%uuid of player%::buyed::%loop-index%} is true:
+                    send "お前買ってるやん。飴ちゃんあげちゃう!"
+                else:
+                    send "は？いまチームええかんじやねん。"
     cancel event
