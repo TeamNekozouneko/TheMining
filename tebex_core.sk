@@ -14,7 +14,7 @@ command /eval [<text>]:
 
 on load:
     clear {tebex.items::*}
-    add "EXAMPLE" to {tebex.items::*}
+    add "test" to {tebex.items::*}
 
 command /tebex_transaction [<offline player>] [<text>] [<text>]:
     trigger:
