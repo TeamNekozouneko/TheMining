@@ -71,10 +71,15 @@ on inventory click:
             set {_index} to loop-index parsed as integer
             if clicked slot is {_index}:
                 if {product.player::%uuid of player%::buyed::%{_index}%} is true:
-                    set {product.player::%uuid of player%::selected} to {_index}
-                    send "&a採掘サウンドを変更しました。"
-                    sound_success(player)
-                    sound_menu(player)
+                    if {product.player::%uuid of player%::selected} is {_index}:
+                        send "&cサウンドをデフォルトに戻しました。"
+                        clear {product.player::%uuid of player%::selected}
+                        sound_telling(player)
+                    else:
+                        set {product.player::%uuid of player%::selected} to {_index}
+                        send "&a採掘サウンドを変更しました。"
+                        sound_success(player)
+                        sound_menu(player)
                 else:
                     send "&cあなたはまだこの製品をご購入していません。"
                     sound_error(player)
