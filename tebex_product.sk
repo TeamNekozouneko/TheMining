@@ -69,4 +69,4 @@ on inventory click:
                     send "お前買ってるやん。飴ちゃんあげちゃう!"
                 else:
                     send "は？いまチームええかんじやねん。"
-    cancel event
+        cancel event
