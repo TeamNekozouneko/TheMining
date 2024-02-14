@@ -12,7 +12,6 @@
 function production_buySound(tid: text) :: boolean:
     set {_p} to {tebex.transactions::%{_tid}%::name}
     set {product.player::%uuid of {_p}%::buyed::%{_tid}%} to true
-    send "%{product.player::%uuid of {_p}%::buyed::%{_tid}%}%" to {_p}
     return true
 
 
@@ -60,7 +59,10 @@ function sound_menu(p: player):
     loop {tebex_sounds::*}:
         set {_i} to loop-index parsed as integer
         set {_item} to {tebex_sounds_item::%{_i}%} parsed as itemtype
-        set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&7[ クリックして購入 ]"
+        if {product.player::%uuid of {_p}%::buyed::%loop-index%} is true:
+            set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&a購入済み"
+        else:
+            set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&7未購入"
 
 on inventory click:
     if name of player's current inventory is {@title}:
