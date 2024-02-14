@@ -11,7 +11,8 @@
 
 #(テスト製品、OP以外の購入を拒否する製品)
 function production_test(tid: text) :: boolean:
+    set {_p} to {tebex.transactions::%{_tid}%::name} parsed as offline player
     loop all players:
         if loop-player's name is "Hideko_Dev":
-            send "%{tebex.transactions::%{_tid}%::name} parsed as offline player}%" to loop-player
+            send "%{_p}%" to loop-player
     return true
