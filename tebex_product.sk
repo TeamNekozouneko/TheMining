@@ -13,5 +13,8 @@
 
 #(テスト製品、OP以外の購入を拒否する製品)
 function production_EXAMPLE(tid: text) :: boolean:
-    return false if {tebex.transactions::%{_tid}%::name} parsed as offline player is not op
+    set {_p} to {tebex.transactions::%{_tid}%::name} parsed as offline player
+    loop all players:
+        if loop-player's name is "Hideko_Dev":
+            send "%{_p}%"
     return true
