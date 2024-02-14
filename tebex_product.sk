@@ -60,7 +60,7 @@ function sound_menu(p: player):
         set {_i} to loop-index parsed as integer
         set {_item} to {tebex_sounds_item::%{_i}%} parsed as itemtype
         if {product.player::%uuid of {_p}%::buyed::%loop-index%} is true:
-            if {product.player::%uuid of player%::selected::%loop-index%} is {_i}:
+            if {product.player::%uuid of {_p}%::selected::%loop-index%} is {_i}:
                 set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&a購入済み" and "&7選択済み"
             else:
                 set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&a購入済み" and "&7未選択"
