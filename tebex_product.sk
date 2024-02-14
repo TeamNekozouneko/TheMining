@@ -32,7 +32,7 @@ on load:
     set {tebex_sounds_id::2} to "block.glass.break"
     set {tebex_sounds_id::3} to "entity.experience_orb.pickup"
 
-    set {tebex_sounds_item::0} to note blook
+    set {tebex_sounds_item::0} to noteblook
     set {tebex_sounds_item::1} to tropical fish
     set {tebex_sounds_item::2} to glass
     set {tebex_sounds_item::3} to bottle of enchanting
