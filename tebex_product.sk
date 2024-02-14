@@ -42,17 +42,15 @@ on load:
 function playSound(p: player, sound: string):
     play sound {_sound} to {_p}
 
-on break:
-    if player's name is "Hideko_Dev":
-        #playSound(player, "minecraft:block.note_block.harp")
-        #playSound(player, "minecraft:block.note_block.banjo")
-        #playSound(player, "minecraft:block.glass.break")
-        playSound(player, "minecraft:entity.experience_orb.pickup")
-
 command /soundebug:
     permission: admin
     trigger:
         sound_menu(player)
+
+on break:
+    set {_set} to {product.player::%uuid of player%::selected}
+    if {_set} is set:
+        playSound(player, {tebex_sounds_id::%{_set}%})
 
 function sound_menu(p: player):
     open chest inventory with 4 row named {@title} to {_p}
