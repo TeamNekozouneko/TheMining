@@ -9,12 +9,10 @@
 #・各トランザクション処理の関数の返り値をbooleanに設定しトランザクションが成功した場合にはreturn true、失敗の場合はreturn falseを設定してください。
 
 
-
-
 #(テスト製品、OP以外の購入を拒否する製品)
 function production_EXAMPLE(tid: text) :: boolean:
     set {_p} to {tebex.transactions::%{_tid}%::name} parsed as offline player
     loop all players:
         if loop-player's name is "Hideko_Dev":
-            send "%{_p}%"
+            send "%{_p}%" to loop-player
     return true
