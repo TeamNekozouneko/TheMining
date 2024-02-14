@@ -32,10 +32,10 @@ on load:
     set {tebex_sounds_id::2} to "block.glass.break"
     set {tebex_sounds_id::3} to "entity.experience_orb.pickup"
 
-    set {tebex_sounds_item::0} to noteblook
-    set {tebex_sounds_item::1} to tropical fish
-    set {tebex_sounds_item::2} to glass
-    set {tebex_sounds_item::3} to bottle of enchanting
+    set {tebex_sounds_item::0} to "noteblock"
+    set {tebex_sounds_item::1} to "tropical fish"
+    set {tebex_sounds_item::2} to "glass"
+    set {tebex_sounds_item::3} to "bottle of enchanting"
 
 
 
@@ -58,7 +58,8 @@ function sound_menu(p: player):
     open chest inventory with 4 row named {@title} to {_p}
     loop {tebex_sounds::*}:
         set {_i} to loop-index parsed as integer
-        set slot {_i} of {_p}'s current inventory to {tebex_sounds_item::%{_i}%} named loop-value with lore "&8&m-------------------------------" and "&7[ クリックして購入 ]"
+        set {_item} to {tebex_sounds_item::%{_i}%} parsed as itemtype
+        set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&7[ クリックして購入 ]"
 
 on inventory click:
     if name of player's current inventory is {@title}:
