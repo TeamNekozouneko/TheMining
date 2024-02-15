@@ -160,12 +160,12 @@ on load:
     add {mine.ores::magma_block} to {mine.orewhite::40::*}
 
 
-    add 0.1 to {mine.price::stone}
-    add 0.1 to {mine.price::coal_ore}
-    add 0.1 to {mine.price::iron_ore}
-    add 0.2 to {mine.price::emerald_ore}
-    add 0.2 to {mine.price::diamond_ore}
-    add 0.4 to {mine.price::obsidian}
+    set {mine.price::stone} to 0.1
+    set {mine.price::coal_ore} to 0.1
+    set {mine.price::iron_ore} to 0.1
+    set {mine.price::emerald_ore} to 0.2
+    set {mine.price::diamond_ore} to 0.2
+    set {mine.price::obsidian} to 0.4
 
     clear {mine.crafting.magma::*}
     add {mine.items::39} to {mine.crafting.magma::*} 
