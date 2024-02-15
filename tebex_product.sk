@@ -8,10 +8,18 @@
 #┃ トランザクションの終了処理について
 #・各トランザクション処理の関数の返り値をbooleanに設定しトランザクションが成功した場合にはreturn true、失敗の場合はreturn falseを設定してください。
 
+function production_sound0(tid: text) :: boolean:
+    return buySonud(0, {_tid})
+function production_sound1(tid: text) :: boolean:
+    return buySonud(1, {_tid})
+function production_sound2(tid: text) :: boolean:
+    return buySonud(2, {_tid})
+function production_sound3(tid: text) :: boolean:
+    return buySonud(3, {_tid})
 
-function production_buySound(tid: text) :: boolean:
+function buySound(index: integer, tid: text) :: boolean:
     set {_p} to {tebex.transactions::%{_tid}%::name}
-    set {product.player::%uuid of {_p}%::buyed::%{_tid}%} to true
+    set {product.player::%uuid of {_p}%::buyed::%{_index}%} to true
     return true
 
 

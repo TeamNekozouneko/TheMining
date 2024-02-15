@@ -14,7 +14,10 @@ command /eval [<text>]:
 
 on load:
     clear {tebex.items::*}
-    add "buySound" to {tebex.items::*}
+    add "sound0" to {tebex.items::*}
+    add "sound1" to {tebex.items::*}
+    add "sound2" to {tebex.items::*}
+    add "sound3" to {tebex.items::*}
 
 command /tebex_transaction [<offline player>] [<text>] [<text>]:
     trigger:
