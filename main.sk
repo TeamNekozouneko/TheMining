@@ -1030,6 +1030,7 @@ function mine_reset_player(p: player):
     clear {mine.player_quests::%{_p}'s uuid%::*}
     clear {mine.players::%{_p}'s uuid%::*}
     clear {mine.player_quest_data::%{_p}'s uuid%::*}
+    clear {mine.pboost::%{_p}'s uuid%::*}
     set {_p}'s money to 0
 
 function mine_resetlv_player(p: player, lv: integer):
