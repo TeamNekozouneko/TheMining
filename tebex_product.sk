@@ -22,16 +22,20 @@ function production_sound2(tid: text) :: boolean:
 function production_sound3(tid: text) :: boolean:
     return buySound(3, {_tid})
 
-function buySound(index: integer, tid: text) :: boolean:
-    set {_p} to {tebex.transactions::%{_tid}%::name}
-    set {product.player::%uuid of {_p}%::buyed::%{_index}%} to true
-    return true
-
 # ============================================================
-
 
 options:
     title: "&6&l採掘サウンド"
+
+function buySound(index: integer, tid: text) :: boolean:
+    set {_p} to {tebex.transactions::%{_tid}%::name}
+    set {product.player::%uuid of {_p}%::buyed::%{_index}%} to true
+    if {_p} is online:
+        send "&9Tebex&7にて、製品番号 「%{_index}%」 を購入いたしました。" to {_p}
+    return true
+
+function playSound(p: player, sound: string):
+    play sound {_sound} to {_p}
 
 on load:
     clear {tebex_sounds::*}
@@ -54,9 +58,6 @@ on load:
     set {tebex_sounds_item::3} to "experience bottle"
 
 
-function playSound(p: player, sound: string):
-    play sound {_sound} to {_p}
-
 command /soundebug:
     permission: admin
     trigger:
@@ -74,9 +75,9 @@ function sound_menu(p: player):
         set {_item} to {tebex_sounds_item::%{_i}%} parsed as itemtype
         if {product.player::%uuid of {_p}%::buyed::%loop-index%} is true:
             if {product.player::%uuid of {_p}%::selected} is {_i}:
-                set slot {_i} of {_p}'s current inventory to glowing {_item} named loop-value with lore "&8&m-------------------------------" and "&a購入済み" and "&7選択済み"
+                set slot {_i} of {_p}'s current inventory to glowing {_item} named loop-value with lore "&8&m-------------------------------" and "&e選択済みです。" and "&7[ &cクリックしてデフォルトにする&7 ]"
             else:
-                set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&a購入済み" and "&7未選択"
+                set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&aあなたはこの製品を購入済みです。" and "&7[ クリックして切り替え ]"
         else:
             set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&7未購入"
 
