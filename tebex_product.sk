@@ -79,7 +79,7 @@ function sound_menu(p: player):
             else:
                 set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&aあなたはこの製品を購入済みです。" and "&7[ クリックして切り替え ]"
         else:
-            set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&7未購入"
+            set slot {_i} of {_p}'s current inventory to {_item} named loop-value with lore "&8&m-------------------------------" and "&7あなたはこの製品を購入していません。"
 
 on inventory click:
     if name of player's current inventory is {@title}:
