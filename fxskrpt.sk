@@ -67,10 +67,10 @@ command /admin_fx_set_token [<text>]:
 
 every 5 seconds:
     send a request to "http://nekozouneko.net/get_fx.php?token=%{fx.token}%"
-    set {_resp} to the last http response
-    set {_body} to {_resp}'s body
-    copy json {_body} to {_data::*}
-    set {fx.rate} to {_data::rate} parsed as number
+    #set {_resp} to the last http response
+    #set {_body} to {_resp}'s body
+    #copy json {_body} to {_data::*}
+    #set {fx.rate} to {_data::rate} parsed as number
 
 every second:
     loop all players:
