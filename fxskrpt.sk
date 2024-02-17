@@ -70,8 +70,8 @@ every 5 seconds:
     set {_resp} to the last http response
     set {_body} to {_resp}'s body
     send "%{_body}%" to console
-    #copy json {_body} to {_data::*}
-    #set {fx.rate} to {_data::rate} parsed as number
+    copy json {_body} to {_data::*}
+    set {fx.rate} to {_data::rate} parsed as number
 
 every second:
     loop all players:
