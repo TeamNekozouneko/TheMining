@@ -1814,7 +1814,6 @@ function mine_recipe_content(p: player, index: integer):
 
 #以下売店
 on inventory click:
-    send "%name of player's current inventory% - {@menu_seller_buy_title}" to player
     if name of player's current inventory is "{@menu_seller_title}":
         cancel event
         if name of event-item is "&aアイテムを売る":
