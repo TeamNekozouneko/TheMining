@@ -1831,6 +1831,7 @@ on inventory click:
             cancel event
     else if name of player's current inventory is "{@menu_seller_buy_title}":
         cancel event
+        send "%name of event-item%" to ops
         if name of event-item is "&7[ &d&l幻のインゴット &7]":
             if player's money >= 600000:
                 send "&2&l! &a購入しました！" 
