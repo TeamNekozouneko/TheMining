@@ -1814,13 +1814,14 @@ function mine_recipe_content(p: player, index: integer):
 
 #以下売店
 on inventory click:
+    send "%name of player's current inventory% - {@menu_seller_buy_title}" to player
     if name of player's current inventory is "{@menu_seller_title}":
         cancel event
         if name of event-item is "&aアイテムを売る":
             mine_seller_open_sell(player)
         if name of event-item is "&aアイテムを買う":
             mine_seller_open_buy(player)
-    if name of player's current inventory is "{@menu_seller_sell_title}":
+    else if name of player's current inventory is "{@menu_seller_sell_title}":
         event-item is set
         if name of event-item is "&c" or "&a売却するアイテムを入れてください":
             cancel event
@@ -1829,8 +1830,7 @@ on inventory click:
                 add 1 to {_n}
         if {_n} is not set:
             cancel event
-    if name of player's current inventory is "{@menu_seller_buy_title}":
-        send "%event-item%" to ops
+    else if name of player's current inventory is "{@menu_seller_buy_title}":
         cancel event
         if name of event-item is "&7[ &d&l幻のインゴット &7]":
             if player's money >= 600000:
