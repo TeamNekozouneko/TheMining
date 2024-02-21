@@ -1906,7 +1906,7 @@ function mine_seller_open_sell(p: player):
         add 1 to {_n}
 
 function mine_seller_open_buy(p: player):
-    open chest inventory with 6 row named "{@menu_seller_buy_title}" to {_p}
+    open chest inventory with 6 row named "&c&lTheMining &7- &7- &f売店屋 &7- &fアイテム購入" to {_p}
     set {mine.buy.open::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 44 and 45 and 46 and 47 and 48 and 49 and 50 and 51 and 52 and 53 
     set slot {mine.buy.open::*} of {_p}'s current inventory to lime stained glass pane named " "
     set slot 10 of {_p}'s current inventory to {mine.buy.items::1}
