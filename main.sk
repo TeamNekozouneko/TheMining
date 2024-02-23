@@ -1829,11 +1829,11 @@ on inventory click:
         #        add 1 to {_n}
         #        send "%{_n}%" to ops
         #        send "%event-item%" to ops
-        loop {mine.items::*}:
-            if loop-value is event-item:
-                add 1 to {_n}
-        if {_n} is not set:
-            cancel event
+        #loop {mine.items::*}:
+        #    if loop-value is event-item:
+        #        add 1 to {_n}
+        #if {_n} is not set:
+        #    cancel event
     else if name of player's current inventory contains "{@menu_seller_buy_title}":
         cancel event
         if name of event-item is "&7[ &d&l幻のインゴット &7]":
