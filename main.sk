@@ -1825,8 +1825,10 @@ on inventory click:
         if name of event-item is "&c" or "&a売却するアイテムを入れてください":
             cancel event
         loop {mine.seller.sellprice::*}:
+            send "%loop-index%" to ops
             if 1 of {mine.items::%loop-index%} is 1 of event-item:
-                send "%loop-index%" to ops
+                
+                
                 add 1 to {_n}
         #loop {mine.items::*}:
         #    if loop-value is event-item:
