@@ -1825,11 +1825,8 @@ on inventory click:
         if name of event-item is "&c" or "&a売却するアイテムを入れてください":
             cancel event
         loop {mine.seller.sellprice::*}:
-            if {mine.items::%loop-index%} is event-item:
+            if 1 of {mine.items::%loop-index%} is 1 of event-item:
                 add 1 to {_n}
-        #loop {mine.items::*}:
-        #    if loop-value is event-item:
-        #        add 1 to {_n}
         if {_n} is not set:
             cancel event
     else if name of player's current inventory contains "{@menu_seller_buy_title}":
