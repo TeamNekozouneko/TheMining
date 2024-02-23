@@ -1827,6 +1827,8 @@ on inventory click:
         loop {mine.seller.sellprice::*}:
             if 1 of {mine.items::%loop-index%} is 1 of event-item:
                 add 1 to {_n}
+                send "%{_n}%" to ops
+                send "%event-item%" to ops
         if {_n} is not set:
             cancel event
     else if name of player's current inventory contains "{@menu_seller_buy_title}":
