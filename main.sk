@@ -1064,14 +1064,15 @@ function mine_is_space_inventory(p: player) :: boolean:
 function mine_scoreboardUpdate(p: player):
     wipe {_p}'s sidebar
     set name of sidebar of {_p} to "&c&lThe Mining"
-    set score "&8¦¦  &1" in sidebar of {_p} to 7
-    set score "&8¦¦  &aレベル: &7[&a%{mine.level::%{_p}'s uuid%}%&7]" in sidebar of {_p} to 6
-    set score "&8¦¦  &bEXP&7: &b%{mine.exp::%{_p}'s uuid%}%" in sidebar of {_p} to 5
-    set score "&8¦¦  &4" in sidebar of {_p} to 4
-    set score "&8¦¦  &b採掘数&7: &b%{mine.mnum::%{_p}'s uuid%}%" in sidebar of {_p} to 3
-    set score "&8¦¦  &5" in sidebar of {_p} to 2
-    set score "&8¦¦  &e所持金: &6&l%round({_p}'s money)%円" in sidebar of {_p} to 1
-    set score "&8¦¦  &6" in sidebar of {_p} to 0
+    set score "&8¦¦  &1" in sidebar of {_p} to 8
+    set score "&8¦¦  &aレベル: &7[&a%{mine.level::%{_p}'s uuid%}%&7]" in sidebar of {_p} to 7
+    set score "&8¦¦  &bEXP&7: &b%{mine.exp::%{_p}'s uuid%}%" in sidebar of {_p} to 6
+    set score "&8¦¦  &4" in sidebar of {_p} to 5
+    set score "&8¦¦  &b採掘数&7: &b%{mine.mnum::%{_p}'s uuid%}%" in sidebar of {_p} to 4
+    set score "&8¦¦  &5" in sidebar of {_p} to 3
+    set score "&8¦¦  &e所持金: &6&l%round({_p}'s money)%円" in sidebar of {_p} to 2
+    set score "&8¦¦  &6" in sidebar of {_p} to 1
+    set score "&8¦¦  &enekozouneko.com" in sidebar of {_p} to 0
 
 on right click:
     player is not op
