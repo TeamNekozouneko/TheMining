@@ -2599,3 +2599,18 @@ on npc right click:
     if npc name is "&aアップデート履歴":
         send "&aアップデート履歴 - <link:https://srv.nekozouneko.net/archives/95>https://srv.nekozouneko.net/archives/95"
         send "&a　　　　　　　　 - <link:https://bit.ly/3Us0C4r>bit.ly/3Us0C4r"
+
+command /trash:
+    trigger:
+        open chest inventory with 3 row named "&6ゴミ箱" 
+
+on inventory click:
+    if player's current inventory is "&c最終確認":
+        if event-item is red terracotta named "&c6l本当に捨てますか？":
+            close player's inventory
+
+on inventory close:
+    if player's current inventory is "&6ゴミ箱":
+        open chest inventory with 1 row named "&c最終確認"
+        set slot 13 of player's current inventory to red terracotta named "&c&l本当に捨てますか？"
+    
