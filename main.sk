@@ -2603,8 +2603,3 @@ on npc right click:
 command /trash:
     trigger:
         open chest inventory with 3 row named "&6ゴミ箱" to player
-        set slot 22 of player's current inventory to red terracotta named "&c&l本当に捨てますか？"
-on inventory click:
-    if name of player's current inventory is "&c最終確認":
-        if event-item is red terracotta named "&c6l本当に捨てますか？":
-            close player's inventory
