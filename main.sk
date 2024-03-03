@@ -2603,3 +2603,7 @@ on npc right click:
 command /trash:
     trigger:
         open chest inventory with 3 row named "&6ゴミ箱" to player
+
+on right click:
+    if clicked block is stonecutter:
+        cancel event
