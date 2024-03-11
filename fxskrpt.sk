@@ -86,4 +86,15 @@ every second:
 command /fxlist:
     trigger:
         send "&7[&b&lF&3&lX&7] &a&lあなたは現在&6&l%{fx.dollar_v2.%player%}%$&a&lを所持しています。"
+
+command /admin_fx_transfer [<offline player>] [<offline player>]:
+    permission: admin
+    trigger:
+        if arg-1 and arg-2 is set:
+            add {fx.dollar_v2.%arg-1%} to {fx.dollar_v2.%arg-2%}
+            send "&a所有していたドルを %{fx.dollar_v2.%arg-1%}%ドル 転送しました。" to player
+            clear {fx.dollar_v2.%arg-1%}
+        else:
+            send "&このコマンドはユーザのドルをユーザー名によって転送します。" to player
+            send "&c使用方法：/admin_fx_transfer <転送元> <転送先>" to player
 	
