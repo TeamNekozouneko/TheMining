@@ -87,7 +87,7 @@ command /fxlist:
     trigger:
         send "&7[&b&lF&3&lX&7] &a&lあなたは現在&6&l%{fx.dollar_v2.%player%}%$&a&lを所持しています。"
 
-command /admin_fx_transfer [<offline player>] [<offline player>]:
+command /admin_fx_transfer [<text>] [<offline player>]:
     permission: admin
     trigger:
         if arg-1 and arg-2 is set:
