@@ -2623,3 +2623,17 @@ command /trash:
 on right click:
     if clicked block is stonecutter:
         cancel event
+
+on right click holding stone axe:
+    set {hoge.pos1} to clicked block
+    cancel event
+
+on left click holding stone axe:
+    set {hoge.pos2} to clicked block
+    cancel event
+    
+command /setblock [<material>]:
+    trigger:
+        loop blocks within {hoge.pos1} to {hoge.pos2}:
+            set loop-block to arg-1
+            wait a tick
