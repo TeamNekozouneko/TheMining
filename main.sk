@@ -1582,6 +1582,18 @@ on inventory click:
                     if name of slot 11 of player's current inventory is name of {mine.items::30}:
                         set {_tmp} to item amount of slot 11 of player's current inventory - 1
                         set slot 11 of player's current inventory to {_tmp} of {mine.items::30}
+                    if name of slot 10 of player's current inventory is name of {mine.items::19}:
+                        set {_tmp} to item amount of slot 10 of player's current inventory - 1
+                        set slot 10 of player's current inventory to {_tmp} of {mine.items::19}
+                    if name of slot 11 of player's current inventory is name of {mine.items::19}:
+                        set {_tmp} to item amount of slot 11 of player's current inventory - 1
+                        set slot 11 of player's current inventory to {_tmp} of {mine.items::19}
+                    if name of slot 11 of player's current inventory is name of {mine.items::23}:
+                        set {_tmp} to item amount of slot 11 of player's current inventory - 1
+                        set slot 11 of player's current inventory to {_tmp} of {mine.items::23}
+                    if name of slot 10 of player's current inventory is name of {mine.items::23}:
+                        set {_tmp} to item amount of slot 10 of player's current inventory - 1
+                        set slot 10 of player's current inventory to {_tmp} of {mine.items::23}
                     give {mine.enchant_result::%{_index}%::%{_cindex}%} to player
                     sound_enchanted(player)
                     send "&2&l! &aエンチャントしました！" to player
