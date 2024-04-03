@@ -20,12 +20,8 @@ Options:
     slot: true #スロットSkriptと連携するかどうか
 
     #以下値設定
-    maboroshi_ingot_drop_p: 1
-    maboroshi_ingot_drop_c: 100000
-    obsidian_drop_p: 1
-    obsidian_drop_c: 100000
-    magma_drop_p: 1
-    magma_drop_c: 100000
+    rare_drop_p: 1
+    rare_drop_c: 100000
     #maboroshi_ingot_drop設定ではpが確率分母、cが確率分子を示しています。
     #確率演算については、nupo_calc_lib.skを参照してください。
 
@@ -274,6 +270,14 @@ on load:
     clear {mine.tell.maboroshi::*}
     add "&a採掘をすると出てくるアイテムを7つ無くしてしまったんじゃ" to {mine.tell.maboroshi::*} 
     add "&a見つけてくれたら報酬をあげるぞ" to {mine.tell.maboroshi::*} 
+
+    clear {mine.break.list::*}
+    add stone to {mine.break::*}
+    add iron_ore to {mine.break::*}
+    add coal_ore to {mine.break::*}
+    add diamond_ore to {mine.break::*}
+    add emerald_ore to {mine.break::*}
+    add obsidian to {mine.break::*}
 
 on join:
     clear metadata value "mine_add_orerange" of player
@@ -1262,37 +1266,54 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 set {_exp} to {_price}
                 remove {_exp} from {mine.exp::%{_p}'s uuid%}
 
-            if mine_thread_throw("MINE_MABOROSHI_INGOT_DROP"):
+            if mine_thread_throw("RARE_DROP"):
                 sound_notification({_p})
-                send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
-                if mine_is_space_inventory({_p}):
-                    give {mine.items::30} to {_p}
-                else:
-                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
-                    add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
-                mine_quest_thread({_p}, "MABOROSHI_DROP", 0)
+                set {_tmp} to random number from 1 to 3
+                set {_tmp2} to round({_tmp})
+                if {_tmp2} is 1:
+                    send "&2&l！&a&lドロップ&2&l！ &d&l幻のインゴット&aを発掘しました。" to {_p}
+                    if mine_is_space_inventory({_p}):
+                        give {mine.items::30} to {_p}
+                    else:
+                        send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+                        add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
+                    mine_quest_thread({_p}, "MABOROSHI_DROP", 0)
+                if {_tmp2} is 2:
+                    send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
+                    if mine_is_space_inventory({_p}):
+                        give {mine.items::30} to {_p}
+                    else:
+                        send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+                        add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
+                if {_tmp2} is 3:
+                    send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
+                    if mine_is_space_inventory({_p}):
+                        give {mine.items::30} to {_p}
+                    else:
+                        send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+                        add {mine.items::30} to {pickup.%{_p}'s uuid%::*}
                 mine_quest_thread({_p}, "RARE_DROP", 1)
 
-            if mine_thread_throw_OBSIDIAN("MINE_OBSIDIAN_DROP"):
-                sound_notification({_p})
-                if mine_is_space_inventory({_p}):
-                    send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
-                    give {mine.items::37} to {_p}
-                else:
-                    send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
-                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
-                    add {mine.items::37} to {pickup.%{_p}'s uuid%::*}
-                mine_quest_thread({_p}, "RARE_DROP", 1)
-            if mine_thread_throw_MAGMA("MINE_MAGMA_DROP"):
-                sound_notification({_p})
-                if mine_is_space_inventory({_p}):
-                    send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
-                    give {mine.items::39} to {_p}
-                else:
-                    send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
-                    send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
-                    add {mine.items::39} to {pickup.%{_p}'s uuid%::*}
-                mine_quest_thread({_p}, "RARE_DROP", 1)
+            #if mine_thread_throw_OBSIDIAN("MINE_OBSIDIAN_DROP"):
+            #    sound_notification({_p})
+            #    if mine_is_space_inventory({_p}):
+            #        send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
+            #        give {mine.items::37} to {_p}
+            #    else:
+            #        send "&2&l！&a&lドロップ&2&l！ &d&l黒曜石の塊&aを発掘しました。" to {_p}
+            #        send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+            #        add {mine.items::37} to {pickup.%{_p}'s uuid%::*}
+            #    mine_quest_thread({_p}, "RARE_DROP", 1)
+            #if mine_thread_throw_MAGMA("MINE_MAGMA_DROP"):
+            #    sound_notification({_p})
+            #    if mine_is_space_inventory({_p}):
+            #        send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
+            #        give {mine.items::39} to {_p}
+            #    else:
+            #        send "&2&l！&a&lドロップ&2&l！ &c&lマグマのかけら&aを発掘しました。" to {_p}
+            #        send "&4&l! &cインベントリーに空きがなかったため、/pickupへ入りました。" to {_p}
+            #        add {mine.items::39} to {pickup.%{_p}'s uuid%::*}
+            #    mine_quest_thread({_p}, "RARE_DROP", 1)
             return true
     else if {_p} is not op:
         return false
@@ -1705,12 +1726,10 @@ function mine_all_x(p: player, h: text, a: integer, i: integer, u: integer, e: i
         set {_loc2} to location of {_v}
         add {_u} to x-coord of {_loc2}
         add {_e} to y-coord of {_loc2}
-        set {_var} to random number from 1 to 3
-        set {_var} to round({_var}) 
         loop blocks within {_loc} to {_loc2}:
-            set {_loop} to loop-block
-            if mine_break({_p}, loop-block, true):
-                set loop-block to air
+            if {mine.break::*} contains loop-block:
+                if mine_break({_p}, loop-block, true):
+                    set loop-block to air
             #wait a tick
 
 function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: number, v: block):
@@ -1721,12 +1740,10 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
         set {_loc2} to location of {_v}
         add {_u} to z-coord of {_loc2}
         add {_e} to y-coord of {_loc2}
-        set {_var} to random number from 1 to 3
-        set {_var} to round({_var}) 
         loop blocks within {_loc} to {_loc2}:
-            set {_loop} to loop-block
-            if mine_break({_p}, loop-block, true):
-                set loop-block to air
+            if {mine.break::*} contains loop-block:
+                if mine_break({_p}, loop-block, true):
+                    set loop-block to air
             #wait a tick
 
 #以下特殊アイテム
@@ -1738,9 +1755,10 @@ function mine_special_item(p: player, i: integer):
         mine_quest_thread({_p}, "HAKAIOU", 0) 
         sound_do_skill({_p})
         loop all blocks in radius 6 around {_p}:
-            if mine_break({_p}, loop-block, true):
-                set loop-block to air
-                wait a tick
+            if {mine.break::*} contains loop-block:
+                if mine_break({_p}, loop-block, true):
+                    set loop-block to air
+                    wait a tick
 
 on right click:
     if 1 of event-item is {mine.items::22}:
@@ -1925,20 +1943,8 @@ function mine_seller_open_buy(p: player):
 
 #スレッド処理
 function mine_thread_throw(type: string) :: object:
-    if {_type} is "MINE_MABOROSHI_INGOT_DROP":
-        return true if nupo_calc_random({@maboroshi_ingot_drop_p}, {@maboroshi_ingot_drop_c})
-        return false
-    return false
-
-function mine_thread_throw_OBSIDIAN(type: string) :: object:
-    if {_type} is "MINE_OBSIDIAN_DROP":
-        return true if nupo_calc_random({@obsidian_drop_p}, {@obsidian_drop_c})
-        return false
-    return false
-
-function mine_thread_throw_MAGMA(type: string) :: object:
-    if {_type} is "MINE_MAGMA_DROP":
-        return true if nupo_calc_random({@magma_drop_p}, {@magma_drop_c})
+    if {_type} is "RARE_DROP":
+        return true if nupo_calc_random({@rare_drop_p}, {@rare_drop_c})
         return false
     return false
 
@@ -2522,18 +2528,6 @@ command /levels:
             send "&7[&a%{mine.level::%loop-value's uuid%}%&7] &f%loop-value%"
         send "&a合計参加人数 &f%{_ver}%"
 
-on npc right click:
-    if npc name is "&a第四マップへ":
-        set {player.loc.spawn::%player%} to 4
-    if npc name is "&amap1へ戻る":
-        set {player.loc.spawn::%player%} to 1
-
-on npc right click:
-    if npc name is "&aマグマピッケル交換用":
-        if player has gold pickaxe named "&7[&c&lマグマのピッケル&7]":
-            remove 1 of gold pickaxe named "&7[&c&lマグマのピッケル&7]" from player
-            give {mine.items::40} to player
-
 command /code [<integer>]:
     trigger:
         if arg-1 is not set:
@@ -2603,18 +2597,6 @@ command /pay [<player>] [<number>]:
                 send "&c自分自身に送ることはできません。"
         else:
             send "&cプレイヤーを入力してください。"
-
-on join:
-    player is not op
-    execute console command "/lp user %player% permission set jecon.pay false"
-
-command /auto_check [<player>]:
-    permission: admin
-    trigger:
-        send "uuid: %{mine.status.autoore::%player's uuid%}%"
-        send "uuid money: %{mine.status.autoore.money::%player's uuid%}%"
-        send "player: %{mine.status.autoore::%player%}%"
-        send "player money: %{mine.status.autoore.money::%player%}%"
 
 on npc right click:
     if npc name is "&aアップデート履歴":
