@@ -2633,6 +2633,7 @@ on left click holding stone axe:
     cancel event
     
 command /setblock [<material>]:
+    permission: admin
     trigger:
         loop blocks within {hoge.pos1} to {hoge.pos2}:
             set loop-block to arg-1
