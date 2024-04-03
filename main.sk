@@ -2582,18 +2582,21 @@ command /pay [<player>] [<number>]:
         if arg-1 is set:
             if arg-1 is not player:
                 if arg-2 is set:
-                    set {_int} to arg-2
-                    set {_r} to {_int}/2
-                    set {_l} to {_int} + {_r}
-                    if player's money >= {_l}:
-                        remove {_l} from player's money
-                        add {_int} to arg-1's money 
-                        send "&a送金しました！" to player
-                        send "&c送金額%{_int}%円+税金%{_r}%円=あなたの支払い額%{_l}%円" 
-                        send "&a%player%さんから%{_int}%円送られました！" to arg-1
+                    if arg-2 < -1:
+                        set {_int} to arg-2
+                        set {_r} to {_int}/2
+                        set {_l} to {_int} + {_r}
+                        if player's money >= {_l}:
+                            remove {_l} from player's money
+                            add {_int} to arg-1's money 
+                            send "&a送金しました！" to player
+                            send "&c送金額%{_int}%円+税金%{_r}%円=あなたの支払い額%{_l}%円" 
+                            send "&a%player%さんから%{_int}%円送られました！" to arg-1
+                        else:
+                            send "&cお金が足りません。"
+                            send "&c送る額%{_int}%円+税金%{_r}%円=あなたの支払い額%{_l}%円"    
                     else:
-                        send "&cお金が足りません。"
-                        send "&c送る額%{_int}%円+税金%{_r}%円=あなたの支払い額%{_l}%円"    
+                        send "&c0未満の送金はできません。"
                 else:
                     send "&c送るお金を入力してください。"
             else:
