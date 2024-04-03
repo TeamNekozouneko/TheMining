@@ -1758,7 +1758,7 @@ function mine_special_item(p: player, i: integer):
                 if mine_break({_p}, loop-block, true):
                     set loop-block to air
                     wait a tick
-        autoore(player)
+        autoore({_p})
 
 on right click with blaze rod:
     if name of event-item is name of {mine.items::22}:
