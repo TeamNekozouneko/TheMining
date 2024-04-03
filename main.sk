@@ -2582,7 +2582,7 @@ command /pay [<player>] [<number>]:
         if arg-1 is set:
             if arg-1 is not player:
                 if arg-2 is set:
-                    if arg-2 < -1:
+                    if arg-2 > -1:
                         set {_int} to arg-2
                         set {_r} to {_int}/2
                         set {_l} to {_int} + {_r}
