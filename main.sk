@@ -1760,8 +1760,8 @@ function mine_special_item(p: player, i: integer):
                     set loop-block to air
                     wait a tick
 
-on right click:
-    if 1 of event-item is {mine.items::22}:
+on right click with blaze rod:
+    if name of event-item is name of {mine.items::22}:
         mine_special_item(player, 0)
 
 #以下「レシピの渡来人」処理
