@@ -1398,7 +1398,7 @@ every 5 tick:
                     set {_n} to 5*9
                     set {_i} to slot 13 of loop-player's current inventory
                     loop {mine.blacksmith::*}:
-                        if {mine.items::%loop-index%} is {_i}:
+                        if name of {mine.items::%loop-index%} is name of {_i}:
                             set {_index} to loop-index
                             exit loop
                     set {_itemafter} to {mine.blacksmith::%{_index}%}
@@ -1475,7 +1475,7 @@ every 5 tick:
                     add 1 to {_n}
                     set {_n2} to 0
                     loop {mine.enchant::%{_n}%::*}:
-                        if loop-value-3 is (slot 10 of loop-player-1's current inventory) or (slot 11 of loop-player-1's current inventory):
+                        if name of loop-value-3 is (name of slot 10 of loop-player-1's current inventory) or (name of slot 11 of loop-player-1's current inventory):
                             add 1 to {_n2}
                     if {_n2} is size of {mine.enchant::%{_n}%::*}:
                         set slot 5 of loop-player's current inventory to gray stained glass pane named "&c"
@@ -1503,7 +1503,7 @@ every 5 tick:
         if name of loop-player's current inventory is "{@menu_obsidian_crafting}":
             loop 2 time:
                 loop {mine.crafting::*}:
-                    if loop-value-3 is (slot 3 of loop-player's current inventory) or (slot 4 of loop-player's current inventory):
+                    if name of loop-value-3 is (name of slot 3 of loop-player's current inventory) or (name of slot 4 of loop-player's current inventory):
                         add 1 to {temp.n3}
                     if {temp.n3} is 4:
                         set slot 16 of loop-player's current inventory to netherite pickaxe named "&7[&8黒曜石のピッケル&7] " with lore "&7黒曜石で作られた頑丈なピッケル"
@@ -1513,7 +1513,7 @@ every 5 tick:
         if name of loop-player's current inventory is "{@menu_obsidian_crafting}":
             loop 2 time:
                 loop {mine.crafting.magma::*}:
-                    if loop-value-3 is (slot 3 of loop-player's current inventory) or (slot 4 of loop-player's current inventory):
+                    if name of loop-value-3 is (name of slot 3 of loop-player's current inventory) or (name of slot 4 of loop-player's current inventory):
                         add 1 to {_n4}
                     if {_n4} is 4:
                         set slot 16 of loop-player's current inventory to glowing gold pickaxe named "&7[&c&lマグマのピッケル&7] " with lore "&cとてつもない熱を感じる"
@@ -1546,11 +1546,21 @@ on inventory click:
                 add 1 to {_n}
                 set {_n2} to 0
                 loop {mine.enchant::%{_n}%::*}:
-                    if loop-value-2 is (slot 10 of player's current inventory) or (slot 11 of player's current inventory):
+                    if name of loop-value-2 is (name of slot 10 of player's current inventory) or (name of slot 11 of player's current inventory):
                         add 1 to {_n2}
                 if {_n2} is size of {mine.enchant::%{_n}%::*}:
-                    set slot 10 of player's current inventory to air
-                    set slot 11 of player's current inventory to air
+                    if name of slot 10 of player's current inventory is name of {mine.items::5}:
+                        set {_tmp} to item amount of slot 10 of player's current inventory - 8
+                        set slot 10 of player's current inventory to {_tmp} of {mine.items::5}
+                    if name of slot 11 of player's current inventory is name of {mine.items::5}:
+                        set {_tmp} to item amount of slot 11 of player's current inventory - 8
+                        set slot 11 of player's current inventory to {_tmp} of {mine.items::5}
+                    if name of slot 10 of player's current inventory is name of {mine.items::30}:
+                        set {_tmp} to item amount of slot 10 of player's current inventory - 1
+                        set slot 10 of player's current inventory to {_tmp} of {mine.items::30}
+                    if name of slot 11 of player's current inventory is name of {mine.items::30}:
+                        set {_tmp} to item amount of slot 11 of player's current inventory - 1
+                        set slot 11 of player's current inventory to {_tmp} of {mine.items::30}
                     give {mine.enchant_result::%{_index}%::%{_cindex}%} to player
                     sound_enchanted(player)
                     send "&2&l! &aエンチャントしました！" to player
@@ -1826,7 +1836,7 @@ on inventory click:
         if name of event-item is "&c" or "&a売却するアイテムを入れてください":
             cancel event
         loop {mine.seller.sellprice::*}:
-            if 1 of {mine.items::%loop-index%} is 1 of event-item:
+            if name of {mine.items::%loop-index%} is name of event-item:
                 add 1 to {_n}
         if {_n} is not set:
             cancel event
@@ -1864,7 +1874,7 @@ on inventory close:
         loop all items in player's current inventory:
             if name of loop-item is not "&c" or "&a売却するアイテムを入れてください":
                 loop {mine.seller.sellprice::*}:
-                    if 1 of {mine.items::%loop-index%} is 1 of loop-item:
+                    if name of {mine.items::%loop-index%} is name of loop-item:
                         loop (item amount of loop-item) times:
                             if type of loop-item is any ore:
                                 set {tmp.%player%.isContainsAnyOre} to true
@@ -2088,8 +2098,16 @@ on inventory click:
         if name of event-item is "&6&lレシピ本" or "&a" or "&cこの構成では利用できません":
             cancel event
         if name of event-item is "&7[&8黒曜石のピッケル&7] ":
-            set slot 3 of player's current inventory to air
-            set slot 4 of player's current inventory to air
+            if name of slot 3 of player's current inventory is name of {mine.items::37}:
+                set {_tmp} to item amount of slot 3 of player's current inventory - 1
+                set slot 3 of player's current inventory to {_tmp} of {mine.items::37}
+            else:
+                set slot 3 of player's current inventory to air    
+            if name of slot 4 of player's current inventory is name of {mine.items::37}:
+                set {_tmp} to item amount of slot 4 of player's current inventory - 1
+                set slot 4 of player's current inventory to {_tmp} of {mine.items::37}
+            else:
+                set slot 4 of player's current inventory to air
             set slot 16 of player's current inventory to air
             cancel event
             give {mine.items::36} to player
