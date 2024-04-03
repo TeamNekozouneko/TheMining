@@ -1751,7 +1751,6 @@ function mine_all_z(p: player, h: text, a: number, i: number, u: number, e: numb
 function mine_special_item(p: player, i: integer):
     if {_i} is 0:
         send "&2&l! &a破壊の王を発動しました！" to {_p}
-        remove 1 of {mine.items::22} from {_p}'s inventory
         mine_quest_thread({_p}, "HAKAIOU", 0) 
         sound_do_skill({_p})
         loop all blocks in radius 6 around {_p}:
@@ -1763,6 +1762,7 @@ function mine_special_item(p: player, i: integer):
 on right click with blaze rod:
     if name of event-item is name of {mine.items::22}:
         mine_special_item(player, 0)
+        remove 1 of event-item from player's inventory
 
 #以下「レシピの渡来人」処理
 on npc right click:
