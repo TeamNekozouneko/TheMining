@@ -964,7 +964,7 @@ on drop:
     player is not op
     set {_whitelist::*} to 24 and 25 and 26 and 27 and 28 and 29
     loop {mine.items::*}:
-        if event-item is loop-value:
+        if name of event-item is name of loop-value:
             if {_whitelist::*} doesn't contain (loop-index parsed as integer):
                 add 1 to {_n}
     if {_n} is set:
