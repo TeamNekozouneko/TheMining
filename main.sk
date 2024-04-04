@@ -21,7 +21,8 @@ Options:
 
     #以下値設定
     rare_drop_p: 1
-    rare_drop_c: 100000
+    rare_drop_c: 33333
+    #↑ 本来は1/100000ですが3つ分を計算しているためこの値です
     #maboroshi_ingot_drop設定ではpが確率分母、cが確率分子を示しています。
     #確率演算については、nupo_calc_lib.skを参照してください。
 
@@ -100,6 +101,16 @@ on load:
     set {mine.require::32} to {mine.items::31}
     set {mine.require::33} to {mine.items::32}
     set {mine.require::34} to {mine.items::33}
+
+    #鉱石の登録
+    clear {mine.ores::*}
+    set {mine.ores::stone} to {mine.items::24}
+    set {mine.ores::coal_ore} to {mine.items::25}
+    set {mine.ores::iron_ore} to {mine.items::26}
+    set {mine.ores::diamond_ore} to {mine.items::27}
+    set {mine.ores::emerald_ore} to {mine.items::28}
+    set {mine.ores::obsidian} to {mine.items::29}
+    set {mine.ores::magma_block} to {mine.items::41}
 
     clear {mine.upgrade_price::*}
     set {mine.upgrade_price::2} to 300
@@ -279,6 +290,15 @@ on load:
     add emerald_ore to {mine.break::*}
     add obsidian to {mine.break::*}
 
+    clear {mine.exp.price::*}
+    set {mine.exp.price::stone} to {mine.seller.sellprice::24}*2 
+    set {mine.exp.price::coal_ore} to {mine.seller.sellprice::25}*2 
+    set {mine.exp.price::iron_ore} to {mine.seller.sellprice::26}*2 
+    set {mine.exp.price::diamond_ore} to {mine.seller.sellprice::27}*2 
+    set {mine.exp.price::emerald_ore} to {mine.seller.sellprice::28}*2 
+    set {mine.exp.price::obsidian} to {mine.seller.sellprice::29}*2 
+    set {mine.exp.price::magma_block} to {mine.seller.sellprice::41}*2 
+
 on join:
     clear metadata value "mine_add_orerange" of player
     if {mine.status.autoore.money::%player's uuid%} is not set:
@@ -378,6 +398,45 @@ command /spawn [<text>]:
 
 on tab complete of "/spawn":
    set tab completions for position 1 to "help", "1", "2", "3" and "4"
+
+
+on npc right click:
+    if npc name is "&aアップグレード &7[クリック]":
+        sound_opened(player)
+        mine_open_upgrade(player, 1, 1)
+
+    else if npc name is "&d&lレシピの渡来人 &7[クリック]":
+        if {mine.players::%player's uuid%::recipe_telled} is set:
+            sound_opened(player)
+            mine_recipe_page(player, 1)
+        else:
+            mine_recipe_tell(player)
+
+    else if npc name is "&d&l幻のおじいさん &7[クリック]":
+        if {tell.maboroshi::%player's uuid%} is true:
+            mine_open_maboroshi(player)
+        else:
+            set {tell.maboroshi::%player's uuid%} to true
+            loop {mine.tell.maboroshi::*}:
+                sound_telling(player)
+                send "%loop-value%"
+                wait 3 second
+
+    else if npc name is "&a売店屋 &7[クリック]":
+        if {mine.players::%player's uuid%::seller_telled} is set:
+            sound_opened(player)
+            mine_seller_open(player)
+        else:
+            mine_seller_tell(player)
+
+    else if npc name is "&aアップデート履歴":
+        send "&aアップデート履歴 - <link:https://srv.nekozouneko.net/archives/95>https://srv.nekozouneko.net/archives/95"
+        send "&a　　　　　　　　 - <link:https://bit.ly/3Us0C4r>bit.ly/3Us0C4r"
+
+    else if npc name is "&aスキル &7[クリック]":
+        sound_opened(player)
+        mine_skill_page(player, 1)
+
 
 on inventory click:
     if name of player's current inventory is "{@oremenu_title}":
@@ -924,12 +983,7 @@ on place:
 on hunger meter change:
     cancel event
 
-on right click on oak sign:
-    player is not op
-    cancel event
-on right click on grindstone:
-    player is not op
-    cancel event
+
 
 command /pickaxe:
     trigger:
@@ -1076,7 +1130,7 @@ function mine_scoreboardUpdate(p: player):
     set score "&8¦¦  &5" in sidebar of {_p} to 3
     set score "&8¦¦  &e所持金: &6&l%round({_p}'s money)%円" in sidebar of {_p} to 2
     set score "&8¦¦  &6" in sidebar of {_p} to 1
-    set score "&8¦¦  &enekozouneko.com" in sidebar of {_p} to 0
+    set score "&8¦¦  &enekozouneko.net" in sidebar of {_p} to 0
 
 on right click:
     player is not op
@@ -1086,6 +1140,9 @@ on right click:
     cancel event if event-block is spruce trapdoor
     cancel event if event-block is mangrove trapdoor
     cancel event if event-block is a shulker box
+    cancel event if event-block is oak sign
+    cancel event if event-block is grindstone
+    cancel event if event-block is stonecutter
 
 #以下定期システム
 
@@ -1121,15 +1178,6 @@ every 5 minute:
 on first join:
     give {mine.items::0} to {_p}
 
-on load: #鉱石の登録
-    clear {mine.ores::*}
-    set {mine.ores::stone} to {mine.items::24}
-    set {mine.ores::coal_ore} to {mine.items::25}
-    set {mine.ores::iron_ore} to {mine.items::26}
-    set {mine.ores::diamond_ore} to {mine.items::27}
-    set {mine.ores::emerald_ore} to {mine.items::28}
-    set {mine.ores::obsidian} to {mine.items::29}
-    set {mine.ores::magma_block} to {mine.items::41}
 
 command /admin_break [<text>] [<player>]:   
     permission: admin
@@ -1172,7 +1220,6 @@ on break:
             cancel event
         if event-block is light blue terracotta:
             cancel event
-    
 
 on pickup:
     autoore(player)
@@ -1187,7 +1234,7 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
     set {_name} to "%blockdata of {_b}%"
     replace all "minecraft:" with "" in {_name}
     if {mine.ores::%{_name}%} is set:
-        set {_index} to {_special_item}
+        #set {_index} to {_special_item}
         set {_index} to first element of {mine.items::*} where [{_p}'s tool is input]
         #send "[Debug] %{_index}% - %{mine.items::*} where [{_p}'s tool is input]%" to {_p} if {_p} is op
         #return false if {_index} is not set
@@ -1212,10 +1259,10 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
                 set {_money} to {mine.price::%{_name}%}
                 add {_money} to {_p}'s money
             
-            loop {mine.seller.sellprice::*}:
-                if 1 of {mine.items::%loop-index%} is 1 of {mine.ores::%{_name}%}:
-                    set {_price} to loop-value
-                    exit loop
+            #loop {mine.seller.sellprice::*}:
+            #    if 1 of {mine.items::%loop-index%} is 1 of {mine.ores::%{_name}%}:
+            #        set {_price} to loop-value
+            #        exit loop
 
             if {_thread_bypass} is not true:
                 mine_boost_thread_wait({_p}, 1, {_exp})
@@ -1259,14 +1306,17 @@ function mine_break(p: player, b: block, thread_bypass: boolean = false) :: bool
             give {mine.ores::%{_name}%} to {_p}
             add 1 to {mine.mnum::%{_p}'s uuid%}
 
+            set {_price} to {mine.exp.price::%{_name}%}
+
             if {mine.levelprice::%{_name}%} is not set: #個別で採掘時のEXP獲得量を設定するためのコード by ぬぽ
-                set {_exp} to {_price}*2
+                set {_exp} to {_price}
                 remove {_exp} from {mine.exp::%{_p}'s uuid%}
             else:
                 set {_exp} to {_price}
                 remove {_exp} from {mine.exp::%{_p}'s uuid%}
 
             if mine_thread_throw("RARE_DROP"):
+                #それぞれで計算していたものを一個にまとめました確率は33333と前とあまり変わりません
                 sound_notification({_p})
                 set {_tmp} to random number from 1 to 3
                 set {_tmp2} to round({_tmp})
@@ -1325,10 +1375,6 @@ function mine_skill_hojo(p: player, v: block):
     mine_all_x({_p}, "north", 1, 1, -1, -1, {_v})
 
 #以下ショップ
-on npc right click:
-    if npc name is "&aアップグレード &7[クリック]":
-        sound_opened(player)
-        mine_open_upgrade(player, 1, 1)
 
 function mine_open_upgrade(p: player, tab: integer, page: integer):
     open chest inventory with 6 row named "{@menu_upgrade_title}" to {_p}
@@ -1606,10 +1652,6 @@ command /skill:
     trigger:
         mine_skill_page(player, 1)
 
-on npc right click:
-    if npc name is "&aスキル &7[クリック]":
-        sound_opened(player)
-        mine_skill_page(player, 1)
 
 function mine_skill_page(p: player, page: integer):
     if {_page} is 1:
@@ -1778,14 +1820,7 @@ on right click with blaze rod:
         remove 1 of event-item from player's inventory
 
 #以下「レシピの渡来人」処理
-on npc right click:
-    #player is op
-    if npc name is "&d&lレシピの渡来人 &7[クリック]":
-        if {mine.players::%player's uuid%::recipe_telled} is set:
-            sound_opened(player)
-            mine_recipe_page(player, 1)
-        else:
-            mine_recipe_tell(player)
+
 
 function mine_recipe_page(p: player, page: integer):
     open chest inventory with 6 row named "{@menu_recipe_title}" to {_p}
@@ -1917,13 +1952,7 @@ on inventory close:
         add {_price} to player's money
         send "&2&l! &a売却結果: %{_price}%円" to player
 
-on npc right click:
-    if npc name is "&a売店屋 &7[クリック]":
-        if {mine.players::%player's uuid%::seller_telled} is set:
-            sound_opened(player)
-            mine_seller_open(player)
-        else:
-            mine_seller_tell(player)
+
 
 function mine_seller_tell(p: player):
     if {mine.players::%{_p}'s uuid%::seller_telled} is not set:
@@ -2204,17 +2233,6 @@ every 1 second:
         clear {status.data::%loop-player%}
         set {status.data::%loop-player%} to 5
 
-on npc right click:
-    if npc name is "&d&l幻のおじいさん &7[クリック]":
-        if {tell.maboroshi::%player's uuid%} is true:
-            mine_open_maboroshi(player)
-        else:
-            set {tell.maboroshi::%player's uuid%} to true
-            loop {mine.tell.maboroshi::*}:
-                sound_telling(player)
-                send "%loop-value%"
-                wait 3 second
-
 function mine_open_maboroshi(p: player):
     open chest inventory with 3 row named "{@menu_maboroshi}" to {_p}     
     set {mine.slot.maboroshi::*} to 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 19 and 20 and 21 and 23 and 24 and 25  
@@ -2309,20 +2327,6 @@ on first join:
             
 every 1 minute:
     loop all players:
-        add 1 to {mine.pickaxe.time::%loop-player%}
-        if {mine.pickaxe.time::%loop-player%} > 30:
-            if loop-player has {mine.items::38}: 
-                remove 1 of {mine.items::38} from loop-player's inventory
-                send "&b初心者ピッケルが無くなってしまった!" to loop-player
-                send "&b鉱石をNPCに売ることでお金がもらえます!" to loop-player
-                send "&bお金を使いアップグレードNPCでアップグレードできるので" to loop-player
-                send "&bつるはしをどんどんアップグレードしていこう!" to loop-player
-                clear {mine.pickaxe.time::%loop-player%}
-                set {mine.hojo.%loop-player's uuid%} to false
-            else:
-                clear {mine.pickaxe.time::%loop-player%}
-every 1 minute:
-    loop all players:
         add 1 to {mine.login.time::%loop-player%}
         if {mine.login.time::%loop-player%} > 59:
             mine_quest_thread(loop-player, "TIME", 0)
@@ -2337,6 +2341,19 @@ every 1 minute:
             mine_quest_thread(loop-player, "LOC4", 0)  
             if {mine.loc4.time::%loop-player's uuid%} > 59:
                 set {mine.loc4.time::%loop-player's uuid%} to 0
+
+        add 1 to {mine.pickaxe.time::%loop-player%}
+        if {mine.pickaxe.time::%loop-player%} > 30:
+            if loop-player has {mine.items::38}: 
+                remove 1 of {mine.items::38} from loop-player's inventory
+                send "&b初心者ピッケルが無くなってしまった!" to loop-player
+                send "&b鉱石をNPCに売ることでお金がもらえます!" to loop-player
+                send "&bお金を使いアップグレードNPCでアップグレードできるので" to loop-player
+                send "&bつるはしをどんどんアップグレードしていこう!" to loop-player
+                clear {mine.pickaxe.time::%loop-player%}
+                set {mine.hojo.%loop-player's uuid%} to false
+            else:
+                clear {mine.pickaxe.time::%loop-player%}
 
 command /joinmsg:
     trigger:
@@ -2611,30 +2628,15 @@ command /pay [<player>] [<number>]:
         else:
             send "&cプレイヤーを入力してください。"
 
-on npc right click:
-    if npc name is "&aアップデート履歴":
-        send "&aアップデート履歴 - <link:https://srv.nekozouneko.net/archives/95>https://srv.nekozouneko.net/archives/95"
-        send "&a　　　　　　　　 - <link:https://bit.ly/3Us0C4r>bit.ly/3Us0C4r"
-
 command /trash:
     trigger:
         open chest inventory with 3 row named "&6ゴミ箱" to player
 
-on right click:
-    if clicked block is stonecutter:
-        cancel event
-
-on right click holding stone axe:
-    set {hoge.pos1} to clicked block
-    cancel event
-
-on left click holding stone axe:
-    set {hoge.pos2} to clicked block
-    cancel event
-    
-command /setblock [<material>]:
+command /delete_variables:
     permission: admin
     trigger:
-        loop blocks within {hoge.pos1} to {hoge.pos2}:
-            set loop-block to arg-1
-            wait a tick
+        loop all offline players:
+            clear {mine.status.autoore::%loop-value%}
+            clear {mine.status.autoore.money::%loop-value%}
+            wait 3 tick
+        send "不要なデータの削除が完了しました。" to ops
